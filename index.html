@@ -1159,3 +1159,621 @@ renderTasks();
 updateAll();
 
 newTip();
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🔥 Topper Hub</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+
+  body {
+    font-family: 'Segoe UI', Arial, sans-serif;
+    background: #0a0f1e;
+    color: #e2e8f0;
+    min-height: 100vh;
+    padding-bottom: 70px;
+  }
+
+  /* ---- TOP HEADER ---- */
+  .header {
+    background: linear-gradient(135deg, #1e3a5f, #0f2340);
+    padding: 18px 20px 14px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 2px solid #facc15;
+  }
+  .header h1 { font-size: 20px; color: #facc15; letter-spacing: 1px; }
+  .header .xp-pill {
+    background: #facc15;
+    color: #0a0f1e;
+    font-weight: 700;
+    font-size: 13px;
+    padding: 4px 12px;
+    border-radius: 20px;
+  }
+
+  /* ---- PAGES ---- */
+  .page { display: none; padding: 16px; }
+  .page.active { display: block; }
+
+  /* ---- CARDS ---- */
+  .card {
+    background: #1a2540;
+    border-radius: 14px;
+    padding: 16px;
+    margin-bottom: 14px;
+    border: 1px solid #2d3f60;
+  }
+  .card h2 { font-size: 16px; margin-bottom: 10px; color: #93c5fd; }
+
+  /* ---- STREAK ROW ---- */
+  .streak-row {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 14px;
+  }
+  .streak-box {
+    flex: 1;
+    background: #1a2540;
+    border: 1px solid #2d3f60;
+    border-radius: 12px;
+    padding: 12px;
+    text-align: center;
+  }
+  .streak-box .val { font-size: 22px; font-weight: 700; color: #facc15; }
+  .streak-box .lbl { font-size: 11px; color: #94a3b8; margin-top: 2px; }
+
+  /* ---- PROGRESS BAR ---- */
+  .prog-wrap { background: #0a0f1e; border-radius: 20px; height: 14px; overflow: hidden; margin: 10px 0 6px; }
+  .prog-bar { height: 100%; background: linear-gradient(90deg, #22c55e, #86efac); border-radius: 20px; transition: width 0.5s ease; }
+
+  /* ---- TASK LIST ---- */
+  .task-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 0;
+    border-bottom: 1px solid #2d3f60;
+    cursor: pointer;
+  }
+  .task-item:last-child { border-bottom: none; }
+  .task-check {
+    width: 22px; height: 22px;
+    border: 2px solid #3b82f6;
+    border-radius: 6px;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    transition: all 0.2s;
+  }
+  .task-item.done .task-check { background: #22c55e; border-color: #22c55e; }
+  .task-item.done .task-text { text-decoration: line-through; color: #64748b; }
+  .task-text { font-size: 14px; }
+
+  /* ---- SUBJECT GRID ---- */
+  .subj-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+  .subj-btn {
+    background: #0f2340;
+    border: 1px solid #3b82f6;
+    border-radius: 12px;
+    padding: 18px 10px;
+    text-align: center;
+    cursor: pointer;
+    color: white;
+    font-size: 14px;
+    transition: all 0.2s;
+  }
+  .subj-btn:hover { background: #1e3a5f; transform: scale(1.02); }
+  .subj-btn .icon { font-size: 26px; display: block; margin-bottom: 6px; }
+
+  /* ---- QUIZ UI ---- */
+  #quizBox { display: none; }
+  .quiz-q {
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 16px;
+    line-height: 1.5;
+    color: #e2e8f0;
+  }
+  .quiz-opts { display: flex; flex-direction: column; gap: 10px; }
+  .opt-btn {
+    background: #0f2340;
+    border: 2px solid #2d3f60;
+    border-radius: 10px;
+    padding: 12px 14px;
+    color: white;
+    font-size: 14px;
+    cursor: pointer;
+    text-align: left;
+    transition: all 0.2s;
+  }
+  .opt-btn:hover { border-color: #3b82f6; background: #1a2540; }
+  .opt-btn.correct { background: #14532d; border-color: #22c55e; color: #86efac; }
+  .opt-btn.wrong { background: #450a0a; border-color: #ef4444; color: #fca5a5; }
+  .quiz-result { text-align: center; padding: 20px 0; }
+  .quiz-result .big { font-size: 48px; }
+  .quiz-result h3 { font-size: 18px; margin: 8px 0 4px; }
+  .quiz-meta { font-size: 13px; color: #94a3b8; }
+  .quiz-counter { font-size: 12px; color: #64748b; margin-bottom: 10px; }
+
+  /* ---- BTN ---- */
+  .btn {
+    width: 100%;
+    padding: 13px;
+    border: none;
+    border-radius: 10px;
+    background: #3b82f6;
+    color: white;
+    font-size: 15px;
+    cursor: pointer;
+    margin-top: 10px;
+    font-weight: 600;
+    transition: background 0.2s;
+  }
+  .btn:hover { background: #2563eb; }
+  .btn.yellow { background: #facc15; color: #0a0f1e; }
+  .btn.green { background: #22c55e; color: #0a0f1e; }
+
+  /* ---- AI COACH ---- */
+  .coach-tip {
+    background: #0f2340;
+    border-left: 4px solid #facc15;
+    padding: 14px;
+    border-radius: 8px;
+    font-size: 14px;
+    line-height: 1.6;
+    min-height: 60px;
+  }
+
+  /* ---- LEADERBOARD ---- */
+  .lb-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 0;
+    border-bottom: 1px solid #2d3f60;
+  }
+  .lb-row:last-child { border: none; }
+  .lb-rank { font-size: 20px; width: 32px; text-align: center; }
+  .lb-name { flex: 1; font-size: 14px; }
+  .lb-xp { font-size: 13px; color: #facc15; font-weight: 700; }
+
+  /* ---- PROFILE ---- */
+  .profile-avatar {
+    width: 72px; height: 72px;
+    background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 30px;
+    margin: 0 auto 12px;
+  }
+  .profile-name { text-align: center; font-size: 20px; font-weight: 700; margin-bottom: 4px; }
+  .profile-sub { text-align: center; font-size: 12px; color: #64748b; margin-bottom: 16px; }
+  .stat-row { display: flex; gap: 10px; }
+  .stat-box {
+    flex: 1; background: #0f2340; border-radius: 10px;
+    padding: 12px; text-align: center;
+  }
+  .stat-box .sv { font-size: 20px; font-weight: 700; color: #facc15; }
+  .stat-box .sl { font-size: 11px; color: #94a3b8; }
+
+  /* ---- BOTTOM NAV ---- */
+  .bottom-nav {
+    position: fixed; bottom: 0; left: 0; width: 100%;
+    background: #1a2540;
+    border-top: 1px solid #2d3f60;
+    display: flex;
+    z-index: 100;
+  }
+  .nav-btn {
+    flex: 1; padding: 10px 0;
+    background: none; border: none;
+    color: #64748b;
+    font-size: 11px;
+    cursor: pointer;
+    display: flex; flex-direction: column;
+    align-items: center; gap: 3px;
+    transition: color 0.2s;
+  }
+  .nav-btn .ni { font-size: 20px; }
+  .nav-btn.active { color: #facc15; }
+
+  /* ---- TOAST ---- */
+  #toast {
+    position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%);
+    background: #22c55e; color: #0a0f1e;
+    padding: 10px 20px; border-radius: 20px;
+    font-weight: 700; font-size: 14px;
+    opacity: 0; transition: opacity 0.3s;
+    pointer-events: none; z-index: 999;
+    white-space: nowrap;
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>🔥 Topper Hub</h1>
+  <div class="xp-pill" id="headerXP">⭐ 0 XP</div>
+</div>
+
+<!-- ============ HOME PAGE ============ -->
+<div class="page active" id="page-home">
+
+  <div class="streak-row">
+    <div class="streak-box">
+      <div class="val" id="homeXP">0</div>
+      <div class="lbl">⭐ Total XP</div>
+    </div>
+    <div class="streak-box">
+      <div class="val" id="homeLevel">1</div>
+      <div class="lbl">🏅 Level</div>
+    </div>
+    <div class="streak-box">
+      <div class="val" id="homeStreak">1</div>
+      <div class="lbl">🔥 Streak</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>🎯 Aaj ki Mission</h2>
+    <div id="taskList"></div>
+    <button class="btn yellow" onclick="completeMission()">✅ Mission Complete karo</button>
+  </div>
+
+  <div class="card">
+    <h2>📊 Aaj ki Progress</h2>
+    <div class="prog-wrap">
+      <div class="prog-bar" id="progBar" style="width:0%"></div>
+    </div>
+    <p id="progText" style="font-size:13px;color:#94a3b8;">0% Complete</p>
+  </div>
+
+  <div class="card">
+    <h2>🤖 AI Coach — Aaj ki Tip</h2>
+    <div class="coach-tip" id="homeTip">Loading...</div>
+    <button class="btn" onclick="newTip()">🔄 Naya Tip Lo</button>
+  </div>
+
+</div>
+
+<!-- ============ STUDY PAGE ============ -->
+<div class="page" id="page-study">
+
+  <div class="card" id="subjectSelect">
+    <h2>📚 Subject chuno</h2>
+    <div class="subj-grid">
+      <div class="subj-btn" onclick="startQuiz('math')"><span class="icon">📘</span>Maths</div>
+      <div class="subj-btn" onclick="startQuiz('science')"><span class="icon">🔬</span>Science</div>
+      <div class="subj-btn" onclick="startQuiz('english')"><span class="icon">📖</span>English</div>
+      <div class="subj-btn" onclick="startQuiz('sst')"><span class="icon">🌍</span>SST</div>
+    </div>
+  </div>
+
+  <div class="card" id="quizBox">
+    <div class="quiz-counter" id="quizCounter">Question 1/5</div>
+    <div class="quiz-q" id="quizQ">—</div>
+    <div class="quiz-opts" id="quizOpts"></div>
+    <div class="quiz-result" id="quizResult" style="display:none">
+      <div class="big" id="resultEmoji">🎉</div>
+      <h3 id="resultTitle">—</h3>
+      <p class="quiz-meta" id="resultMeta">—</p>
+      <button class="btn green" onclick="closeQuiz()" style="margin-top:16px">← Wapas jao</button>
+    </div>
+  </div>
+
+</div>
+
+<!-- ============ LEADERBOARD PAGE ============ -->
+<div class="page" id="page-leader">
+  <div class="card">
+    <h2>🏆 Leaderboard</h2>
+    <div id="lbList"></div>
+  </div>
+</div>
+
+<!-- ============ PROFILE PAGE ============ -->
+<div class="page" id="page-profile">
+  <div class="card">
+    <div class="profile-avatar">👤</div>
+    <div class="profile-name" id="profName">—</div>
+    <div class="profile-sub">Bihar Board • Class 9</div>
+    <div class="stat-row">
+      <div class="stat-box"><div class="sv" id="profXP">0</div><div class="sl">XP</div></div>
+      <div class="stat-box"><div class="sv" id="profLevel">1</div><div class="sl">Level</div></div>
+      <div class="stat-box"><div class="sv" id="profStreak">1</div><div class="sl">Streak</div></div>
+    </div>
+    <button class="btn" onclick="changeName()" style="margin-top:14px">✏️ Naam badlo</button>
+  </div>
+
+  <div class="card">
+    <h2>🎯 Life Mission</h2>
+    <p style="font-size:13px;line-height:1.7;color:#94a3b8;">
+      Bihar Board Class 10 → <strong style="color:#facc15">Rank 1</strong><br>
+      JEE Main & Advanced → <strong style="color:#facc15">Top 10</strong><br>
+      MIT Computer Science → <strong style="color:#facc15">✅</strong><br>
+      India ke liye World-Class Technology banana 🇮🇳
+    </p>
+  </div>
+</div>
+
+<!-- ============ BOTTOM NAV ============ -->
+<div class="bottom-nav">
+  <button class="nav-btn active" onclick="goPage('home',this)"><span class="ni">🏠</span>Home</button>
+  <button class="nav-btn" onclick="goPage('study',this)"><span class="ni">📚</span>Study</button>
+  <button class="nav-btn" onclick="goPage('leader',this)"><span class="ni">🏆</span>Rank</button>
+  <button class="nav-btn" onclick="goPage('profile',this)"><span class="ni">👤</span>Profile</button>
+</div>
+
+<div id="toast"></div>
+
+<script>
+// ===== DATA =====
+let xp     = Number(localStorage.getItem('xp'))     || 0;
+let streak = Number(localStorage.getItem('streak')) || 1;
+let studentName = localStorage.getItem('studentName') || '';
+
+if(!studentName){
+  studentName = window.prompt('Apna naam likhein:') || 'Topper';
+  localStorage.setItem('studentName', studentName);
+}
+
+function save(){
+  localStorage.setItem('xp', xp);
+  localStorage.setItem('streak', streak);
+}
+function getLevel(){ return Math.floor(xp/100)+1; }
+
+// ===== TASKS =====
+const defaultTasks = [
+  'Math Chapter padho',
+  'Science Revision karo',
+  'English ke 10 words seekho',
+  'SST Notes banao',
+  'Ek quiz complete karo'
+];
+let tasksDone = JSON.parse(localStorage.getItem('tasksDone')||'[]');
+
+function renderTasks(){
+  const list = document.getElementById('taskList');
+  list.innerHTML = '';
+  defaultTasks.forEach((t,i) => {
+    const done = tasksDone.includes(i);
+    const div = document.createElement('div');
+    div.className = 'task-item' + (done?' done':'');
+    div.innerHTML = `<div class="task-check">${done?'✓':''}</div><div class="task-text">${t}</div>`;
+    div.onclick = () => toggleTask(i);
+    list.appendChild(div);
+  });
+  updateProgress();
+}
+
+function toggleTask(i){
+  if(tasksDone.includes(i)){
+    tasksDone = tasksDone.filter(x=>x!==i);
+  } else {
+    tasksDone.push(i);
+    xp += 5; save();
+    showToast('+5 XP 🎯');
+  }
+  localStorage.setItem('tasksDone', JSON.stringify(tasksDone));
+  renderTasks();
+  updateAll();
+}
+
+function updateProgress(){
+  const pct = Math.round((tasksDone.length/defaultTasks.length)*100);
+  document.getElementById('progBar').style.width = pct+'%';
+  document.getElementById('progText').textContent = pct+'% Complete';
+}
+
+function completeMission(){
+  if(tasksDone.length < defaultTasks.length){
+    showToast('Pehle sab tasks complete karo! ⚠️', '#f59e0b');
+    return;
+  }
+  xp += 50; streak++; save();
+  tasksDone = [];
+  localStorage.setItem('tasksDone','[]');
+  renderTasks();
+  updateAll();
+  showToast('🎉 Mission Complete! +50 XP');
+}
+
+// ===== TIPS =====
+const tips = [
+  '📚 Aaj kam se kam 2 ghante padhai karo. Consistency hi success hai.',
+  '🧮 Maths mein strong banao — JEE ka 50% hissa Maths hai.',
+  '🔥 Roz padhoge toh rank apne aap aayegi. Ek din bhi mat chhodna.',
+  '💪 Har mushkil sawaal ko ek baar aur try karo before dekhna answer.',
+  '🎯 Aaj ka lakshya poora karke hi sona — kal ki padhai kal karana.',
+  '🧠 Notes hand se likhne se yaad zyada rehta hai.',
+  '⏰ 5 AM uthte ho — yeh sabse badi advantage hai. Use it!',
+  '🏆 Bihar Board Rank 1 ka sapna tab poora hoga jab aaj ki padhai perfect ho.',
+];
+function newTip(){
+  const r = Math.floor(Math.random()*tips.length);
+  document.getElementById('homeTip').textContent = tips[r];
+}
+
+// ===== QUIZ DATA =====
+const qBank = {
+  math: [
+    {q:'2 + 3 × 4 = ?', a:['20','14','24','10'], c:1},
+    {q:'√144 = ?', a:['11','12','13','14'], c:1},
+    {q:'12 × 12 = ?', a:['124','142','144','122'], c:2},
+    {q:'15² = ?', a:['225','215','205','235'], c:0},
+    {q:'81 ÷ 9 = ?', a:['7','8','9','10'], c:2},
+    {q:'x² = 25 mein x = ?', a:['3','4','5','6'], c:2},
+    {q:'0.5 × 0.5 = ?', a:['0.025','0.25','2.5','25'], c:1},
+  ],
+  science: [
+    {q:'Paudhon mein bhojan banane ki prakriya kya hai?', a:['Shvasan','Prakash Sanshleshan','Vaspotsarjan','Pachan'], c:1},
+    {q:'Paani ka rasayanik sutra kya hai?', a:['CO₂','H₂O','O₂','NaCl'], c:1},
+    {q:'Manushya ke sharir mein sabse bada organ kaun sa hai?', a:['Dil','Twacha','Dimag','Phephda'], c:1},
+    {q:'Bijli ki SI unit kya hai?', a:['Watt','Joule','Ampere','Volt'], c:2},
+    {q:'Prithvi ki surface ka kitna hissa paani hai?', a:['51%','61%','71%','81%'], c:2},
+    {q:'Newton ka pehla niyam kya kehta hai?', a:['F=ma','Inertia ka niyam','Barabar aur ulti force','Urja sanrakshan'], c:1},
+  ],
+  english: [
+    {q:'"Benevolent" ka matlab kya hai?', a:['Dayan','Dayalu','Akraman','Nirday'], c:1},
+    {q:'"Ephemeral" matlab?', a:['Shaswat','Kshanik/Thoda samay','Bada','Tez'], c:1},
+    {q:'Verb: "She ___ to school every day."', a:['go','goes','going','gone'], c:1},
+    {q:'Opposite of "Courage"?', a:['Bravery','Strength','Cowardice','Power'], c:2},
+    {q:'Correct sentence kaun sa hai?', a:['He go to market','He goes to market','He going to market','He gone to market'], c:1},
+  ],
+  sst: [
+    {q:'Bharat ka Rashtriya Khel kaun sa hai?', a:['Cricket','Football','Hockey','Kabaddi'], c:2},
+    {q:'Bharat ki rajdhani kya hai?', a:['Mumbai','Kolkata','New Delhi','Chennai'], c:2},
+    {q:'Bharat mein kitne rajya hain (2024)?', a:['25','28','29','30'], c:1},
+    {q:'Bharat ka sabse bada rajya (kshetrafal) kaun sa hai?', a:['Maharashtra','UP','MP','Rajasthan'], c:3},
+    {q:'Bharat ka Samvidhan kab lagu hua?', a:['15 Aug 1947','26 Jan 1950','2 Oct 1950','1 Jan 1949'], c:1},
+    {q:'Ganga nadi kahan se nikalti hai?', a:['Yamnotri','Gangotri','Kedarnath','Badrinath'], c:1},
+  ]
+};
+
+// ===== QUIZ LOGIC =====
+let curQuiz=[], curQ=0, curScore=0, curSubj='';
+
+function startQuiz(subj){
+  curSubj = subj;
+  const pool = [...qBank[subj]].sort(()=>Math.random()-0.5).slice(0,5);
+  curQuiz = pool;
+  curQ = 0; curScore = 0;
+  document.getElementById('subjectSelect').style.display='none';
+  const qb = document.getElementById('quizBox');
+  qb.style.display='block';
+  document.getElementById('quizResult').style.display='none';
+  document.getElementById('quizQ').style.display='block';
+  document.getElementById('quizOpts').style.display='flex';
+  showQuizQ();
+}
+
+function showQuizQ(){
+  const q = curQuiz[curQ];
+  document.getElementById('quizCounter').textContent = `Question ${curQ+1}/${curQuiz.length}`;
+  document.getElementById('quizQ').textContent = q.q;
+  const opts = document.getElementById('quizOpts');
+  opts.innerHTML = '';
+  q.a.forEach((ans,i)=>{
+    const b = document.createElement('button');
+    b.className = 'opt-btn';
+    b.textContent = ans;
+    b.onclick = ()=>checkQ(i,b);
+    opts.appendChild(b);
+  });
+}
+
+function checkQ(sel, btn){
+  const q = curQuiz[curQ];
+  const allBtns = document.querySelectorAll('.opt-btn');
+  allBtns.forEach(b=>b.onclick=null);
+  if(sel===q.c){
+    btn.classList.add('correct');
+    curScore++;
+    xp+=10; save();
+    showToast('+10 XP ✅');
+  } else {
+    btn.classList.add('wrong');
+    allBtns[q.c].classList.add('correct');
+  }
+  setTimeout(()=>{
+    curQ++;
+    if(curQ<curQuiz.length){ showQuizQ(); }
+    else { endQuiz(); }
+  }, 1000);
+}
+
+function endQuiz(){
+  const pct = curScore/curQuiz.length;
+  document.getElementById('quizQ').style.display='none';
+  document.getElementById('quizOpts').style.display='none';
+  document.getElementById('quizResult').style.display='block';
+  document.getElementById('resultEmoji').textContent = pct>=0.8?'🏆':pct>=0.5?'👍':'💪';
+  document.getElementById('resultTitle').textContent =
+    pct>=0.8?'Shandaar!':pct>=0.5?'Accha kiya!':'Aur practice karo!';
+  document.getElementById('resultMeta').textContent =
+    `Score: ${curScore}/${curQuiz.length} | XP mila: ${curScore*10}`;
+  updateAll();
+  renderLeaderboard();
+}
+
+function closeQuiz(){
+  document.getElementById('quizBox').style.display='none';
+  document.getElementById('subjectSelect').style.display='block';
+}
+
+// ===== LEADERBOARD =====
+function renderLeaderboard(){
+  const entries = [
+    {name: studentName, xp: xp},
+    {name: 'Rahul', xp: 180},
+    {name: 'Priya', xp: 150},
+    {name: 'Ankit', xp: 120},
+    {name: 'Neha', xp: 95},
+  ].sort((a,b)=>b.xp-a.xp);
+
+  const medals = ['🥇','🥈','🥉','4️⃣','5️⃣'];
+  const list = document.getElementById('lbList');
+  list.innerHTML = entries.map((e,i)=>`
+    <div class="lb-row">
+      <div class="lb-rank">${medals[i]||i+1}</div>
+      <div class="lb-name" style="${e.name===studentName?'color:#facc15;font-weight:700':''}">${e.name}</div>
+      <div class="lb-xp">${e.xp} XP</div>
+    </div>
+  `).join('');
+}
+
+// ===== UPDATE ALL UI =====
+function updateAll(){
+  document.getElementById('homeXP').textContent    = xp;
+  document.getElementById('homeLevel').textContent = getLevel();
+  document.getElementById('homeStreak').textContent= streak;
+  document.getElementById('profXP').textContent    = xp;
+  document.getElementById('profLevel').textContent = getLevel();
+  document.getElementById('profStreak').textContent= streak;
+  document.getElementById('profName').textContent  = studentName;
+  document.getElementById('headerXP').textContent  = '⭐ '+xp+' XP';
+}
+
+// ===== NAVIGATION =====
+function goPage(id, btn){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById('page-'+id).classList.add('active');
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  if(id==='leader') renderLeaderboard();
+}
+
+// ===== PROFILE NAME =====
+function changeName(){
+  const n = window.prompt('Naya naam:', studentName);
+  if(n && n.trim()){
+    studentName = n.trim();
+    localStorage.setItem('studentName', studentName);
+    updateAll();
+  }
+}
+
+// ===== TOAST =====
+function showToast(msg, color='#22c55e'){
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.style.background = color;
+  t.style.opacity = '1';
+  setTimeout(()=>{ t.style.opacity='0'; }, 2000);
+}
+
+// ===== INIT =====
+renderTasks();
+updateAll();
+newTip();
+</script>
+</body>
+</html>
