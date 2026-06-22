@@ -595,6 +595,567 @@ function newTip() {
   );
 
   document.getElementById('homeTip').textContent =
+
     tips[random];
 
 }
+// =========================
+// प्रश्न बैंक
+// =========================
+
+const qBank = {
+
+  math: [
+
+    {
+      q:'2 + 3 × 4 = ?',
+      a:['20','14','24','10'],
+      c:1
+    },
+
+    {
+      q:'√144 = ?',
+      a:['11','12','13','14'],
+      c:1
+    },
+
+    {
+      q:'12 × 12 = ?',
+      a:['124','142','144','122'],
+      c:2
+    },
+
+    {
+      q:'15² = ?',
+      a:['225','215','205','235'],
+      c:0
+    },
+
+    {
+      q:'81 ÷ 9 = ?',
+      a:['7','8','9','10'],
+      c:2
+    },
+
+    {
+      q:'x² = 25 में x = ?',
+      a:['3','4','5','6'],
+      c:2
+    },
+
+    {
+      q:'0.5 × 0.5 = ?',
+      a:['0.025','0.25','2.5','25'],
+      c:1
+    }
+
+  ],
+
+
+  science: [
+
+    {
+      q:'पौधों में भोजन बनाने की प्रक्रिया क्या कहलाती है?',
+      a:['श्वसन','प्रकाश संश्लेषण','वाष्पोत्सर्जन','पाचन'],
+      c:1
+    },
+
+    {
+      q:'पानी का रासायनिक सूत्र क्या है?',
+      a:['CO₂','H₂O','O₂','NaCl'],
+      c:1
+    },
+
+    {
+      q:'मनुष्य के शरीर का सबसे बड़ा अंग कौन-सा है?',
+      a:['हृदय','त्वचा','मस्तिष्क','फेफड़ा'],
+      c:1
+    },
+
+    {
+      q:'विद्युत धारा की SI इकाई क्या है?',
+      a:['वाट','जूल','एम्पियर','वोल्ट'],
+      c:2
+    },
+
+    {
+      q:'पृथ्वी की सतह का लगभग कितना भाग जल से ढका है?',
+      a:['51%','61%','71%','81%'],
+      c:2
+    },
+
+    {
+      q:'न्यूटन का पहला नियम किससे संबंधित है?',
+      a:[
+        'F = ma',
+        'जड़त्व का नियम',
+        'प्रत्येक क्रिया की समान एवं विपरीत प्रतिक्रिया',
+        'ऊर्जा संरक्षण'
+      ],
+      c:1
+    }
+
+  ],
+
+
+  english: [
+
+    {
+      q:'"Benevolent" का हिन्दी अर्थ क्या है?',
+      a:['दयनीय','दयालु','आक्रामक','निर्दयी'],
+      c:1
+    },
+
+    {
+      q:'"Ephemeral" का अर्थ क्या है?',
+      a:['शाश्वत','क्षणिक','विशाल','तेज़'],
+      c:1
+    },
+
+    {
+      q:'रिक्त स्थान भरें: "She ___ to school every day."',
+      a:['go','goes','going','gone'],
+      c:1
+    },
+
+    {
+      q:'"Courage" का विलोम शब्द क्या है?',
+      a:['Bravery','Strength','Cowardice','Power'],
+      c:2
+    },
+
+    {
+      q:'सही वाक्य चुनिए।',
+      a:[
+        'He go to market',
+        'He goes to market',
+        'He going to market',
+        'He gone to market'
+      ],
+      c:1
+    }
+
+  ],
+
+
+  sst: [
+
+    {
+      q:'भारत का राष्ट्रीय खेल कौन-सा माना जाता है?',
+      a:['क्रिकेट','फुटबॉल','हॉकी','कबड्डी'],
+      c:2
+    },
+
+    {
+      q:'भारत की राजधानी क्या है?',
+      a:['मुंबई','कोलकाता','नई दिल्ली','चेन्नई'],
+      c:2
+    },
+
+    {
+      q:'भारत में वर्तमान में कितने राज्य हैं?',
+      a:['25','28','29','30'],
+      c:1
+    },
+
+    {
+      q:'क्षेत्रफल की दृष्टि से भारत का सबसे बड़ा राज्य कौन-सा है?',
+      a:['महाराष्ट्र','उत्तर प्रदेश','मध्य प्रदेश','राजस्थान'],
+      c:3
+    },
+
+    {
+      q:'भारत का संविधान कब लागू हुआ?',
+      a:[
+        '15 अगस्त 1947',
+        '26 जनवरी 1950',
+        '2 अक्टूबर 1950',
+        '1 जनवरी 1949'
+      ],
+      c:1
+    },
+
+    {
+      q:'गंगा नदी का उद्गम स्थल कौन-सा है?',
+      a:[
+        'यमुनोत्री',
+        'गंगोत्री',
+        'केदारनाथ',
+        'बद्रीनाथ'
+      ],
+      c:1
+    }
+
+  ]
+
+};// =========================
+// प्रश्नोत्तरी लॉजिक
+// =========================
+
+let curQuiz = [];
+let curQ = 0;
+let curScore = 0;
+let curSubj = '';
+
+function startQuiz(subject){
+
+  curSubj = subject;
+
+  const pool = [...qBank[subject]]
+    .sort(() => Math.random() - 0.5)
+    .slice(0,5);
+
+  curQuiz = pool;
+  curQ = 0;
+  curScore = 0;
+
+  document.getElementById('subjectSelect').style.display = 'none';
+
+  const quizBox = document.getElementById('quizBox');
+
+  quizBox.style.display = 'block';
+
+  document.getElementById('quizResult').style.display = 'none';
+  document.getElementById('quizQ').style.display = 'block';
+  document.getElementById('quizOpts').style.display = 'flex';
+
+  showQuizQ();
+
+}
+
+
+// =========================
+// प्रश्न दिखाएँ
+// =========================
+
+function showQuizQ(){
+
+  const question = curQuiz[curQ];
+
+  document.getElementById('quizCounter').textContent =
+    `प्रश्न ${curQ + 1}/${curQuiz.length}`;
+
+  document.getElementById('quizQ').textContent =
+    question.q;
+
+  const options =
+    document.getElementById('quizOpts');
+
+  options.innerHTML = '';
+
+  question.a.forEach((answer,index)=>{
+
+    const button =
+      document.createElement('button');
+
+    button.className = 'opt-btn';
+
+    button.textContent = answer;
+
+    button.onclick = ()=>checkQ(index,button);
+
+    options.appendChild(button);
+
+  });
+
+}
+
+
+// =========================
+// उत्तर जाँचें
+// =========================
+
+function checkQ(selected,button){
+
+  const question = curQuiz[curQ];
+
+  const allButtons =
+    document.querySelectorAll('.opt-btn');
+
+  allButtons.forEach(btn=>btn.onclick=null);
+
+  if(selected === question.c){
+
+    button.classList.add('correct');
+
+    curScore++;
+
+    xp += 10;
+
+    save();
+
+    showToast('+10 अनुभव अंक ✅');
+
+  }
+
+  else{
+
+    button.classList.add('wrong');
+
+    allButtons[question.c]
+      .classList.add('correct');
+
+  }
+
+  setTimeout(()=>{
+
+    curQ++;
+
+    if(curQ < curQuiz.length){
+
+      showQuizQ();
+
+    }
+
+    else{
+
+      endQuiz();
+
+    }
+
+  },1000);
+
+}
+
+
+// =========================
+// प्रश्नोत्तरी समाप्त
+// =========================
+
+function endQuiz(){
+
+  const percent =
+    curScore / curQuiz.length;
+
+  document.getElementById('quizQ').style.display =
+    'none';
+
+  document.getElementById('quizOpts').style.display =
+    'none';
+
+  document.getElementById('quizResult').style.display =
+    'block';
+
+  document.getElementById('resultEmoji').textContent =
+    percent >= 0.8 ? '🏆'
+    : percent >= 0.5 ? '👍'
+    : '💪';
+
+  document.getElementById('resultTitle').textContent =
+    percent >= 0.8
+      ? 'शानदार प्रदर्शन!'
+      : percent >= 0.5
+      ? 'बहुत अच्छा!'
+      : 'और अभ्यास की आवश्यकता है!';
+
+  document.getElementById('resultMeta').textContent =
+    `अंक : ${curScore}/${curQuiz.length} | प्राप्त अनुभव अंक : ${curScore * 10}`;
+
+  updateAll();
+
+  renderLeaderboard();
+
+}
+
+
+// =========================
+// प्रश्नोत्तरी बंद करें
+// =========================
+
+function closeQuiz(){
+
+  document.getElementById('quizBox').style.display =
+    'none';
+
+  document.getElementById('subjectSelect').style.display =
+    'block';
+
+ }// =========================
+// लीडरबोर्ड
+// =========================
+
+function renderLeaderboard(){
+
+  const entries = [
+
+    {
+      name: studentName,
+      xp: xp
+    },
+
+    {
+      name: 'राहुल',
+      xp: 180
+    },
+
+    {
+      name: 'प्रिया',
+      xp: 150
+    },
+
+    {
+      name: 'अंकित',
+      xp: 120
+    },
+
+    {
+      name: 'नेहा',
+      xp: 95
+    }
+
+  ].sort((a,b)=>b.xp-a.xp);
+
+  const medals = ['🥇','🥈','🥉','4️⃣','5️⃣'];
+
+  const list = document.getElementById('lbList');
+
+  list.innerHTML = entries.map((player,index)=>`
+
+    <div class="lb-row">
+
+      <div class="lb-rank">
+        ${medals[index] || index + 1}
+      </div>
+
+      <div class="lb-name"
+      style="${
+        player.name===studentName
+        ? 'color:#facc15;font-weight:700;'
+        : ''
+      }">
+
+        ${player.name}
+
+      </div>
+
+      <div class="lb-xp">
+        ${player.xp} अनुभव अंक
+      </div>
+
+    </div>
+
+  `).join('');
+
+}
+
+
+// =========================
+// पूरा इंटरफ़ेस अपडेट करें
+// =========================
+
+function updateAll(){
+
+  document.getElementById('homeXP').textContent =
+    xp;
+
+  document.getElementById('homeLevel').textContent =
+    getLevel();
+
+  document.getElementById('homeStreak').textContent =
+    streak;
+
+  document.getElementById('profXP').textContent =
+    xp;
+
+  document.getElementById('profLevel').textContent =
+    getLevel();
+
+  document.getElementById('profStreak').textContent =
+    streak;
+
+  document.getElementById('profName').textContent =
+    studentName;
+
+  document.getElementById('headerXP').textContent =
+    '⭐ ' + xp + ' अनुभव अंक';
+
+}
+
+
+// =========================
+// पेज बदलें
+// =========================
+
+function goPage(id,button){
+
+  document.querySelectorAll('.page')
+    .forEach(page=>page.classList.remove('active'));
+
+  document.getElementById('page-'+id)
+    .classList.add('active');
+
+  document.querySelectorAll('.nav-btn')
+    .forEach(btn=>btn.classList.remove('active'));
+
+  button.classList.add('active');
+
+  if(id==='leader'){
+
+    renderLeaderboard();
+
+  }
+
+}
+
+
+// =========================
+// नाम बदलें
+// =========================
+
+function changeName(){
+
+  const newName =
+    window.prompt(
+      'अपना नया नाम लिखें:',
+      studentName
+    );
+
+  if(newName && newName.trim()){
+
+    studentName = newName.trim();
+
+    localStorage.setItem(
+      'studentName',
+      studentName
+    );
+
+    updateAll();
+
+  }
+
+}
+
+
+// =========================
+// सूचना संदेश (Toast)
+// =========================
+
+function showToast(message,color='#22c55e'){
+
+  const toast =
+    document.getElementById('toast');
+
+  toast.textContent = message;
+
+  toast.style.background = color;
+
+  toast.style.opacity = '1';
+
+  setTimeout(()=>{
+
+    toast.style.opacity='0';
+
+  },2000);
+
+}
+
+
+// =========================
+// प्रारम्भ
+// =========================
+
+renderTasks();
+
+updateAll();
+
+newTip();
