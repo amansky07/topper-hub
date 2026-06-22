@@ -77,3 +77,36 @@
         document.getElementById('roomPopup').style.display = 'block';
     };
 </script>
+<!-- बटन सेक्शन -->
+<div style="text-align: center; margin: 20px;">
+    <button onclick="showSubject('math')">Math</button>
+    <button onclick="showSubject('science')">Science</button>
+    <button class="create-room-btn" onclick="document.getElementById('roomPopup').style.display='block'">Create Challenge Room</button>
+</div>
+
+<!-- क्वेश्चन बैंक का हिस्सा -->
+<div id="math-questions" style="display:none; color:white; padding: 20px;">
+    <h3>Math Question Bank</h3>
+    <p>1. $2 + 2 = ?$</p>
+</div>
+
+<div id="science-questions" style="display:none; color:white; padding: 20px;">
+    <h3>Science Question Bank</h3>
+    <p>1. पानी का रासायनिक सूत्र क्या है?</p>
+</div>
+
+<!-- Popup का कोड -->
+<div id="roomPopup" style="display:none; position:fixed; top:20%; left:10%; width:80%; background:#1a1a2e; padding:20px; border-radius:10px; color:white; text-align:center; z-index:100;">
+    <h3>रूम तैयार करें</h3>
+    <input type="text" id="playerName" placeholder="अपना नाम लिखें..." style="padding:10px; width:90%;"><br><br>
+    <button onclick="document.getElementById('roomPopup').style.display='none'" style="padding:10px 20px; background:red;">बंद करें</button>
+</div>
+
+<!-- JavaScript -->
+<script>
+function showSubject(sub) {
+    document.getElementById('math-questions').style.display = 'none';
+    document.getElementById('science-questions').style.display = 'none';
+    document.getElementById(sub + '-questions').style.display = 'block';
+}
+</script>
