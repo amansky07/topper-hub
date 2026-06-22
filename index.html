@@ -55,3 +55,25 @@
 </body>
 </html>
 
+<!-- नियम (Instructions) का सेक्शन -->
+<div class="rules-section" style="margin-top: 30px; color: #ccc; text-align: center;">
+    <h3>कैसे खेलें?</h3>
+    <p>1. 'Create Room' दबाएं। 2. कोड शेयर करें। 3. सबसे ज़्यादा XP जीतें!</p>
+</div>
+
+<!-- Popup का स्ट्रक्चर -->
+<div id="roomPopup" style="display:none; position:fixed; top:20%; left:10%; width:80%; background:#1a1a2e; padding:20px; border-radius:10px; color:white; text-align:center;">
+    <h3>रूम तैयार करें</h3>
+    <p>अपना नाम डालें और चैलेंज शुरू करें!</p>
+    <input type="text" id="playerName" placeholder="अपना नाम लिखें..." style="padding:10px; width:90%;">
+    <button onclick="alert('रूम बन गया!')" style="margin-top:10px; padding:10px 20px; background:green; color:white; border:none; border-radius:5px;">शुरू करें</button>
+    <button onclick="document.getElementById('roomPopup').style.display='none'" style="margin-top:10px; padding:10px 20px; background:red; color:white; border:none; border-radius:5px;">बंद करें</button>
+</div>
+
+<!-- JavaScript बटन क्लिक के लिए -->
+<script>
+    // 'Create Challenge Room' बटन पर क्लिक करने पर Popup दिखाना
+    document.querySelector('.create-room-btn').onclick = function() {
+        document.getElementById('roomPopup').style.display = 'block';
+    };
+</script>
