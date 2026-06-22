@@ -619,3 +619,630 @@ newTip();
 </html>
 
 ```
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🔥 टॉपर हब (Topper Hub) - प्रो</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+
+  body {
+    font-family: 'Segoe UI', Arial, sans-serif;
+    background: #0a0f1e;
+    color: #e2e8f0;
+    min-height: 100vh;
+    padding-bottom: 70px;
+  }
+
+  /* ---- TOP HEADER ---- */
+  .header {
+    background: linear-gradient(135deg, #1e3a5f, #0f2340);
+    padding: 18px 20px 14px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 2px solid #facc15;
+  }
+  .header h1 { font-size: 20px; color: #facc15; letter-spacing: 1px; }
+  .header .xp-pill {
+    background: #facc15;
+    color: #0a0f1e;
+    font-weight: 700;
+    font-size: 13px;
+    padding: 4px 12px;
+    border-radius: 20px;
+  }
+
+  /* ---- PAGES ---- */
+  .page { display: none; padding: 16px; }
+  .page.active { display: block; }
+
+  /* ---- CARDS ---- */
+  .card {
+    background: #1a2540;
+    border-radius: 14px;
+    padding: 16px;
+    margin-bottom: 14px;
+    border: 1px solid #2d3f60;
+  }
+  .card h2 { font-size: 16px; margin-bottom: 10px; color: #93c5fd; }
+
+  /* ---- STREAK ROW ---- */
+  .streak-row {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 14px;
+  }
+  .streak-box {
+    flex: 1;
+    background: #1a2540;
+    border: 1px solid #2d3f60;
+    border-radius: 12px;
+    padding: 12px;
+    text-align: center;
+  }
+  .streak-box .val { font-size: 22px; font-weight: 700; color: #facc15; }
+  .streak-box .lbl { font-size: 11px; color: #94a3b8; margin-top: 2px; }
+
+  /* ---- POMODORO TIMER ---- */
+  .timer-display { font-size: 38px; font-weight: bold; text-align: center; margin: 8px 0; color: #ef4444; letter-spacing: 1px; }
+  .timer-controls { display: flex; gap: 10px; }
+
+  /* ---- QUICK NOTES ---- */
+  .notes-textarea {
+    width: 100%;
+    height: 100px;
+    background: #0a0f1e;
+    border: 1px solid #2d3f60;
+    border-radius: 8px;
+    color: #e2e8f0;
+    padding: 10px;
+    font-size: 14px;
+    resize: none;
+    outline: none;
+    font-family: inherit;
+  }
+
+  /* ---- PROGRESS BAR ---- */
+  .prog-wrap { background: #0a0f1e; border-radius: 20px; height: 14px; overflow: hidden; margin: 10px 0 6px; }
+  .prog-bar { height: 100%; background: linear-gradient(90deg, #22c55e, #86efac); border-radius: 20px; transition: width 0.5s ease; }
+
+  /* ---- TASK LIST ---- */
+  .task-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 0;
+    border-bottom: 1px solid #2d3f60;
+    cursor: pointer;
+  }
+  .task-item:last-child { border-bottom: none; }
+  .task-check {
+    width: 22px; height: 22px;
+    border: 2px solid #3b82f6;
+    border-radius: 6px;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    transition: all 0.2s;
+  }
+  .task-item.done .task-check { background: #22c55e; border-color: #22c55e; }
+  .task-item.done .task-text { text-decoration: line-through; color: #64748b; }
+  .task-text { font-size: 14px; }
+
+  /* ---- SUBJECT GRID ---- */
+  .subj-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+  .subj-btn {
+    background: #0f2340;
+    border: 1px solid #3b82f6;
+    border-radius: 12px;
+    padding: 18px 10px;
+    text-align: center;
+    cursor: pointer;
+    color: white;
+    font-size: 14px;
+    transition: all 0.2s;
+  }
+  .subj-btn:hover { background: #1e3a5f; transform: scale(1.02); }
+  .subj-btn .icon { font-size: 26px; display: block; margin-bottom: 6px; }
+
+  /* ---- QUIZ UI ---- */
+  #quizBox { display: none; }
+  .quiz-q {
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 16px;
+    line-height: 1.5;
+    color: #e2e8f0;
+  }
+  .quiz-opts { display: flex; flex-direction: column; gap: 10px; }
+  .opt-btn {
+    background: #0f2340;
+    border: 2px solid #2d3f60;
+    border-radius: 10px;
+    padding: 12px 14px;
+    color: white;
+    font-size: 14px;
+    cursor: pointer;
+    text-align: left;
+    transition: all 0.2s;
+  }
+  .opt-btn:hover { border-color: #3b82f6; background: #1a2540; }
+  .opt-btn.correct { background: #14532d; border-color: #22c55e; color: #86efac; }
+  .opt-btn.wrong { background: #450a0a; border-color: #ef4444; color: #fca5a5; }
+  .quiz-result { text-align: center; padding: 20px 0; }
+  .quiz-result .big { font-size: 48px; }
+  .quiz-result h3 { font-size: 18px; margin: 8px 0 4px; }
+  .quiz-meta { font-size: 13px; color: #94a3b8; }
+  .quiz-counter { font-size: 12px; color: #64748b; margin-bottom: 10px; }
+
+  /* ---- BTN ---- */
+  .btn {
+    width: 100%;
+    padding: 13px;
+    border: none;
+    border-radius: 10px;
+    background: #3b82f6;
+    color: white;
+    font-size: 15px;
+    cursor: pointer;
+    margin-top: 10px;
+    font-weight: 600;
+    transition: background 0.2s;
+  }
+  .btn:hover { background: #2563eb; }
+  .btn.yellow { background: #facc15; color: #0a0f1e; }
+  .btn.green { background: #22c55e; color: #0a0f1e; }
+  .btn.outline { background: transparent; border: 2px solid #ef4444; color: #ef4444; }
+  .btn.outline:hover { background: #ef4444; color: white; }
+
+  /* ---- AI COACH ---- */
+  .coach-tip {
+    background: #0f2340;
+    border-left: 4px solid #facc15;
+    padding: 14px;
+    border-radius: 8px;
+    font-size: 14px;
+    line-height: 1.6;
+    min-height: 60px;
+  }
+
+  /* ---- LEADERBOARD ---- */
+  .lb-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 0;
+    border-bottom: 1px solid #2d3f60;
+  }
+  .lb-row:last-child { border: none; }
+  .lb-rank { font-size: 20px; width: 32px; text-align: center; }
+  .lb-name { flex: 1; font-size: 14px; }
+  .lb-xp { font-size: 13px; color: #facc15; font-weight: 700; }
+
+  /* ---- PROFILE ---- */
+  .profile-avatar {
+    width: 72px; height: 72px;
+    background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 30px;
+    margin: 0 auto 12px;
+  }
+  .profile-name { text-align: center; font-size: 20px; font-weight: 700; margin-bottom: 4px; }
+  .profile-sub { text-align: center; font-size: 12px; color: #64748b; margin-bottom: 16px; }
+  .stat-row { display: flex; gap: 10px; }
+  .stat-box {
+    flex: 1; background: #0f2340; border-radius: 10px;
+    padding: 12px; text-align: center;
+  }
+  .stat-box .sv { font-size: 20px; font-weight: 700; color: #facc15; }
+  .stat-box .sl { font-size: 11px; color: #94a3b8; }
+
+  /* ---- BOTTOM NAV ---- */
+  .bottom-nav {
+    position: fixed; bottom: 0; left: 0; width: 100%;
+    background: #1a2540;
+    border-top: 1px solid #2d3f60;
+    display: flex;
+    z-index: 100;
+  }
+  .nav-btn {
+    flex: 1; padding: 10px 0;
+    background: none; border: none;
+    color: #64748b;
+    font-size: 11px;
+    cursor: pointer;
+    display: flex; flex-direction: column;
+    align-items: center; gap: 3px;
+    transition: color 0.2s;
+  }
+  .nav-btn .ni { font-size: 20px; }
+  .nav-btn.active { color: #facc15; }
+
+  /* ---- TOAST ---- */
+  #toast {
+    position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%);
+    background: #22c55e; color: #0a0f1e;
+    padding: 10px 20px; border-radius: 20px;
+    font-weight: 700; font-size: 14px;
+    opacity: 0; transition: opacity 0.3s;
+    pointer-events: none; z-index: 999;
+    white-space: nowrap;
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>🔥 टॉपर हब</h1>
+  <div class="xp-pill" id="headerXP">⭐ 0 XP</div>
+</div>
+
+<!-- ============ HOME PAGE ============ -->
+<div class="page active" id="page-home">
+
+  <!-- NEW FEATURE: POMODORO TIMER -->
+  <div class="card">
+    <h2>⏱️ पोमोडोरो फोकस टाइमर</h2>
+    <div class="timer-display" id="timerDisplay">25:00</div>
+    <div class="timer-controls">
+      <button class="btn green" id="startTimerBtn" onclick="toggleTimer()">▶️ शुरू करें</button>
+      <button class="btn outline" onclick="resetTimer()">🔄 रीसेट</button>
+    </div>
+  </div>
+
+  <!-- NEW FEATURE: QUICK NOTES -->
+  <div class="card">
+    <h2>📝 क्विक टॉपर नोट्स</h2>
+    <textarea class="notes-textarea" id="quickNotes" placeholder="यहाँ अपने ज़रूरी सूत्र, फॉर्मूले या आज का रफ प्लान लिखें (यह अपने आप सुरक्षित रहेगा)..." oninput="saveNotes()"></textarea>
+  </div>
+
+  <div class="streak-row">
+    <div class="streak-box">
+      <div class="val" id="homeXP">0</div>
+      <div class="lbl">⭐ कुल एक्सपी (XP)</div>
+    </div>
+    <div class="streak-box">
+      <div class="val" id="homeLevel">1</div>
+      <div class="lbl">🏅 स्तर (Level)</div>
+    </div>
+    <div class="streak-box">
+      <div class="val" id="homeStreak">1</div>
+      <div class="lbl">🔥 लगातार दिन</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>🎯 आज का मिशन</h2>
+    <div id="taskList"></div>
+    <button class="btn yellow" onclick="completeMission()">✅ मिशन पूरा करें</button>
+  </div>
+
+  <div class="card">
+    <h2>📊 आज की प्रगति</h2>
+    <div class="prog-wrap">
+      <div class="prog-bar" id="progBar" style="width:0%"></div>
+    </div>
+    <p id="progText" style="font-size:13px;color:#94a3b8;">0% पूर्ण</p>
+  </div>
+
+  <div class="card">
+    <h2>🤖 एआई कोच — आज का सुझाव</h2>
+    <div class="coach-tip" id="homeTip">लोड हो रहा है...</div>
+    <button class="btn" onclick="newTip()">🔄 नया सुझाव प्राप्त करें</button>
+  </div>
+
+</div>
+
+<!-- ============ STUDY PAGE ============ -->
+<div class="page" id="page-study">
+
+  <div class="card" id="subjectSelect">
+    <h2>📚 विषय चुनें</h2>
+    <div class="subj-grid">
+      <div class="subj-btn" onclick="startQuiz('math')"><span class="icon">📘</span>गणित</div>
+      <div class="subj-btn" onclick="startQuiz('science')"><span class="icon">🔬</span>विज्ञान</div>
+      <div class="subj-btn" onclick="startQuiz('english')"><span class="icon">📖</span>अंग्रेजी</div>
+      <div class="subj-btn" onclick="startQuiz('sst')"><span class="icon">🌍</span>समाजिक विज्ञान</div>
+    </div>
+  </div>
+
+  <div class="card" id="quizBox">
+    <div class="quiz-counter" id="quizCounter">प्रश्न 1/5</div>
+    <div class="quiz-q" id="quizQ">—</div>
+    <div class="quiz-opts" id="quizOpts"></div>
+    <div class="quiz-result" id="quizResult" style="display:none">
+      <div class="big" id="resultEmoji">🎉</div>
+      <h3 id="resultTitle">—</h3>
+      <p class="quiz-meta" id="resultMeta">—</p>
+      <button class="btn green" onclick="closeQuiz()" style="margin-top:16px">← वापस जाएं</button>
+    </div>
+  </div>
+
+</div>
+
+<!-- ============ LEADERBOARD PAGE ============ -->
+<div class="page" id="page-leader">
+  <div class="card">
+    <h2>🏆 लीडरबोर्ड (रैंक)</h2>
+    <div id="lbList"></div>
+  </div>
+</div>
+
+<!-- ============ PROFILE PAGE ============ -->
+<div class="page" id="page-profile">
+  <div class="card">
+    <div class="profile-avatar">👤</div>
+    <div class="profile-name" id="profName">—</div>
+    <div class="profile-sub">बिहार बोर्ड • कक्षा 9</div>
+    <div class="stat-row">
+      <div class="stat-box"><div class="sv" id="profXP">0</div><div class="sl">XP</div></div>
+      <div class="stat-box"><div class="sv" id="profLevel">1</div><div class="sl">स्तर</div></div>
+      <div class="stat-box"><div class="sv" id="profStreak">1</div><div class="sl">लगातार दिन</div></div>
+    </div>
+    <button class="btn" onclick="changeName()" style="margin-top:14px">✏️ नाम बदलें</button>
+  </div>
+
+  <div class="card">
+    <h2>🎯 जीवन का लक्ष्य</h2>
+    <p style="font-size:13px;line-height:1.7;color:#94a3b8;">
+      बिहार बोर्ड कक्षा 10 → <strong style="color:#facc15">रैंक 1</strong><br>
+      JEE Main & Advanced → <strong style="color:#facc15">शीर्ष 10 (Top 10)</strong><br>
+      MIT कंप्यूटर साइंस → <strong style="color:#facc15">✅</strong><br>
+      भारत के लिए विश्व-स्तरीय तकनीक बनाना 🇮🇳
+    </p>
+  </div>
+</div>
+
+<!-- ============ BOTTOM NAV ============ -->
+<div class="bottom-nav">
+  <button class="nav-btn active" onclick="goPage('home',this)"><span class="ni">🏠</span>मुख्य पृष्ठ</button>
+  <button class="nav-btn" onclick="goPage('study',this)"><span class="ni">📚</span>पढ़ाई</button>
+  <button class="nav-btn" onclick="goPage('leader',this)"><span class="ni">🏆</span>रैंक</button>
+  <button class="nav-btn" onclick="goPage('profile',this)"><span class="ni">👤</span>प्रोफाइल</button>
+</div>
+
+<div id="toast"></div>
+
+<script>
+// ===== DATA =====
+let xp     = Number(localStorage.getItem('xp'))     || 0;
+let streak = Number(localStorage.getItem('streak')) || 1;
+let studentName = localStorage.getItem('studentName') || '';
+
+if(!studentName){
+  studentName = window.prompt('अपना नाम लिखें:') || 'टॉपर';
+  localStorage.setItem('studentName', studentName);
+}
+
+function save(){
+  localStorage.setItem('xp', xp);
+  localStorage.setItem('streak', streak);
+}
+function getLevel(){ return Math.floor(xp/100)+1; }
+
+// ===== POMODORO TIMER =====
+let timerInterval = null;
+let timeRemaining = 25 * 60; // 25 minutes
+let isTimerRunning = false;
+
+function updateTimerDisplay() {
+  const mins = Math.floor(timeRemaining / 60).toString().padStart(2, '0');
+  const secs = (timeRemaining % 60).toString().padStart(2, '0');
+  document.getElementById('timerDisplay').textContent = `${mins}:${secs}`;
+}
+
+function toggleTimer() {
+  const btn = document.getElementById('startTimerBtn');
+  if (isTimerRunning) {
+    clearInterval(timerInterval);
+    btn.textContent = '▶️ शुरू करें';
+    btn.style.background = '#22c55e';
+    isTimerRunning = false;
+  } else {
+    isTimerRunning = true;
+    btn.textContent = '⏸️ रोकें';
+    btn.style.background = '#f59e0b';
+    timerInterval = setInterval(() => {
+      timeRemaining--;
+      updateTimerDisplay();
+      if (timeRemaining <= 0) {
+        clearInterval(timerInterval);
+        isTimerRunning = false;
+        timeRemaining = 25 * 60;
+        updateTimerDisplay();
+        btn.textContent = '▶️ शुरू करें';
+        btn.style.background = '#22c55e';
+        xp += 20; save(); updateAll(); // Bonus XP
+        showToast('🎉 बेहतरीन! 25 मिनट फोकस पूरा हुआ। +20 XP 🎯');
+        playBeep();
+      }
+    }, 1000);
+  }
+}
+
+function resetTimer() {
+  clearInterval(timerInterval);
+  isTimerRunning = false;
+  timeRemaining = 25 * 60;
+  updateTimerDisplay();
+  const btn = document.getElementById('startTimerBtn');
+  btn.textContent = '▶️ शुरू करें';
+  btn.style.background = '#22c55e';
+}
+
+function playBeep() {
+  const ctx = new (window.AudioContext || window.webkitAudioContext)();
+  const osc = ctx.createOscillator();
+  osc.type = 'sine'; osc.frequency.setValueAtTime(600, ctx.currentTime);
+  osc.connect(ctx.destination); osc.start(); osc.stop(ctx.currentTime + 0.4);
+}
+
+// ===== QUICK NOTES =====
+function saveNotes() {
+  const txt = document.getElementById('quickNotes').value;
+  localStorage.setItem('topper_notes', txt);
+}
+function loadNotes() {
+  document.getElementById('quickNotes').value = localStorage.getItem('topper_notes') || '';
+}
+
+// ===== TASKS =====
+const defaultTasks = [
+  'गणित का एक अध्याय पढ़ें',
+  'विज्ञान का रिवीज़न करें',
+  'अंग्रेजी के 10 नए शब्द सीखें',
+  'सामाजिक विज्ञान के नोट्स बनाएं',
+  'एक क्विज़ (प्रश्नोत्तरी) पूरी करें'
+];
+let tasksDone = JSON.parse(localStorage.getItem('tasksDone')||'[]');
+
+function renderTasks(){
+  const list = document.getElementById('taskList');
+  list.innerHTML = '';
+  defaultTasks.forEach((t,i) => {
+    const done = tasksDone.includes(i);
+    const div = document.createElement('div');
+    div.className = 'task-item' + (done?' done':'');
+    div.innerHTML = `<div class="task-check">${done?'✓':''}</div><div class="task-text">${t}</div>`;
+    div.onclick = () => toggleTask(i);
+    list.appendChild(div);
+  });
+  updateProgress();
+}
+
+function toggleTask(i){
+  if(tasksDone.includes(i)){
+    tasksDone = tasksDone.filter(x=>x!==i);
+  } else {
+    tasksDone.push(i);
+    xp += 5; save();
+    showToast('+5 XP प्राप्त 🎯');
+  }
+  localStorage.setItem('tasksDone', JSON.stringify(tasksDone));
+  renderTasks();
+  updateAll();
+}
+
+function updateProgress(){
+  const pct = Math.round((tasksDone.length/defaultTasks.length)*100);
+  document.getElementById('progBar').style.width = pct+'%';
+  document.getElementById('progText').textContent = pct+'% पूर्ण';
+}
+
+function completeMission(){
+  if(tasksDone.length < defaultTasks.length){
+    showToast('पहले सभी कार्यों को पूरा करें! ⚠️', '#f59e0b');
+    return;
+  }
+  xp += 50; streak++; save();
+  tasksDone = [];
+  localStorage.setItem('tasksDone','[]');
+  renderTasks();
+  updateAll();
+  showToast('🎉 मिशन पूरा हुआ! +50 XP');
+}
+
+// ===== TIPS =====
+const tips = [
+  '📚 आज कम से कम 2 घंटे पढ़ाई करें। निरंतरता (Consistency) ही सफलता की चाबी है।',
+  '🧮 गणित को मजबूत बनाएं — JEE परीक्षा का 50% हिस्सा गणितीय कौशल पर आधारित होता है।',
+  '🔥 रोज़ पढ़ाई करने से रैंक अपने आप आएगी। एक दिन का भी ब्रेक न लें।',
+  '💪 किसी भी कठिन सवाल को खुद से हल करने का प्रयास करें, उत्तर देखने से पहले एक बार और सोचें।',
+  '🎯 आज का लक्ष्य पूरा करके ही सोएं — कल की पढ़ाई कल पर न छोड़ें।',
+  '🧠 हाथ से लिखकर नोट्स बनाने पर चीजें बहुत लंबे समय तक याद रहती हैं।',
+  '⏰ सुबह 5 बजे उठना शुरू करें — यह आपकी सबसे बड़ी ताकत बन सकता है। इसका सही उपयोग करें!',
+  '🏆 बिहार बोर्ड में रैंक 1 लाने का सपना तभी सच होगा जब आपकी दैनिक तैयारी सर्वोत्तम होगी।'
+];
+function newTip(){
+  const r = Math.floor(Math.random()*tips.length);
+  document.getElementById('homeTip').textContent = tips[r];
+}
+
+// ===== QUIZ DATA =====
+const qBank = {
+  math: [
+    {q:'2 + 3 × 4 = ? (BODMAS नियम का प्रयोग करें)', a:['20','14','24','10'], c:1},
+    {q:'√144 का मान क्या होगा?', a:['11','12','13','14'], c:1},
+    {q:'12 × 12 = ?', a:['124','142','144','122'], c:2},
+    {q:'15² का मान क्या होगा?', a:['225','215','205','235'], c:0},
+    {q:'81 ÷ 9 = ?', a:['7','8','9','10'], c:2},
+  ],
+  science: [
+    {q:'पौधों में भोजन बनाने की प्रक्रिया को क्या कहा जाता है?', a:['श्वसन','प्रकाश संश्लेषण','वाष्पोत्सर्जन','पाचन'], c:1},
+    {q:'पानी (जल) का रासायनिक सूत्र क्या है?', a:['CO₂','H₂O','O₂','NaCl'], c:1},
+    {q:'मानव शरीर का सबसे बड़ा अंग (Organ) कौन सा है?', a:['हृदय','त्वचा (Skin)','मस्तिष्क','फेफड़ा'], c:1},
+  ],
+  english: [
+    {q:'"Benevolent" का सही हिंदी अर्थ क्या है?', a:['दयावान/परोपकारी','क्रूर','आक्रामक','निर्दयी'], c:0},
+    {q:'सही विकल्प चुनें: "She ___ to school every day."', a:['go','goes','going','gone'], c:1},
+  ],
+  sst: [
+    {q:'भारत की राजधानी कहाँ है?', a:['मुंबई','कोलकाता','नई दिल्ली','चेन्नई'], c:2},
+    {q:'क्षेत्रफल की दृष्टि से भारत का सबसे बड़ा राज्य कौन सा है?', a:['महाराष्ट्र','उत्तर प्रदेश','मध्य प्रदेश','राजस्थान'], c:3},
+  ]
+};
+
+// ===== QUIZ LOGIC =====
+let curQuiz=[], curQ=0, curScore=0, curSubj='';
+
+function startQuiz(subj){
+  curSubj = subj;
+  const pool = [...qBank[subj]].sort(()=>Math.random()-0.5).slice(0,5);
+  curQuiz = pool;
+  curQ = 0; curScore = 0;
+  document.getElementById('subjectSelect').style.display='none';
+  const qb = document.getElementById('quizBox');
+  qb.style.display='block';
+  document.getElementById('quizResult').style.display='none';
+  document.getElementById('quizQ').style.display='block';
+  document.getElementById('quizOpts').style.display='flex';
+  showQuizQ();
+}
+
+function showQuizQ(){
+  const q = curQuiz[curQ];
+  document.getElementById('quizCounter').textContent = `प्रश्न ${curQ+1}/${curQuiz.length}`;
+  document.getElementById('quizQ').textContent = q.q;
+  const opts = document.getElementById('quizOpts');
+  opts.innerHTML = '';
+  q.a.forEach((ans,i)=>{
+    const b = document.createElement('button');
+    b.className = 'opt-btn';
+    b.textContent = ans;
+    b.onclick = ()=>checkQ(i,b);
+    opts.appendChild(b);
+  });
+}
+
+function checkQ(sel, btn){
+  const q = curQuiz[curQ];
+  const allBtns = document.querySelectorAll('.opt-btn');
+  allBtns.forEach(b=>b.onclick=null);
+  if(sel===q.c){
+    btn.classList.add('correct');
+    curScore++;
+    xp+=10; save();
+    showToast('+10 XP प्राप्त ✅');
+  } else {
+    btn.classList.add('wrong');
+    allBtns[q.c].classList.add('correct');
+  }
+  setTimeout(()=>{
+    curQ++;
+    if(curQ<curQuiz.length){ showQuizQ(); }
+    else { endQuiz(); }
+  }, 1000);
+}
+
+function endQuiz(){
+  const pct = curScore/curQuiz.length;
+  document.getElementById('quizQ').style.display='none';
+  document.getElementById('quizOpt01025btn.textContentbtn.style.backgroundosc.typediv.classNamelist.innerHTMLdiv.onclickdiv.innerHTML
+                          5231124opts.innerHTML9b.textContentb.classNameb.onclick
