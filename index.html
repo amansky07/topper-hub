@@ -1,112 +1,55 @@
 <!DOCTYPE html>
-<html lang="hi">
+<html>
 <head>
-    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Topper Hub - Community</title>
-    <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        .glass { background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        body { background: #0f172a; color: white; font-family: sans-serif; margin: 0; padding: 20px; }
+        .card { background: #1e293b; padding: 15px; border-radius: 10px; margin-bottom: 15px; }
+        .btn { background: #3b82f6; border: none; padding: 10px; color: white; border-radius: 5px; width: 100%; margin-top: 5px; }
     </style>
 </head>
-<body class="bg-slate-950 text-white min-h-screen p-4">
+<body>
 
-    <header class="mb-8 text-center">
-        <h1 class="text-4xl font-bold text-yellow-400">🔥 Community Hub</h1>
-        <p class="text-sm opacity-70 mt-2">दोस्तों के साथ मुकाबला करें और टॉपर्स की लिस्ट देखें!</p>
-    </header>
+    <h2>🔥 Topper Hub Dashboard</h2>
 
-    <div class="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-6">
-        
-        <!-- Leaderboard -->
-        <section class="glass p-6 rounded-3xl">
-            <h2 class="text-2xl font-bold mb-6 text-yellow-300">🏆 Global Leaderboard</h2>
-            <ul id="leaderboard-list" class="space-y-3">
-                <!-- Sample Data -->
-                <li class="flex justify-between p-4 bg-white/5 rounded-xl border border-white/10">
-                    <span>1. अमन (Topper)</span>
-                    <span class="font-bold text-yellow-400">2500 XP</span>
-                </li>
-                <li class="flex justify-between p-4 bg-white/5 rounded-xl border border-white/10">
-                    <span>2. राहुल (Scholar)</span>
-                    <span class="font-bold text-yellow-400">2100 XP</span>
-                </li>
-                <li class="flex justify-between p-4 bg-white/5 rounded-xl border border-white/10">
-                    <span>3. प्रिया (Learner)</span>
-                    <span class="font-bold text-yellow-400">1800 XP</span>
-                </li>
-            </ul>
-        </section>
+    <div class="card">
+        <h3>🎯 Today's Mission</h3>
+        <p>Math: Chapter 1 Revision</p>
+        <button class="btn" onclick="alert('Mission Started!')">Start Mission</button>
+    </div>
 
-        <!-- Multiplayer Arena -->
-        <section class="glass p-6 rounded-3xl">
-            <h2 class="text-2xl font-bold mb-6 text-indigo-400">⚔️ Multiplayer Arena</h2>
-            <div class="space-y-4">
-                <button onclick="alert('रूम कोड बन गया: AMAN123 - इसे दोस्तों को भेजें!')" class="w-full py-4 bg-indigo-600 hover:bg-indigo-500 rounded-xl font-bold transition-all">🎯 Create Challenge Room</button>
-                <div class="flex gap-2">
-                    <input type="text" placeholder="Enter Room Code" class="w-full p-4 rounded-xl bg-white/10 text-white border border-white/10">
-                    <button class="bg-green-600 px-6 rounded-xl font-bold">Join</button>
-                </div>
-                <p class="text-xs opacity-50 text-center mt-4">अपने दोस्त को कोड भेजें और रियल-टाइम क्विज़ खेलें!</p>
-            </div>
-        </section>
+    <div class="card">
+        <h3>📚 Subject Question Banks</h3>
+        <button class="btn" onclick="alert('Opening Math Bank...')">Math</button>
+        <button class="btn" onclick="alert('Opening Science Bank...')">Science</button>
+    </div>
+
+    <div class="card">
+        <h3>🤖 AI Success Coach</h3>
+        <p>रात 9 बजे अपनी परफॉरमेंस रिपोर्ट देखें।</p>
     </div>
 
 </body>
 </html>
+<!-- Main Dashboard -->
+<div id="dashboard" style="background:#0f172a; color:white; padding:20px; font-family:sans-serif; border-radius:15px; margin:10px;">
+    
+    <!-- Header: Streak & XP -->
+    <div style="display:flex; justify-content:space-between; margin-bottom:20px;">
+        <span>🔥 5 Day Streak</span>
+        <span>⭐ 2500 XP</span>
+    </div>
 
-<!-- नियम (Instructions) का सेक्शन -->
-<div class="rules-section" style="margin-top: 30px; color: #ccc; text-align: center;">
-    <h3>कैसे खेलें?</h3>
-    <p>1. 'Create Room' दबाएं। 2. कोड शेयर करें। 3. सबसे ज़्यादा XP जीतें!</p>
+    <!-- Today's Mission -->
+    <div style="background:#1e293b; padding:15px; border-radius:10px; border-left: 5px solid #f59e0b;">
+        <h3>🎯 Today's Mission</h3>
+        <p>Complete 2 Chapters of Math (Algebra).</p>
+        <button style="width:100%; padding:10px; background:#f59e0b; border:none; border-radius:5px; font-weight:bold;">Start Mission</button>
+    </div>
+
+    <!-- Quick Access Features -->
+    <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin-top:20px;">
+        <div style="background:#1e293b; padding:15px; text-align:center; border-radius:10px;">🧠 AI Quiz</div>
+        <div style="background:#1e293b; padding:15px; text-align:center; border-radius:10px;">📈 Analytics</div>
+    </div>
 </div>
-
-<!-- Popup का स्ट्रक्चर -->
-<div id="roomPopup" style="display:none; position:fixed; top:20%; left:10%; width:80%; background:#1a1a2e; padding:20px; border-radius:10px; color:white; text-align:center;">
-    <h3>रूम तैयार करें</h3>
-    <p>अपना नाम डालें और चैलेंज शुरू करें!</p>
-    <input type="text" id="playerName" placeholder="अपना नाम लिखें..." style="padding:10px; width:90%;">
-    <button onclick="alert('रूम बन गया!')" style="margin-top:10px; padding:10px 20px; background:green; color:white; border:none; border-radius:5px;">शुरू करें</button>
-    <button onclick="document.getElementById('roomPopup').style.display='none'" style="margin-top:10px; padding:10px 20px; background:red; color:white; border:none; border-radius:5px;">बंद करें</button>
-</div>
-
-<!-- JavaScript बटन क्लिक के लिए -->
-<script>
-    // 'Create Challenge Room' बटन पर क्लिक करने पर Popup दिखाना
-    document.querySelector('.create-room-btn').onclick = function() {
-        document.getElementById('roomPopup').style.display = 'block';
-    };
-</script>
-<!-- बटन सेक्शन -->
-<div style="text-align: center; margin: 20px;">
-    <button onclick="showSubject('math')">Math</button>
-    <button onclick="showSubject('science')">Science</button>
-    <button class="create-room-btn" onclick="document.getElementById('roomPopup').style.display='block'">Create Challenge Room</button>
-</div>
-
-<!-- क्वेश्चन बैंक का हिस्सा -->
-<div id="math-questions" style="display:none; color:white; padding: 20px;">
-    <h3>Math Question Bank</h3>
-    <p>1. $2 + 2 = ?$</p>
-</div>
-
-<div id="science-questions" style="display:none; color:white; padding: 20px;">
-    <h3>Science Question Bank</h3>
-    <p>1. पानी का रासायनिक सूत्र क्या है?</p>
-</div>
-
-<!-- Popup का कोड -->
-<div id="roomPopup" style="display:none; position:fixed; top:20%; left:10%; width:80%; background:#1a1a2e; padding:20px; border-radius:10px; color:white; text-align:center; z-index:100;">
-    <h3>रूम तैयार करें</h3>
-    <input type="text" id="playerName" placeholder="अपना नाम लिखें..." style="padding:10px; width:90%;"><br><br>
-    <button onclick="document.getElementById('roomPopup').style.display='none'" style="padding:10px 20px; background:red;">बंद करें</button>
-</div>
-
-<!-- JavaScript -->
-<script>
-function showSubject(sub) {
-    document.getElementById('math-questions').style.display = 'none';
-    document.getElementById('science-questions').style.display = 'none';
-    document.getElementById(sub + '-questions').style.display = 'block';
-}
-</script>
