@@ -233,3 +233,105 @@ alert("AI Success Coach (Coming in Part 3)");
 
 </body>
 </html>
+// =====================
+// Math Question Bank
+// =====================
+
+const mathQuestions = [
+
+{
+q:"2 + 3 = ?",
+a:["4","5","6","7"],
+c:1
+},
+
+{
+q:"10 × 5 = ?",
+a:["50","40","60","30"],
+c:0
+},
+
+{
+q:"81 ÷ 9 = ?",
+a:["7","8","9","10"],
+c:2
+},
+
+{
+q:"15 + 25 = ?",
+a:["35","40","45","50"],
+c:1
+},
+
+{
+q:"12 × 12 = ?",
+a:["124","142","144","122"],
+c:2
+}
+
+];
+
+let current=0;
+let score=0;
+
+function math(){
+
+showQuestion();
+
+}
+
+function showQuestion(){
+
+let q=mathQuestions[current];
+
+let text=q.q+"\n\n";
+
+for(let i=0;i<q.a.length;i++){
+
+text+=(i+1)+". "+q.a[i]+"\n";
+
+}
+
+let ans=prompt(text);
+
+if(ans==null)return;
+
+checkAnswer(parseInt(ans)-1);
+
+}
+
+function checkAnswer(user){
+
+if(user===mathQuestions[current].c){
+
+alert("✅ सही उत्तर");
+
+score++;
+
+}else{
+
+alert("❌ गलत उत्तर");
+
+}
+
+current++;
+
+if(current<mathQuestions.length){
+
+showQuestion();
+
+}else{
+
+alert(
+"🎉 Quiz समाप्त\n\nScore : "+
+score+
+"/"+
+mathQuestions.length
+);
+
+current=0;
+score=0;
+
+}
+
+}
