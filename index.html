@@ -328,10 +328,93 @@ score+
 "/"+
 mathQuestions.length
 );
-
+rewardQuiz();
 current=0;
 score=0;
 
 }
 
 }
+  // ======================
+// XP + Level + Streak
+// ======================
+
+// अगर पहले से डेटा सेव है तो उसे लोड करो
+let xp = Number(localStorage.getItem("xp")) || 0;
+let streak = Number(localStorage.getItem("streak")) || 1;
+
+// Level निकालने का आसान तरीका
+function getLevel() {
+    return Math.floor(xp / 100) + 1;
+}
+
+// Dashboard पर Status दिखाओ
+function updateStatus() {
+
+    let old = document.getElementById("statusCard");
+
+    if(old) old.remove();
+
+    let card = document.createElement("div");
+
+    card.className = "card";
+
+    card.id = "statusCard";
+
+    card.innerHTML = `
+        <h2>🏆 Student Status</h2>
+        <p>⭐ XP : ${xp}</p>
+        <p>🏅 Level : ${getLevel()}</p>
+        <p>🔥 Streak : ${streak} Day</p>
+    `;
+
+    document.body.insertBefore(card, document.querySelector(".bottom"));
+}
+
+updateStatus();
+
+
+// ======================
+// Mission Complete
+// ======================
+
+function mission(){
+
+    alert("🎉 Mission Complete!");
+
+    progress = 100;
+
+    document.getElementById("bar").style.width = progress + "%";
+
+    document.getElementById("progressText").innerHTML = "100% Complete";
+
+    xp += 20;
+
+    streak++;
+
+    localStorage.setItem("xp", xp);
+
+    localStorage.setItem("streak", streak);
+
+    updateStatus();
+
+    alert("⭐ +20 XP मिला!");
+}
+
+
+// ======================
+// Quiz Reward
+// ======================
+
+function rewardQuiz(){
+
+    xp += score * 10;
+
+    localStorage.setItem("xp", xp);
+
+    updateStatus();
+
+}
+
+// Quiz खत्म होने पर यह लाइन जोड़ना
+// rewardQuiz();
