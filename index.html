@@ -1,9 +1,10 @@
+```html
 <!DOCTYPE html>
 <html lang="hi">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>🔥 Topper Hub</title>
+<title>🔥 टॉपर हब (Topper Hub)</title>
 <style>
   * { margin:0; padding:0; box-sizing:border-box; }
 
@@ -238,7 +239,7 @@
 <body>
 
 <div class="header">
-  <h1>🔥 Topper Hub</h1>
+  <h1>🔥 टॉपर हब</h1>
   <div class="xp-pill" id="headerXP">⭐ 0 XP</div>
 </div>
 
@@ -248,36 +249,36 @@
   <div class="streak-row">
     <div class="streak-box">
       <div class="val" id="homeXP">0</div>
-      <div class="lbl">⭐ Total XP</div>
+      <div class="lbl">⭐ कुल एक्सपी (XP)</div>
     </div>
     <div class="streak-box">
       <div class="val" id="homeLevel">1</div>
-      <div class="lbl">🏅 Level</div>
+      <div class="lbl">🏅 स्तर (Level)</div>
     </div>
     <div class="streak-box">
       <div class="val" id="homeStreak">1</div>
-      <div class="lbl">🔥 Streak</div>
+      <div class="lbl">🔥 लगातार दिन (Streak)</div>
     </div>
   </div>
 
   <div class="card">
-    <h2>🎯 Aaj ki Mission</h2>
+    <h2>🎯 आज का मिशन</h2>
     <div id="taskList"></div>
-    <button class="btn yellow" onclick="completeMission()">✅ Mission Complete karo</button>
+    <button class="btn yellow" onclick="completeMission()">✅ मिशन पूरा करें</button>
   </div>
 
   <div class="card">
-    <h2>📊 Aaj ki Progress</h2>
+    <h2>📊 आज की प्रगति</h2>
     <div class="prog-wrap">
       <div class="prog-bar" id="progBar" style="width:0%"></div>
     </div>
-    <p id="progText" style="font-size:13px;color:#94a3b8;">0% Complete</p>
+    <p id="progText" style="font-size:13px;color:#94a3b8;">0% पूर्ण</p>
   </div>
 
   <div class="card">
-    <h2>🤖 AI Coach — Aaj ki Tip</h2>
-    <div class="coach-tip" id="homeTip">Loading...</div>
-    <button class="btn" onclick="newTip()">🔄 Naya Tip Lo</button>
+    <h2>🤖 एआई कोच — आज का सुझाव</h2>
+    <div class="coach-tip" id="homeTip">लोड हो रहा है...</div>
+    <button class="btn" onclick="newTip()">🔄 नया सुझाव प्राप्त करें</button>
   </div>
 
 </div>
@@ -286,24 +287,24 @@
 <div class="page" id="page-study">
 
   <div class="card" id="subjectSelect">
-    <h2>📚 Subject chuno</h2>
+    <h2>📚 विषय चुनें</h2>
     <div class="subj-grid">
-      <div class="subj-btn" onclick="startQuiz('math')"><span class="icon">📘</span>Maths</div>
-      <div class="subj-btn" onclick="startQuiz('science')"><span class="icon">🔬</span>Science</div>
-      <div class="subj-btn" onclick="startQuiz('english')"><span class="icon">📖</span>English</div>
-      <div class="subj-btn" onclick="startQuiz('sst')"><span class="icon">🌍</span>SST</div>
+      <div class="subj-btn" onclick="startQuiz('math')"><span class="icon">📘</span>गणित</div>
+      <div class="subj-btn" onclick="startQuiz('science')"><span class="icon">🔬</span>विज्ञान</div>
+      <div class="subj-btn" onclick="startQuiz('english')"><span class="icon">📖</span>अंग्रेजी</div>
+      <div class="subj-btn" onclick="startQuiz('sst')"><span class="icon">🌍</span>समाजिक विज्ञान</div>
     </div>
   </div>
 
   <div class="card" id="quizBox">
-    <div class="quiz-counter" id="quizCounter">Question 1/5</div>
+    <div class="quiz-counter" id="quizCounter">प्रश्न 1/5</div>
     <div class="quiz-q" id="quizQ">—</div>
     <div class="quiz-opts" id="quizOpts"></div>
     <div class="quiz-result" id="quizResult" style="display:none">
       <div class="big" id="resultEmoji">🎉</div>
       <h3 id="resultTitle">—</h3>
       <p class="quiz-meta" id="resultMeta">—</p>
-      <button class="btn green" onclick="closeQuiz()" style="margin-top:16px">← Wapas jao</button>
+      <button class="btn green" onclick="closeQuiz()" style="margin-top:16px">← वापस जाएं</button>
     </div>
   </div>
 
@@ -312,7 +313,7 @@
 <!-- ============ LEADERBOARD PAGE ============ -->
 <div class="page" id="page-leader">
   <div class="card">
-    <h2>🏆 Leaderboard</h2>
+    <h2>🏆 लीडरबोर्ड (रैंक)</h2>
     <div id="lbList"></div>
   </div>
 </div>
@@ -322,32 +323,32 @@
   <div class="card">
     <div class="profile-avatar">👤</div>
     <div class="profile-name" id="profName">—</div>
-    <div class="profile-sub">Bihar Board • Class 9</div>
+    <div class="profile-sub">बिहार बोर्ड • कक्षा 9</div>
     <div class="stat-row">
       <div class="stat-box"><div class="sv" id="profXP">0</div><div class="sl">XP</div></div>
-      <div class="stat-box"><div class="sv" id="profLevel">1</div><div class="sl">Level</div></div>
-      <div class="stat-box"><div class="sv" id="profStreak">1</div><div class="sl">Streak</div></div>
+      <div class="stat-box"><div class="sv" id="profLevel">1</div><div class="sl">स्तर</div></div>
+      <div class="stat-box"><div class="sv" id="profStreak">1</div><div class="sl">लगातार दिन</div></div>
     </div>
-    <button class="btn" onclick="changeName()" style="margin-top:14px">✏️ Naam badlo</button>
+    <button class="btn" onclick="changeName()" style="margin-top:14px">✏️ नाम बदलें</button>
   </div>
 
   <div class="card">
-    <h2>🎯 Life Mission</h2>
+    <h2>🎯 जीवन का लक्ष्य</h2>
     <p style="font-size:13px;line-height:1.7;color:#94a3b8;">
-      Bihar Board Class 10 → <strong style="color:#facc15">Rank 1</strong><br>
-      JEE Main & Advanced → <strong style="color:#facc15">Top 10</strong><br>
-      MIT Computer Science → <strong style="color:#facc15">✅</strong><br>
-      India ke liye World-Class Technology banana 🇮🇳
+      बिहार बोर्ड कक्षा 10 → <strong style="color:#facc15">रैंक 1</strong><br>
+      JEE Main & Advanced → <strong style="color:#facc15">शीर्ष 10 (Top 10)</strong><br>
+      MIT कंप्यूटर साइंस → <strong style="color:#facc15">✅</strong><br>
+      भारत के लिए विश्व-स्तरीय तकनीक बनाना 🇮🇳
     </p>
   </div>
 </div>
 
 <!-- ============ BOTTOM NAV ============ -->
 <div class="bottom-nav">
-  <button class="nav-btn active" onclick="goPage('home',this)"><span class="ni">🏠</span>Home</button>
-  <button class="nav-btn" onclick="goPage('study',this)"><span class="ni">📚</span>Study</button>
-  <button class="nav-btn" onclick="goPage('leader',this)"><span class="ni">🏆</span>Rank</button>
-  <button class="nav-btn" onclick="goPage('profile',this)"><span class="ni">👤</span>Profile</button>
+  <button class="nav-btn active" onclick="goPage('home',this)"><span class="ni">🏠</span>मुख्य पृष्ठ</button>
+  <button class="nav-btn" onclick="goPage('study',this)"><span class="ni">📚</span>पढ़ाई</button>
+  <button class="nav-btn" onclick="goPage('leader',this)"><span class="ni">🏆</span>रैंक</button>
+  <button class="nav-btn" onclick="goPage('profile',this)"><span class="ni">👤</span>प्रोफाइल</button>
 </div>
 
 <div id="toast"></div>
@@ -359,7 +360,7 @@ let streak = Number(localStorage.getItem('streak')) || 1;
 let studentName = localStorage.getItem('studentName') || '';
 
 if(!studentName){
-  studentName = window.prompt('Apna naam likhein:') || 'Topper';
+  studentName = window.prompt('अपना नाम लिखें:') || 'टॉपर';
   localStorage.setItem('studentName', studentName);
 }
 
@@ -371,11 +372,11 @@ function getLevel(){ return Math.floor(xp/100)+1; }
 
 // ===== TASKS =====
 const defaultTasks = [
-  'Math Chapter padho',
-  'Science Revision karo',
-  'English ke 10 words seekho',
-  'SST Notes banao',
-  'Ek quiz complete karo'
+  'गणित का एक अध्याय पढ़ें',
+  'विज्ञान का रिवीज़न करें',
+  'अंग्रेजी के 10 नए शब्द सीखें',
+  'सामाजिक विज्ञान के नोट्स बनाएं',
+  'एक क्विज़ (प्रश्नोत्तरी) पूरी करें'
 ];
 let tasksDone = JSON.parse(localStorage.getItem('tasksDone')||'[]');
 
@@ -399,7 +400,7 @@ function toggleTask(i){
   } else {
     tasksDone.push(i);
     xp += 5; save();
-    showToast('+5 XP 🎯');
+    showToast('+5 XP प्राप्त 🎯');
   }
   localStorage.setItem('tasksDone', JSON.stringify(tasksDone));
   renderTasks();
@@ -409,12 +410,12 @@ function toggleTask(i){
 function updateProgress(){
   const pct = Math.round((tasksDone.length/defaultTasks.length)*100);
   document.getElementById('progBar').style.width = pct+'%';
-  document.getElementById('progText').textContent = pct+'% Complete';
+  document.getElementById('progText').textContent = pct+'% पूर्ण';
 }
 
 function completeMission(){
   if(tasksDone.length < defaultTasks.length){
-    showToast('Pehle sab tasks complete karo! ⚠️', '#f59e0b');
+    showToast('पहले सभी कार्यों को पूरा करें! ⚠️', '#f59e0b');
     return;
   }
   xp += 50; streak++; save();
@@ -422,58 +423,58 @@ function completeMission(){
   localStorage.setItem('tasksDone','[]');
   renderTasks();
   updateAll();
-  showToast('🎉 Mission Complete! +50 XP');
+  showToast('🎉 मिशन पूरा हुआ! +50 XP');
 }
 
 // ===== TIPS =====
 const tips = [
-  '📚 Aaj kam se kam 2 ghante padhai karo. Consistency hi success hai.',
-  '🧮 Maths mein strong banao — JEE ka 50% hissa Maths hai.',
-  '🔥 Roz padhoge toh rank apne aap aayegi. Ek din bhi mat chhodna.',
-  '💪 Har mushkil sawaal ko ek baar aur try karo before dekhna answer.',
-  '🎯 Aaj ka lakshya poora karke hi sona — kal ki padhai kal karana.',
-  '🧠 Notes hand se likhne se yaad zyada rehta hai.',
-  '⏰ 5 AM uthte ho — yeh sabse badi advantage hai. Use it!',
-  '🏆 Bihar Board Rank 1 ka sapna tab poora hoga jab aaj ki padhai perfect ho.',
+  '📚 आज कम से कम 2 घंटे पढ़ाई करें। निरंतरता (Consistency) ही सफलता की चाबी है।',
+  '🧮 गणित को मजबूत बनाएं — JEE परीक्षा का 50% हिस्सा गणितीय कौशल पर आधारित होता है।',
+  '🔥 रोज़ पढ़ाई करने से रैंक अपने आप आएगी। एक दिन का भी ब्रेक न लें।',
+  '💪 किसी भी कठिन सवाल को खुद से हल करने का प्रयास करें, उत्तर देखने से पहले एक बार और सोचें।',
+  '🎯 आज का लक्ष्य पूरा करके ही सोएं — कल की पढ़ाई कल पर न छोड़ें।',
+  '🧠 हाथ से लिखकर नोट्स बनाने पर चीजें बहुत लंबे समय तक याद रहती हैं।',
+  '⏰ सुबह 5 बजे उठना शुरू करें — यह आपकी सबसे बड़ी ताकत बन सकता है। इसका सही उपयोग करें!',
+  '🏆 बिहार बोर्ड में रैंक 1 लाने का सपना तभी सच होगा जब आपकी दैनिक तैयारी सर्वोत्तम होगी।'
 ];
 function newTip(){
   const r = Math.floor(Math.random()*tips.length);
   document.getElementById('homeTip').textContent = tips[r];
 }
 
-// ===== QUIZ DATA =====
+// ===== QUIZ DATA (IN HINDI) =====
 const qBank = {
   math: [
-    {q:'2 + 3 × 4 = ?', a:['20','14','24','10'], c:1},
-    {q:'√144 = ?', a:['11','12','13','14'], c:1},
+    {q:'2 + 3 × 4 = ? (संकेत: BODMAS नियम का प्रयोग करें)', a:['20','14','24','10'], c:1},
+    {q:'√144 का मान क्या होगा?', a:['11','12','13','14'], c:1},
     {q:'12 × 12 = ?', a:['124','142','144','122'], c:2},
-    {q:'15² = ?', a:['225','215','205','235'], c:0},
+    {q:'15² का मान क्या होगा?', a:['225','215','205','235'], c:0},
     {q:'81 ÷ 9 = ?', a:['7','8','9','10'], c:2},
-    {q:'x² = 25 mein x = ?', a:['3','4','5','6'], c:2},
+    {q:'यदि x² = 25 हो, तो x का धनात्मक मान क्या होगा?', a:['3','4','5','6'], c:2},
     {q:'0.5 × 0.5 = ?', a:['0.025','0.25','2.5','25'], c:1},
   ],
   science: [
-    {q:'Paudhon mein bhojan banane ki prakriya kya hai?', a:['Shvasan','Prakash Sanshleshan','Vaspotsarjan','Pachan'], c:1},
-    {q:'Paani ka rasayanik sutra kya hai?', a:['CO₂','H₂O','O₂','NaCl'], c:1},
-    {q:'Manushya ke sharir mein sabse bada organ kaun sa hai?', a:['Dil','Twacha','Dimag','Phephda'], c:1},
-    {q:'Bijli ki SI unit kya hai?', a:['Watt','Joule','Ampere','Volt'], c:2},
-    {q:'Prithvi ki surface ka kitna hissa paani hai?', a:['51%','61%','71%','81%'], c:2},
-    {q:'Newton ka pehla niyam kya kehta hai?', a:['F=ma','Inertia ka niyam','Barabar aur ulti force','Urja sanrakshan'], c:1},
+    {q:'पौधों में भोजन बनाने की प्रक्रिया को क्या कहा जाता है?', a:['श्वसन','प्रकाश संश्लेषण (Photosynthesis)','वाष्पोत्सर्जन','पाचन'], c:1},
+    {q:'पानी (जल) का रासायनिक सूत्र क्या है?', a:['CO₂','H₂O','O₂','NaCl'], c:1},
+    {q:'मानव शरीर का सबसे बड़ा अंग (Organ) कौन सा है?', a:['हृदय','त्वचा (Skin)','मस्तिष्क','फेफड़ा'], c:1},
+    {q:'विद्युत धारा (Electric Current) का SI मात्रक क्या है?', a:['वाट','जूल','एम्पियर','वोल्ट'], c:2},
+    {q:'पृथ्वी की सतह का लगभग कितना प्रतिशत भाग जल से ढका है?', a:['51%','61%','71%','81%'], c:2},
+    {q:'न्यूटन का प्रथम नियम किस नाम से भी जाना जाता है?', a:['F=ma','जड़त्व का नियम (Law of Inertia)','क्रिया-प्रतिक्रिया का नियम','ऊर्जा संरक्षण का नियम'], c:1},
   ],
   english: [
-    {q:'"Benevolent" ka matlab kya hai?', a:['Dayan','Dayalu','Akraman','Nirday'], c:1},
-    {q:'"Ephemeral" matlab?', a:['Shaswat','Kshanik/Thoda samay','Bada','Tez'], c:1},
-    {q:'Verb: "She ___ to school every day."', a:['go','goes','going','gone'], c:1},
-    {q:'Opposite of "Courage"?', a:['Bravery','Strength','Cowardice','Power'], c:2},
-    {q:'Correct sentence kaun sa hai?', a:['He go to market','He goes to market','He going to market','He gone to market'], c:1},
+    {q:'"Benevolent" का सही हिंदी अर्थ क्या है?', a:['दयावान/परोपकारी','क्रूर','आक्रामक','निर्दयी'], c:0},
+    {q:'"Ephemeral" का क्या अर्थ होता है?', a:['शाश्वत (हमेशा रहने वाला)','क्षणिक (थोड़े समय का)','विशाल','अत्यधिक तेज़'], c:1},
+    {q:'सही विकल्प चुनें: "She ___ to school every day."', a:['go','goes','going','gone'], c:1},
+    {q:'"Courage" (साहस) का विपरीतार्थक (Opposite) शब्द क्या है?', a:['Bravery','Strength','Cowardice (कायरता)','Power'], c:2},
+    {q:'व्याकरण की दृष्टि से कौन सा वाक्य सही है?', a:['He go to market','He goes to market','He going to market','He gone to market'], c:1},
   ],
   sst: [
-    {q:'Bharat ka Rashtriya Khel kaun sa hai?', a:['Cricket','Football','Hockey','Kabaddi'], c:2},
-    {q:'Bharat ki rajdhani kya hai?', a:['Mumbai','Kolkata','New Delhi','Chennai'], c:2},
-    {q:'Bharat mein kitne rajya hain (2024)?', a:['25','28','29','30'], c:1},
-    {q:'Bharat ka sabse bada rajya (kshetrafal) kaun sa hai?', a:['Maharashtra','UP','MP','Rajasthan'], c:3},
-    {q:'Bharat ka Samvidhan kab lagu hua?', a:['15 Aug 1947','26 Jan 1950','2 Oct 1950','1 Jan 1949'], c:1},
-    {q:'Ganga nadi kahan se nikalti hai?', a:['Yamnotri','Gangotri','Kedarnath','Badrinath'], c:1},
+    {q:'भारत का राष्ट्रीय खेल कौन सा माना जाता है?', a:['क्रिकेट','फुटबॉल','हॉकी','कबड्डी'], c:2},
+    {q:'भारत की राजधानी कहाँ है?', a:['मुंबई','कोलकाता','नई दिल्ली','चेन्नई'], c:2},
+    {q:'भारत में वर्तमान में कुल कितने राज्य हैं?', a:['25','28','29','30'], c:1},
+    {q:'क्षेत्रफल की दृष्टि से भारत का सबसे बड़ा राज्य कौन सा है?', a:['महाराष्ट्र','उत्तर प्रदेश','मध्य प्रदेश','राजस्थान'], c:3},
+    {q:'भारत का संविधान कब लागू हुआ था?', a:['15 अगस्त 1947','26 जनवरी 1950','2 अक्टूबर 1950','1 जनवरी 1949'], c:1},
+    {q:'गंगा नदी का उद्गम स्थल कहाँ है?', a:['यमुनोत्री','गंगोत्री','केदारनाथ','बद्रीनाथ'], c:1},
   ]
 };
 
@@ -496,7 +497,7 @@ function startQuiz(subj){
 
 function showQuizQ(){
   const q = curQuiz[curQ];
-  document.getElementById('quizCounter').textContent = `Question ${curQ+1}/${curQuiz.length}`;
+  document.getElementById('quizCounter').textContent = `प्रश्न ${curQ+1}/${curQuiz.length}`;
   document.getElementById('quizQ').textContent = q.q;
   const opts = document.getElementById('quizOpts');
   opts.innerHTML = '';
@@ -517,7 +518,7 @@ function checkQ(sel, btn){
     btn.classList.add('correct');
     curScore++;
     xp+=10; save();
-    showToast('+10 XP ✅');
+    showToast('+10 XP प्राप्त ✅');
   } else {
     btn.classList.add('wrong');
     allBtns[q.c].classList.add('correct');
@@ -536,9 +537,9 @@ function endQuiz(){
   document.getElementById('quizResult').style.display='block';
   document.getElementById('resultEmoji').textContent = pct>=0.8?'🏆':pct>=0.5?'👍':'💪';
   document.getElementById('resultTitle').textContent =
-    pct>=0.8?'Shandaar!':pct>=0.5?'Accha kiya!':'Aur practice karo!';
+    pct>=0.8?'शानदार प्रदर्शन!':pct>=0.5?'अच्छा प्रयास!':'और अभ्यास करें!';
   document.getElementById('resultMeta').textContent =
-    `Score: ${curScore}/${curQuiz.length} | XP mila: ${curScore*10}`;
+    `कुल स्कोर: ${curScore}/${curQuiz.length} | प्राप्त XP: ${curScore*10}`;
   updateAll();
   renderLeaderboard();
 }
@@ -552,10 +553,10 @@ function closeQuiz(){
 function renderLeaderboard(){
   const entries = [
     {name: studentName, xp: xp},
-    {name: 'Rahul', xp: 180},
-    {name: 'Priya', xp: 150},
-    {name: 'Ankit', xp: 120},
-    {name: 'Neha', xp: 95},
+    {name: 'राहुल सिंह', xp: 180},
+    {name: 'प्रिया कुमारी', xp: 150},
+    {name: 'अंकित कुमार', xp: 120},
+    {name: 'नेहा शर्मा', xp: 95},
   ].sort((a,b)=>b.xp-a.xp);
 
   const medals = ['🥇','🥈','🥉','4️⃣','5️⃣'];
@@ -592,7 +593,7 @@ function goPage(id, btn){
 
 // ===== PROFILE NAME =====
 function changeName(){
-  const n = window.prompt('Naya naam:', studentName);
+  const n = window.prompt('अपना नया नाम दर्ज करें:', studentName);
   if(n && n.trim()){
     studentName = n.trim();
     localStorage.setItem('studentName', studentName);
@@ -617,3 +618,4 @@ newTip();
 </body>
 </html>
 
+```
