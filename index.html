@@ -418,3 +418,262 @@ function rewardQuiz(){
 
 // Quiz खत्म होने पर यह लाइन जोड़ना
 // rewardQuiz();
+// ==========================
+// Student Profile
+// ==========================
+
+let studentName = localStorage.getItem("studentName");
+
+if(!studentName){
+
+studentName = prompt("अपना नाम लिखें");
+
+if(studentName==null || studentName==""){
+
+studentName="Student";
+
+}
+
+localStorage.setItem("studentName",studentName);
+
+}
+
+showProfile();
+
+function showProfile(){
+
+let old=document.getElementById("profileCard");
+
+if(old) old.remove();
+
+let card=document.createElement("div");
+
+card.className="card";
+
+card.id="profileCard";
+
+card.innerHTML=`
+<h2>👤 Student Profile</h2>
+
+<p>नाम : ${studentName}</p>
+
+<p>🏅 Level : ${getLevel()}</p>
+
+<p>⭐ XP : ${xp}</p>
+
+<p>🔥 Streak : ${streak}</p>
+`;
+
+document.body.insertBefore(card,document.querySelector(".bottom"));
+
+}
+
+// ==========================
+// Study Timer
+// ==========================
+
+let seconds=0;
+
+setInterval(function(){
+
+seconds++;
+
+let min=Math.floor(seconds/60);
+
+let sec=seconds%60;
+
+document.title="📚 "+min+"m "+sec+"s";
+
+},1000);
+
+
+// ==========================
+// Dark / Light Mode
+// ==========================
+
+let dark=true;
+
+function toggleTheme(){
+
+if(dark){
+
+document.body.style.background="white";
+
+document.body.style.color="black";
+
+dark=false;
+
+}else{
+
+document.body.style.background="#0f172a";
+
+document.body.style.color="white";
+
+dark=true;
+
+}
+
+}
+
+let themeButton=document.createElement("button");
+
+themeButton.innerHTML="🌙 Theme";
+
+themeButton.className="btn";
+
+themeButton.onclick=toggleTheme;
+
+document.body.insertBefore(themeButton,document.querySelector(".bottom"));
+
+
+// ==========================
+// Leaderboard
+// ==========================
+
+let leaderboard=document.createElement("div");
+
+leaderboard.className="card";
+
+leaderboard.innerHTML=`
+
+<h2>🏆 Leaderboard</h2>
+
+<p>🥇 Aman - ${xp} XP</p>
+
+<p>🥈 Rahul - 180 XP</p>
+
+<p>🥉 Priya - 150 XP</p>
+
+`;
+
+document.body.insertBefore(leaderboard,document.querySelector(".bottom"));// ==============================
+// AI Success Coach
+// ==============================
+
+const coachTips = [
+
+"📚 आज कम से कम 2 घंटे पढ़ाई करो।",
+
+"🧮 पहले Maths पूरा करो, फिर Science।",
+
+"🔥 रोज़ पढ़ोगे तो Rank अपने आप आएगी।",
+
+"💪 हार मत मानो, Consistency ही Success है।",
+
+"🎯 आज का लक्ष्य पूरा करके ही सोना।"
+
+];
+
+function coach(){
+
+let random=Math.floor(Math.random()*coachTips.length);
+
+alert(coachTips[random]);
+
+}
+
+// ==============================
+// Science Question Bank
+// ==============================
+
+const scienceQuestions=[
+
+{
+q:"पौधों में भोजन बनाने की प्रक्रिया क्या कहलाती है?",
+a:["श्वसन","प्रकाश संश्लेषण","वाष्पोत्सर्जन","पाचन"],
+c:1
+},
+
+{
+q:"पानी का रासायनिक सूत्र क्या है?",
+a:["CO2","H2O","O2","NaCl"],
+c:1
+},
+
+{
+q:"मनुष्य के शरीर में सबसे बड़ा अंग कौन सा है?",
+a:["दिल","त्वचा","दिमाग","फेफड़ा"],
+c:1
+}
+
+];
+
+function science(){
+
+let marks=0;
+
+for(let i=0;i<scienceQuestions.length;i++){
+
+let q=scienceQuestions[i];
+
+let txt=q.q+"\n\n";
+
+for(let j=0;j<q.a.length;j++){
+
+txt+=(j+1)+". "+q.a[j]+"\n";
+
+}
+
+let ans=prompt(txt);
+
+if(ans==null) return;
+
+if(parseInt(ans)-1==q.c){
+
+marks++;
+
+}
+
+}
+
+alert("🎉 Science Score : "+marks+"/"+scienceQuestions.length);
+
+xp+=marks*10;
+
+localStorage.setItem("xp",xp);
+
+updateStatus();
+
+}
+
+// ==============================
+// Search
+// ==============================
+
+function searchFeature(){
+
+let item=prompt("क्या खोजना चाहते हैं?");
+
+if(!item) return;
+
+item=item.toLowerCase();
+
+if(item.includes("math")){
+
+math();
+
+}
+
+else if(item.includes("science")){
+
+science();
+
+}
+
+else{
+
+alert("❌ Feature नहीं मिला");
+
+}
+
+}
+
+let searchBtn=document.createElement("button");
+
+searchBtn.innerHTML="🔍 Search";
+
+searchBtn.className="btn";
+
+searchBtn.onclick=searchFeature;
+
+document.body.insertBefore(searchBtn,document.querySelector(".bottom"));
