@@ -1,1282 +1,807 @@
-```html
 <!DOCTYPE html>
 <html lang="hi">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>🔥 टॉपर हब – शिक्षा सबकी, प्रगति सबकी</title>
-<!-- Firebase SDK Imports for Central DB Support -->
-<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>टॉपर हब – मुफ़्त पढ़ाई</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
 <style>
-*{margin:0;padding:0;box-sizing:border-box;}
-:root{
-  --bg:#060d1a;--bg2:#0d1b30;--bg3:#112240;
-  --accent:#f59e0b;--blue:#3b82f6;--green:#22c55e;
-  --red:#ef4444;--purple:#8b5cf6;--text:#e2e8f0;
-  --muted:#64748b;--border:#1e3a5f;
-}
-body{font-family:'Segoe UI',Arial,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;padding-bottom:75px;font-size:15px;}
+  :root {
+    --bg: #0b0c10;
+    --surface: #13141a;
+    --card: #1c1d26;
+    --border: #2c2d3e;
+    --accent: #4f8ef7;
+    --accent2: #f7666a;
+    --gold: #ffc94d;
+    --green: #2ecc71;
+    --text: #e9eaf0;
+    --muted: #6b6d88;
+    --radius: 12px;
+    --font: 'Noto Sans Devanagari', sans-serif;
+    --mono: 'JetBrains Mono', monospace;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family:var(--font); background:var(--bg); color:var(--text); min-height:100vh; overflow-x:hidden; }
 
-/* LOGIN MODAL */
-.login-screen{position:fixed;top:0;left:0;width:100%;height:100%;background:var(--bg);z-index:1000;display:flex;align-items:center;justify-content:center;padding:20px;}
-.login-card{background:var(--bg2);border:2px solid var(--border);border-radius:16px;padding:24px;width:100%;max-width:380px;text-align:center;}
-.login-title{font-size:22px;font-weight:800;color:var(--accent);margin-bottom:8px;}
-.login-subtitle{font-size:12px;color:var(--muted);margin-bottom:20px;line-height:1.6;}
-.login-input{width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:12px;color:#fff;font-size:15px;text-align:center;outline:none;margin-bottom:14px;}
-.login-input:focus{border-color:var(--blue);}
+  /* HEADER */
+  header {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 0 16px;
+    height: 56px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky; top:0; z-index:100;
+  }
+  .logo-wrap { display:flex; flex-direction:column; }
+  .logo-main { font-size:18px; font-weight:700; color:var(--text); letter-spacing:-0.3px; }
+  .logo-main span { color:var(--accent); }
+  .logo-sub { font-size:10px; color:var(--muted); }
+  .header-right { display:flex; align-items:center; gap:8px; }
+  .xp-chip { background:linear-gradient(135deg,var(--accent),#7b5ea7); color:#fff; padding:4px 10px; border-radius:20px; font-size:12px; font-weight:600; font-family:var(--mono); }
+  .streak-chip { font-size:13px; color:var(--gold); font-weight:600; }
 
-/* MOCK SMS TOAST */
-#smsToast{position:fixed;top:15px;left:50%;transform:translateX(-50%);width:90%;max-width:350px;background:#1e293b;border-left:4px solid var(--blue);color:#fff;padding:12px;border-radius:8px;box-shadow:0 10px 15px -3px rgba(0,0,0,0.5);z-index:2000;display:none;font-size:12px;line-height:1.5;}
+  /* TABS */
+  .tabs { display:flex; gap:4px; padding:10px 12px; background:var(--surface); border-bottom:1px solid var(--border); overflow-x:auto; scrollbar-width:none; }
+  .tabs::-webkit-scrollbar { display:none; }
+  .tab { padding:7px 14px; border-radius:8px; font-size:13px; font-weight:500; cursor:pointer; border:none; background:transparent; color:var(--muted); white-space:nowrap; transition:all 0.2s; font-family:var(--font); }
+  .tab:hover { background:var(--card); color:var(--text); }
+  .tab.active { background:var(--accent); color:#fff; }
 
-/* HEADER */
-.hdr{background:linear-gradient(135deg,#0d1b30,#112240);border-bottom:2px solid var(--accent);padding:10px 16px;position:sticky;top:0;z-index:50;}
-.hdr-top{display:flex;justify-content:space-between;align-items:center;}
-.hdr-title{font-size:17px;font-weight:800;color:var(--accent);}
-.hdr-name{font-size:10px;color:#94a3b8;margin-top:2px;letter-spacing:0.5px;}
-.xp-chip{background:var(--accent);color:#000;font-weight:700;font-size:12px;padding:4px 11px;border-radius:20px;white-space:nowrap;}
+  /* MAIN */
+  main { max-width:680px; margin:0 auto; padding:14px; }
+  .section { display:none; }
+  .section.active { display:block; }
 
-/* WELCOME */
-.welcome{background:linear-gradient(135deg,#1e3a5f,#2d1b69);border:1px solid var(--purple);border-radius:14px;padding:14px 16px;margin-bottom:13px;position:relative;overflow:hidden;}
-.welcome::before{content:'';position:absolute;top:-20px;right:-20px;width:80px;height:80px;background:rgba(139,92,246,.15);border-radius:50%;}
-.welcome-name{font-size:16px;font-weight:800;color:#fff;margin-bottom:3px;}
-.welcome-line{font-size:12px;color:#c4b5fd;line-height:1.6;}
-.welcome-streak{position:absolute;top:14px;right:14px;text-align:center;}
-.welcome-streak .sv{font-size:22px;font-weight:800;color:var(--accent);}
-.welcome-streak .sl{font-size:9px;color:var(--muted);}
+  /* CARD */
+  .card { background:var(--card); border:1px solid var(--border); border-radius:var(--radius); padding:18px; margin-bottom:12px; }
+  .card-title { font-size:11px; font-weight:700; letter-spacing:1px; text-transform:uppercase; color:var(--muted); margin-bottom:12px; }
 
-/* PAGE */
-.page{display:none;padding:14px;}
-.page.active{display:block;}
+  /* STATS GRID */
+  .stats-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:10px; margin-bottom:12px; }
+  .stat-card { background:var(--card); border:1px solid var(--border); border-radius:var(--radius); padding:14px; text-align:center; }
+  .stat-num { font-size:26px; font-weight:700; font-family:var(--mono); color:var(--accent); }
+  .stat-num.gold { color:var(--gold); }
+  .stat-num.green { color:var(--green); }
+  .stat-num.red { color:var(--accent2); }
+  .stat-label { font-size:11px; color:var(--muted); margin-top:3px; }
 
-/* CARD */
-.card{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:15px;margin-bottom:13px;}
-.card-title{font-size:14px;font-weight:700;color:#93c5fd;margin-bottom:11px;display:flex;justify-content:space-between;align-items:center;}
+  /* PROGRESS */
+  .prog-wrap { background:var(--border); border-radius:100px; height:7px; margin:6px 0 3px; overflow:hidden; }
+  .prog-fill { height:100%; border-radius:100px; background:linear-gradient(90deg,var(--accent),#7b5ea7); transition:width 0.5s; }
 
-/* STAT ROW */
-.stat-row{display:flex;gap:9px;margin-bottom:13px;}
-.stat{flex:1;background:var(--bg3);border:1px solid var(--border);border-radius:11px;padding:11px 6px;text-align:center;}
-.stat-val{font-size:20px;font-weight:800;color:var(--accent);}
-.stat-lbl{font-size:10px;color:var(--muted);margin-top:2px;}
+  /* QUIZ */
+  .subj-row { display:flex; gap:6px; flex-wrap:wrap; margin-bottom:14px; }
+  .subj-btn { padding:7px 14px; border-radius:8px; border:1px solid var(--border); background:var(--surface); color:var(--muted); font-size:13px; cursor:pointer; font-family:var(--font); transition:all 0.2s; }
+  .subj-btn:hover, .subj-btn.active { border-color:var(--accent); color:var(--accent); background:rgba(79,142,247,0.1); }
 
-/* CUSTOM TASK INPUT */
-.task-creator{display:flex;gap:8px;margin-bottom:12px;}
-.task-inp{flex:1;background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:10px;color:var(--text);font-size:13px;outline:none;}
-.task-inp:focus{border-color:var(--blue);}
-.task-add-btn{background:var(--blue);color:#fff;border:none;padding:0 14px;border-radius:8px;cursor:pointer;font-weight:bold;font-size:18px;}
+  .q-box { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:18px; margin-bottom:10px; }
+  .q-tag { font-size:11px; color:var(--muted); font-family:var(--mono); margin-bottom:6px; }
+  .q-text { font-size:15px; font-weight:500; line-height:1.65; }
 
-/* TASKS */
-.task{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border);cursor:pointer;position:relative;}
-.task:last-child{border:none;}
-.task-box{width:21px;height:21px;border:2px solid var(--blue);border-radius:6px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:12px;transition:all .2s;}
-.task.done .task-box{background:var(--green);border-color:var(--green);}
-.task.done .task-txt{text-decoration:line-through;color:var(--muted);}
-.task-txt{font-size:13px;line-height:1.4;padding-right:30px;}
-.task-del{position:absolute;right:0;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--red);font-size:16px;cursor:pointer;padding:4px;}
+  .opts-grid { display:grid; gap:8px; margin-bottom:12px; }
+  .opt-btn { padding:11px 15px; background:var(--surface); border:1px solid var(--border); border-radius:10px; color:var(--text); font-size:14px; text-align:left; cursor:pointer; transition:all 0.2s; font-family:var(--font); }
+  .opt-btn:hover:not(:disabled) { border-color:var(--accent); background:rgba(79,142,247,0.07); }
+  .opt-btn.correct { border-color:var(--green); background:rgba(46,204,113,0.1); color:var(--green); }
+  .opt-btn.wrong { border-color:var(--accent2); background:rgba(247,102,106,0.1); color:var(--accent2); }
+  .opt-btn:disabled { cursor:default; }
 
-/* PROGRESS */
-.prog-wrap{background:#0a0f1e;border-radius:20px;height:13px;overflow:hidden;margin:9px 0 5px;}
-.prog-bar{height:100%;background:linear-gradient(90deg,var(--green),#86efac);border-radius:20px;transition:width .5s;}
+  .exp-box { background:rgba(79,142,247,0.07); border:1px solid rgba(79,142,247,0.25); border-radius:10px; padding:12px; font-size:13px; color:var(--muted); line-height:1.65; margin-bottom:10px; display:none; }
+  .exp-box.show { display:block; }
 
-/* MOTIVATIONAL */
-.motiv{background:linear-gradient(135deg,#1e3a5f,#2d1b69);border:1px solid var(--purple);border-radius:12px;padding:14px 14px 14px 30px;font-size:13px;font-style:italic;line-height:1.7;color:#ddd6fe;position:relative;margin-bottom:13px;}
-.motiv::before{content:'"';font-size:40px;color:rgba(139,92,246,.3);position:absolute;top:2px;left:10px;line-height:1;}
+  .result-bar { border-radius:10px; padding:11px 14px; margin-bottom:10px; font-weight:600; font-size:14px; display:none; }
+  .result-bar.ok { background:rgba(46,204,113,0.1); border:1px solid rgba(46,204,113,0.3); color:var(--green); display:block; }
+  .result-bar.bad { background:rgba(247,102,106,0.1); border:1px solid rgba(247,102,106,0.3); color:var(--accent2); display:block; }
 
-/* POMODORO */
-.pmode-tabs{display:flex;gap:7px;margin-bottom:13px;}
-.pmode{flex:1;padding:8px 4px;border:1px solid var(--border);border-radius:8px;background:var(--bg3);color:var(--muted);font-size:11px;font-weight:600;cursor:pointer;text-align:center;}
-.pmode.active{background:var(--accent);border-color:var(--accent);color:#000;}
-.pomo-wrap{text-align:center;padding:6px 0 14px;}
-.pomo-ring{width:160px;height:160px;margin:0 auto 14px;position:relative;}
-.pomo-ring svg{transform:rotate(-90deg);}
-.ring-bg{fill:none;stroke:#1e3a5f;stroke-width:10;}
-.ring-fg{fill:none;stroke:var(--accent);stroke-width:10;stroke-linecap:round;transition:stroke-dashoffset .5s;}
-.pomo-center{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center;}
-.pomo-timer{font-size:46px;font-weight:800;color:#fff;letter-spacing:2px;}
-.pomo-lbl{font-size:10px;color:var(--muted);margin-top:2px;}
-.pomo-btns{display:flex;gap:10px;justify-content:center;margin-bottom:12px;}
-.pbtn{padding:10px 22px;border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;}
+  .quiz-btns { display:flex; gap:8px; flex-wrap:wrap; }
+  .btn { display:inline-flex; align-items:center; gap:6px; padding:9px 18px; border-radius:8px; border:none; font-size:14px; font-weight:600; cursor:pointer; font-family:var(--font); transition:all 0.2s; }
+  .btn-p { background:var(--accent); color:#fff; }
+  .btn-p:hover { background:#3a7be0; }
+  .btn-g { background:transparent; border:1px solid var(--border); color:var(--muted); }
+  .btn-g:hover { border-color:var(--accent); color:var(--accent); }
+  .btn-red { background:var(--accent2); color:#fff; }
 
-/* QUIZ & QUESTION BANK */
-.class-tabs{display:flex;gap:8px;margin-bottom:12px;}
-.ctab{flex:1;padding:8px;border:1px solid var(--border);border-radius:8px;background:var(--bg3);color:var(--muted);font-size:13px;font-weight:600;cursor:pointer;text-align:center;}
-.ctab.active{background:var(--blue);border-color:var(--blue);color:#fff;}
-.subj-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px;}
-.subj-card{background:var(--bg3);border:1px solid var(--border);border-radius:12px;padding:16px 8px;text-align:center;cursor:pointer;transition:all .2s;}
-.subj-card:hover{border-color:var(--blue);transform:scale(1.02);}
-.subj-card .si{font-size:28px;display:block;margin-bottom:5px;}
-.subj-card .sn{font-size:13px;font-weight:600;}
-.subj-card .sq{font-size:10px;color:var(--muted);margin-top:2px;}
-.dq-badge{background:var(--green);color:#000;font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;margin-left:6px;}
-.dq-done-badge{background:var(--muted);color:#fff;}
+  /* DIFFICULTY SELECTOR */
+  .diff-row { display:flex; gap:6px; margin-bottom:14px; }
+  .diff-btn { flex:1; padding:7px; border-radius:8px; border:1px solid var(--border); background:var(--surface); color:var(--muted); font-size:12px; cursor:pointer; text-align:center; font-family:var(--font); transition:all 0.2s; }
+  .diff-btn.active { border-color:var(--gold); color:var(--gold); background:rgba(255,201,77,0.08); }
 
-/* ACTIVE QUIZ */
-#quizBox{display:none;}
-.qz-counter{font-size:11px;color:var(--muted);margin-bottom:8px;display:flex;justify-content:space-between;}
-.qz-q{font-size:15px;font-weight:600;line-height:1.6;margin-bottom:14px;}
-.qz-opts{display:flex;flex-direction:column;gap:9px;}
-.opt{background:var(--bg3);border:2px solid var(--border);border-radius:10px;padding:11px 13px;color:var(--text);font-size:13px;cursor:pointer;text-align:left;transition:all .2s;}
-.opt:hover{border-color:var(--blue);}
-.opt.sahi{background:#14532d;border-color:var(--green);color:#86efac;}
-.opt.galat{background:#450a0a;border-color:var(--red);color:#fca5a5;}
+  /* SCORE SUMMARY */
+  .score-sum { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:16px; margin-bottom:12px; display:none; text-align:center; }
+  .score-sum.show { display:block; }
+  .score-big { font-size:40px; font-weight:700; font-family:var(--mono); color:var(--accent); }
+  .score-msg { font-size:14px; color:var(--muted); margin-top:6px; }
 
-/* WRONG ANSWER EXPLANATION PANEL */
-.explanation-panel{margin-top:12px;background:rgba(239,68,68,0.1);border-left:4px solid var(--red);padding:12px;border-radius:8px;display:none;}
-.exp-title{font-size:12px;font-weight:bold;color:var(--red);margin-bottom:4px;}
-.exp-text{font-size:12px;line-height:1.6;color:var(--text);margin-bottom:8px;}
-.yt-help-btn{display:inline-flex;align-items:center;gap:6px;background:var(--red);color:#fff;border:none;padding:6px 12px;border-radius:6px;font-size:11px;font-weight:bold;cursor:pointer;text-decoration:none;}
+  /* AI COACH */
+  .chat-wrap { display:flex; flex-direction:column; gap:10px; min-height:180px; max-height:380px; overflow-y:auto; margin-bottom:14px; padding:2px; }
+  .msg { display:flex; gap:8px; align-items:flex-start; }
+  .msg.user { flex-direction:row-reverse; }
+  .msg-av { width:30px; height:30px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:14px; flex-shrink:0; }
+  .ai-av { background:linear-gradient(135deg,var(--accent),#7b5ea7); }
+  .user-av { background:linear-gradient(135deg,var(--gold),#f4a261); }
+  .bubble { max-width:85%; padding:10px 13px; border-radius:12px; font-size:14px; line-height:1.6; }
+  .ai-bub { background:var(--surface); border:1px solid var(--border); border-top-left-radius:4px; }
+  .user-bub { background:var(--accent); color:#fff; border-top-right-radius:4px; }
+  .typing { display:flex; gap:4px; padding:10px 13px; background:var(--surface); border:1px solid var(--border); border-radius:12px; border-top-left-radius:4px; }
+  .dot { width:6px; height:6px; background:var(--muted); border-radius:50%; animation:bounce 1.1s infinite; }
+  .dot:nth-child(2){animation-delay:.2s} .dot:nth-child(3){animation-delay:.4s}
+  @keyframes bounce { 0%,60%,100%{transform:translateY(0)} 30%{transform:translateY(-5px)} }
 
-/* NOTES UPLOAD & VIEWER */
-.note-saved{font-size:11px;color:var(--green);margin-top:5px;opacity:0;transition:opacity .3s;}
-.notes-container{display:flex;flex-direction:column;gap:12px;}
-.note-item{background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:12px;line-height:1.6;}
-.note-meta{font-size:11px;color:var(--muted);display:flex;justify-content:space-between;margin-bottom:6px;border-bottom:1px dashed var(--border);padding-bottom:4px;}
-.note-title{font-size:14px;font-weight:bold;color:var(--accent);margin-bottom:6px;}
-.note-body{font-size:13px;color:var(--text);white-space:pre-wrap;}
-.no-notes{text-align:center;color:var(--muted);font-size:13px;padding:20px 0;}
+  .quick-qs { display:flex; flex-wrap:wrap; gap:6px; margin-bottom:12px; }
+  .quick-q { padding:6px 11px; background:var(--surface); border:1px solid var(--border); border-radius:20px; font-size:12px; color:var(--muted); cursor:pointer; font-family:var(--font); transition:all 0.2s; }
+  .quick-q:hover { border-color:var(--accent); color:var(--accent); }
 
-/* TEACHER FORM */
-.teacher-login-btn{background:none;border:1px solid var(--border);color:var(--muted);padding:4px 8px;border-radius:6px;font-size:10px;cursor:pointer;}
-.teacher-form{display:none;background:var(--bg3);border:1px solid var(--purple);border-radius:10px;padding:14px;margin-top:12px;}
-.tf-row{display:flex;gap:8px;margin-bottom:10px;}
-.tf-inp, .tf-select{background:var(--bg);border:1px solid var(--border);color:#fff;padding:8px 10px;border-radius:6px;font-size:12px;outline:none;}
-.tf-inp{flex:1;}
-.tf-textarea{width:100%;height:100px;background:var(--bg);border:1px solid var(--border);color:#fff;padding:10px;border-radius:6px;font-size:12px;outline:none;resize:vertical;margin-bottom:10px;font-family:inherit;}
+  .chat-input-wrap { display:flex; gap:8px; }
+  .chat-in { flex:1; background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:10px 13px; color:var(--text); font-size:14px; font-family:var(--font); outline:none; transition:border-color 0.2s; }
+  .chat-in:focus { border-color:var(--accent); }
+  .chat-in::placeholder { color:var(--muted); }
 
-/* AI COACH */
-.coach-chat{max-height:280px;overflow-y:auto;margin-bottom:10px;padding-right:4px;}
-.cmsg{margin-bottom:10px;}
-.cmsg.user{text-align:right;}
-.bubble{display:inline-block;max-width:85%;padding:10px 13px;border-radius:14px;font-size:13px;line-height:1.6;text-align:left;}
-.cmsg.ai .bubble{background:var(--bg3);border:1px solid var(--border);}
-.cmsg.user .bubble{background:var(--blue);color:#fff;}
-.coach-row{display:flex;gap:8px;}
-.coach-inp{flex:1;background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:10px 13px;color:var(--text);font-size:13px;outline:none;font-family:inherit;}
-.coach-inp:focus{border-color:var(--blue);}
-.coach-send{padding:10px 16px;background:var(--blue);border:none;border-radius:10px;color:#fff;font-size:18px;cursor:pointer;}
-.typing-ind{display:none;font-size:12px;color:var(--muted);margin-bottom:8px;padding-left:4px;}
-.quick-btns{display:flex;flex-wrap:wrap;gap:7px;}
-.qbtn{padding:7px 11px;border:1px solid var(--border);border-radius:20px;background:var(--bg3);color:var(--text);font-size:12px;cursor:pointer;}
-.qbtn:hover{border-color:var(--blue);}
+  /* NOTES */
+  .notes-subj-row { display:flex; gap:6px; flex-wrap:wrap; margin-bottom:12px; }
+  .note-area { width:100%; background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:12px; color:var(--text); font-size:14px; font-family:var(--font); resize:vertical; min-height:160px; outline:none; line-height:1.7; }
+  .note-area:focus { border-color:var(--accent); }
+  .notes-btns { display:flex; gap:8px; margin-top:10px; flex-wrap:wrap; }
+  .saved-notes { margin-top:14px; display:flex; flex-direction:column; gap:8px; }
+  .note-item { background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:12px; }
+  .note-item-head { display:flex; justify-content:space-between; align-items:center; margin-bottom:6px; }
+  .note-tag { font-size:11px; color:var(--accent); font-weight:600; text-transform:uppercase; letter-spacing:0.5px; }
+  .note-date { font-size:11px; color:var(--muted); }
+  .note-preview { font-size:13px; color:var(--muted); line-height:1.5; }
+  .note-del { background:none; border:none; color:var(--accent2); cursor:pointer; font-size:12px; font-family:var(--font); }
 
-/* LEADERBOARD RATING */
-.lb-table{width:100%;border-collapse:collapse;margin-top:8px;}
-.lb-table th{text-align:left;color:var(--muted);font-size:11px;padding:6px;border-bottom:1px solid var(--border);}
-.lb-table td{padding:10px 6px;font-size:13px;border-bottom:1px dashed var(--border);}
-.lb-rank{font-size:16px;font-weight:bold;text-align:center;width:30px;}
+  /* TIMER */
+  .presets { display:flex; gap:6px; flex-wrap:wrap; justify-content:center; margin-bottom:14px; }
+  .pre-btn { padding:7px 14px; background:var(--surface); border:1px solid var(--border); border-radius:8px; color:var(--muted); font-size:13px; cursor:pointer; font-family:var(--font); transition:all 0.2s; }
+  .pre-btn:hover { border-color:var(--accent); color:var(--accent); }
+  .timer-disp { font-size:60px; font-family:var(--mono); font-weight:700; color:var(--accent); text-align:center; margin:18px 0 6px; letter-spacing:2px; }
+  .timer-disp.warn { color:var(--accent2); animation:pulse 1s infinite; }
+  @keyframes pulse { 50%{opacity:0.55} }
+  .timer-label-txt { text-align:center; font-size:13px; color:var(--muted); margin-bottom:14px; }
+  .timer-btns { display:flex; justify-content:center; gap:10px; flex-wrap:wrap; margin-bottom:16px; }
+  .sess-log { display:flex; flex-direction:column; gap:6px; max-height:180px; overflow-y:auto; }
+  .sess-item { display:flex; justify-content:space-between; padding:8px 12px; background:var(--surface); border-radius:8px; font-size:13px; }
+  .sess-item span:last-child { font-family:var(--mono); color:var(--green); font-size:12px; }
 
-/* COMMON BUTTONS */
-.btn{width:100%;padding:12px;border:none;border-radius:10px;background:var(--blue);color:#fff;font-size:14px;font-weight:600;cursor:pointer;margin-top:10px;transition:opacity .2s;}
-.btn:hover{opacity:.85;}
-.btn.amber{background:var(--accent);color:#000;}
-.btn.green{background:var(--green);color:#000;}
-.btn.purple{background:var(--purple);}
-.btn.outline{background:none;border:1px solid var(--border);color:var(--text);}
+  /* LEADERBOARD */
+  .lb-row { display:flex; align-items:center; gap:10px; padding:11px; background:var(--surface); border-radius:10px; margin-bottom:7px; border:1px solid var(--border); }
+  .lb-row.you { border-color:var(--accent); background:rgba(79,142,247,0.07); }
+  .lb-rank { font-family:var(--mono); font-size:15px; font-weight:700; width:28px; text-align:center; }
+  .lb-rank.r1{color:var(--gold)} .lb-rank.r2{color:#c0c0c0} .lb-rank.r3{color:#cd7f32}
+  .lb-av { width:34px; height:34px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:15px; background:var(--card); }
+  .lb-info { flex:1; }
+  .lb-name { font-size:14px; font-weight:600; }
+  .lb-sub { font-size:11px; color:var(--muted); }
+  .lb-xp { font-family:var(--mono); font-size:14px; font-weight:600; color:var(--accent); }
 
-/* BOTTOM NAV */
-.bnav{position:fixed;bottom:0;left:0;width:100%;background:var(--bg2);border-top:1px solid var(--border);display:flex;z-index:100;}
-.nbtn{flex:1;padding:8px 0 6px;background:none;border:none;color:var(--muted);font-size:9px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:2px;transition:color .2s;}
-.nbtn .ni{font-size:18px;}
-.nbtn.active{color:var(--accent);}
+  /* TOAST */
+  .toast { position:fixed; bottom:20px; right:20px; background:var(--card); border:1px solid var(--green); color:var(--green); padding:11px 16px; border-radius:10px; font-size:14px; font-weight:600; z-index:999; transform:translateY(70px); opacity:0; transition:all 0.3s; max-width:280px; }
+  .toast.show { transform:translateY(0); opacity:1; }
 
-/* TOAST */
-#toast{position:fixed;bottom:82px;left:50%;transform:translateX(-50%);background:var(--green);color:#000;padding:9px 18px;border-radius:20px;font-weight:700;font-size:13px;opacity:0;transition:opacity .3s;pointer-events:none;z-index:999;white-space:nowrap;}
-::-webkit-scrollbar{width:4px;}
-::-webkit-scrollbar-thumb{background:var(--border);border-radius:4px;}
+  /* MISC */
+  ::-webkit-scrollbar { width:3px; } ::-webkit-scrollbar-thumb { background:var(--border); border-radius:2px; }
+  .empty { text-align:center; padding:30px 20px; color:var(--muted); font-size:14px; }
+
+  /* FOOTER CREDIT */
+  .footer-credit { text-align:center; padding:20px 0 10px; font-size:11px; color:var(--muted); }
+
+  @media(max-width:480px) {
+    .timer-disp { font-size:46px; }
+    .stats-grid { grid-template-columns:repeat(2,1fr); }
+  }
 </style>
 </head>
 <body>
 
-<!-- PHONE/OTP LOGIN PORTAL -->
-<div class="login-screen" id="loginScreen">
-  <div class="login-card">
-    <div class="login-title">🔥 टॉपर हब</div>
-    <div class="login-subtitle">अमन भंडारी द्वारा बिहार बोर्ड के होनहार विद्यार्थियों के लिए मुफ्त डिजिटल पाठशाला</div>
-    
-    <!-- Step 1: Mobile Input -->
-    <div id="loginStep1">
-      <p style="font-size:13px; margin-bottom:14px; color:var(--text);">अपना १० अंकों का मोबाइल नंबर डालें:</p>
-      <input type="tel" class="login-input" id="phoneInput" placeholder="98765XXXXX" maxlength="10">
-      <button class="btn amber" onclick="sendMockOTP()">🚀 OTP भेजें</button>
-    </div>
-
-    <!-- Step 2: OTP Verification -->
-    <div id="loginStep2" style="display:none;">
-      <p style="font-size:13px; margin-bottom:14px; color:var(--text);" id="otpSentLabel">OTP यहाँ डालें:</p>
-      <input type="number" class="login-input" id="otpInput" placeholder="XXXXXX" maxlength="6">
-      <button class="btn green" onclick="verifyMockOTP()">✅ सत्यापित करें</button>
-      <button class="btn outline" onclick="backToLoginStep1()" style="margin-top:8px; font-size:11px; padding:6px;">🔄 नंबर बदलें</button>
-    </div>
+<header>
+  <div class="logo-wrap">
+    <div class="logo-main">टॉपर<span>हब</span></div>
+    <div class="logo-sub">मुफ़्त पढ़ाई • Bihar Board Class 9</div>
   </div>
+  <div class="header-right">
+    <span class="xp-chip" id="hXP">0 XP</span>
+    <span class="streak-chip" id="hStreak">🔥0</span>
+  </div>
+</header>
+
+<div class="tabs">
+  <button class="tab active" onclick="switchTab('dashboard')">📊 डैशबोर्ड</button>
+  <button class="tab" onclick="switchTab('quiz')">📝 क्विज़</button>
+  <button class="tab" onclick="switchTab('aicoach')">🤖 AI कोच</button>
+  <button class="tab" onclick="switchTab('notes')">📓 नोट्स</button>
+  <button class="tab" onclick="switchTab('timer')">⏱ टाइमर</button>
+  <button class="tab" onclick="switchTab('leaderboard')">🏆 रैंकिंग</button>
 </div>
 
-<!-- REAL-LOOKING MOCK SMS NOTIFICATION BAR -->
-<div id="smsToast">
-  <strong style="color:var(--accent);">💬 संदेश (टॉपर हब):</strong><br>
-  <span id="smsToastText">प्रिय छात्र, आपका टॉपर हब सत्यापन कोड है: 123456</span>
-</div>
+<main>
 
-<!-- HEADER WITH SMALL BRANDING CREDIT -->
-<div class="hdr">
-  <div class="hdr-top">
-    <div>
-      <div class="hdr-title">🔥 टॉपर हब</div>
-      <div class="hdr-name">अमन भंडारी द्वारा बिहार बोर्ड छात्रों के लिए समर्पित</div>
+  <!-- DASHBOARD -->
+  <div id="dashboard" class="section active">
+    <div class="stats-grid">
+      <div class="stat-card"><div class="stat-num" id="dXP">0</div><div class="stat-label">कुल XP</div></div>
+      <div class="stat-card"><div class="stat-num gold" id="dStreak">0</div><div class="stat-label">🔥 स्ट्रीक (दिन)</div></div>
+      <div class="stat-card"><div class="stat-num green" id="dCorrect">0</div><div class="stat-label">सही जवाब ✓</div></div>
+      <div class="stat-card"><div class="stat-num red" id="dAcc">0%</div><div class="stat-label">सटीकता</div></div>
     </div>
-    <div class="xp-chip" id="hdrXP">⭐ 0 XP</div>
+
+    <div class="card">
+      <div class="card-title">स्तर प्रगति</div>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+        <div style="font-size:19px;font-weight:700;" id="dLevel">स्तर 1</div>
+        <div id="dRank" style="font-size:13px;font-weight:600;color:var(--gold);"></div>
+      </div>
+      <div class="prog-wrap"><div class="prog-fill" id="dBar" style="width:0%"></div></div>
+      <div style="font-size:12px;color:var(--muted);margin-top:3px;" id="dXPInfo">0 / 100 XP अगले स्तर के लिए</div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">विषय प्रगति</div>
+      <div id="dSubStats"><div class="empty">क्विज़ खेलो — प्रगति यहाँ दिखेगी 📚</div></div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">आज का लक्ष्य</div>
+      <div style="font-size:14px;color:var(--muted);line-height:1.8;">
+        ✅ कम से कम 10 सवाल हल करो<br>
+        ✅ 1 पोमोडोरो (25 मिनट) पढ़ाई करो<br>
+        ✅ AI कोच से एक doubt पूछो<br>
+        ✅ अपने नोट्स लिखो<br>
+        <div style="margin-top:10px;font-size:13px;color:var(--accent);font-style:italic;">"मेहनत कभी झूठ नहीं बोलती।"</div>
+      </div>
+    </div>
+
+    <div class="footer-credit">बनाया: Aman Bhandari • सबके लिए मुफ़्त 🇮🇳</div>
   </div>
-</div>
 
-<!-- ===== घर (HOME) ===== -->
-<div class="page active" id="page-ghar">
+  <!-- QUIZ -->
+  <div id="quiz" class="section">
 
-  <div class="welcome">
-    <div class="welcome-name">🙏 नमस्ते, प्यारे टॉपर छात्र!</div>
-    <div class="welcome-line">अनुशासन + निरंतरता = सर्वोच्च सफलता। हर दिन नया सीखें और प्रगति करें।</div>
-    <div class="welcome-streak">
-      <div class="sv" id="hStr">१</div>
-      <div class="sl">🔥 स्ट्रीक</div>
+    <div class="card" style="margin-bottom:12px;">
+      <div class="card-title">विषय चुनो</div>
+      <div class="subj-row">
+        <button class="subj-btn active" onclick="setSubj('math',this)">📐 गणित</button>
+        <button class="subj-btn" onclick="setSubj('science',this)">🔬 विज्ञान</button>
+        <button class="subj-btn" onclick="setSubj('hindi',this)">📖 हिंदी</button>
+        <button class="subj-btn" onclick="setSubj('english',this)">🔤 अंग्रेज़ी</button>
+        <button class="subj-btn" onclick="setSubj('social',this)">🌍 सामाजिक</button>
+      </div>
+      <div class="card-title" style="margin-top:12px;margin-bottom:8px;">कठिनाई स्तर</div>
+      <div class="diff-row">
+        <button class="diff-btn active" onclick="setDiff('easy',this)">🟢 आसान</button>
+        <button class="diff-btn" onclick="setDiff('medium',this)">🟡 मध्यम</button>
+        <button class="diff-btn" onclick="setDiff('hard',this)">🔴 कठिन</button>
+      </div>
+    </div>
+
+    <!-- Score summary shown after 10 questions -->
+    <div class="score-sum" id="scoreSummary">
+      <div class="score-big" id="sumScore">0/10</div>
+      <div class="score-msg" id="sumMsg"></div>
+      <div style="margin-top:14px;">
+        <button class="btn btn-p" onclick="restartQuiz()">🔄 फिर से खेलो</button>
+      </div>
+    </div>
+
+    <div id="quizArea">
+      <div class="q-box">
+        <div class="q-tag" id="qTag">प्रश्न 1</div>
+        <div class="q-text" id="qText">लोड हो रहा है...</div>
+      </div>
+      <div class="opts-grid" id="optsGrid"></div>
+      <div class="result-bar" id="resBanner"></div>
+      <div class="exp-box" id="expBox"></div>
+      <div class="quiz-btns">
+        <button class="btn btn-p" id="nextBtn" onclick="nextQ()" style="display:none">अगला सवाल →</button>
+        <button class="btn btn-g" onclick="skipQ()">⏭ छोड़ो</button>
+      </div>
     </div>
   </div>
 
-  <div class="motiv" id="motivLine">निरंतर अभ्यास से हर विषय आसान हो जाता है।</div>
-
-  <div class="stat-row">
-    <div class="stat"><div class="stat-val" id="hXP">०</div><div class="stat-lbl">⭐ XP</div></div>
-    <div class="stat"><div class="stat-val" id="hLvl">१</div><div class="stat-lbl">🏅 स्तर</div></div>
-    <div class="stat"><div class="stat-val" id="hPomo">०</div><div class="stat-lbl">🍅 पोमोडोरो</div></div>
-  </div>
-
-  <!-- CUSTOM TASK MANAGER SECTION -->
-  <div class="card">
-    <div class="card-title">🎯 आज का मिशन</div>
-    <div class="task-creator">
-      <input type="text" class="task-inp" id="newTaskInp" placeholder="अपना खुद का लक्ष्य यहाँ लिखें...">
-      <button class="task-add-btn" onclick="addNewCustomTask()">+</button>
-    </div>
-    <div id="taskList"></div>
-    <button class="btn amber" onclick="missionComplete()">⚡ मिशन पूरा करो (+५० XP)</button>
-  </div>
-
-  <div class="card">
-    <div class="card-title">📊 आज की प्रगति</div>
-    <div class="prog-wrap"><div class="prog-bar" id="pBar" style="width:0%"></div></div>
-    <p id="pTxt" style="font-size:12px;color:var(--muted);margin-top:4px;">०% पूर्ण</p>
-  </div>
-
-</div>
-
-<!-- ===== पोमोडोरो टाइमर ===== -->
-<div class="page" id="page-pomo">
-  <div class="card">
-    <div class="card-title">🍅 पोमोडोरो टाइमर</div>
-    <div class="pmode-tabs">
-      <div class="pmode active" onclick="setPMode(25,this)">📚 फोकस (२५ मि)</div>
-      <div class="pmode" onclick="setPMode(5,this)">☕ ब्रेक (५ मि)</div>
-      <div class="pmode" onclick="setPMode(15,this)">🛌 लंबा ब्रेक (१५ मि)</div>
-    </div>
-    <div class="pomo-wrap">
-      <div class="pomo-ring">
-        <svg width="160" height="160" viewBox="0 0 160 160">
-          <circle class="ring-bg" cx="80" cy="80" r="70"/>
-          <circle class="ring-fg" id="pomoRing" cx="80" cy="80" r="70" stroke-dasharray="439.82" stroke-dashoffset="0"/>
-        </svg>
-        <div class="pomo-center">
-          <div class="pomo-timer" id="pomoTimer">२५:००</div>
-          <div class="pomo-lbl" id="pomoLbl">फोकस समय</div>
+  <!-- AI COACH -->
+  <div id="aicoach" class="section">
+    <div class="card">
+      <div class="card-title">AI पढ़ाई कोच — Bihar Board Class 9</div>
+      <div class="quick-qs">
+        <button class="quick-q" onclick="sendQ(this)">त्रिकोणमिति समझाओ</button>
+        <button class="quick-q" onclick="sendQ(this)">प्रकाश संश्लेषण क्या है?</button>
+        <button class="quick-q" onclick="sendQ(this)">Newton के नियम बताओ</button>
+        <button class="quick-q" onclick="sendQ(this)">द्विघात समीकरण हल करो</button>
+        <button class="quick-q" onclick="sendQ(this)">हिंदी व्याकरण — संधि</button>
+        <button class="quick-q" onclick="sendQ(this)">पढ़ाई कैसे करें?</button>
+        <button class="quick-q" onclick="sendQ(this)">मुझे मोटिवेट करो</button>
+      </div>
+      <div class="chat-wrap" id="chatWrap">
+        <div class="msg">
+          <div class="msg-av ai-av">🤖</div>
+          <div class="bubble ai-bub">नमस्ते! 👋 मैं तुम्हारा AI पढ़ाई कोच हूँ। Bihar Board Class 9 के किसी भी विषय में मदद माँगो — गणित, विज्ञान, हिंदी, अंग्रेज़ी या सामाजिक विज्ञान। क्या पूछना है?</div>
         </div>
       </div>
-      <div class="pomo-btns">
-        <button class="pbtn" style="background:var(--green);color:#000;" onclick="pomoStart()">▶ शुरू</button>
-        <button class="pbtn" style="background:var(--border);color:#fff;" onclick="pomoPause()">⏸ रोको</button>
-        <button class="pbtn" style="background:var(--red);color:#fff;" onclick="pomoReset()">↺ रीसेट</button>
+      <div class="chat-input-wrap">
+        <input class="chat-in" id="chatIn" placeholder="अपना सवाल यहाँ लिखो..." onkeydown="if(event.key==='Enter')sendMsg()" />
+        <button class="btn btn-p" onclick="sendMsg()">भेजो</button>
       </div>
     </div>
   </div>
-</div>
 
-<!-- ===== प्रश्नोत्तरी (QUIZ & QUESTION BANK) ===== -->
-<div class="page" id="page-quiz">
-
-  <div class="card" id="dqCard">
-    <div class="card-title">📅 दैनिक सुपर फ़ास्ट क्विज़ <span class="dq-badge" id="dqBadge">बचा हुआ है!</span></div>
-    <p style="font-size:12px;color:#94a3b8;margin-bottom:10px;">सभी प्रश्नों का सबसे तेज़ गति से उत्तर दें। सबसे कम समय में पूरा करने वाले का नाम आज के टॉपर रिकॉर्ड में जुड़ेगा!</p>
-    <button class="btn purple" onclick="dailyQuiz()" id="dqBtn">🎯 सुपर फ़ास्ट क्विज़ शुरू करें</button>
-  </div>
-
-  <div class="card" id="subjCard">
-    <div class="card-title">📚 विषयवार प्रश्न बैंक (Explanations & Video Link Included)</div>
-    <div class="class-tabs">
-      <div class="ctab active" onclick="setKaksha(9,this)">कक्षा ९</div>
-      <div class="ctab" onclick="setKaksha(10,this)">कक्षा १०</div>
-    </div>
-    <div class="subj-grid" id="subjGrid"></div>
-  </div>
-
-  <!-- ACTIVE QUIZ GAME -->
-  <div class="card" id="quizBox">
-    <div class="qz-counter">
-      <span id="qCount">प्रश्न १/७</span>
-      <span id="qTimer" style="font-weight:bold; color:var(--accent);">⏱️ 0.0s</span>
-    </div>
-    <div class="qz-q" id="qText">—</div>
-    <div class="qz-opts" id="qOpts"></div>
-    
-    <!-- Detailed feedback on wrong answers -->
-    <div class="explanation-panel" id="expPanel">
-      <div class="exp-title">💡 विस्तार से समझें:</div>
-      <div class="exp-text" id="expText">—</div>
-      <a class="yt-help-btn" id="expYtLink" href="#" target="_blank">📺 वीडियो देखकर समझें</a>
-    </div>
-
-    <!-- Quiz Result Panel -->
-    <div class="qz-result" id="qResult" style="display:none;">
-      <div class="rbig" id="rEmoji">🎉</div>
-      <h3 id="rTitle">—</h3>
-      <p class="qz-meta" id="rMeta">—</p>
-      <button class="btn green" onclick="quizBand()" style="margin-top:14px;">← वापस जाएँ</button>
-    </div>
-  </div>
-
-</div>
-
-<!-- ===== नोट्स (NOTES WITH TEACHER UPLOAD) ===== -->
-<div class="page" id="page-notes">
-  <div class="card">
-    <div class="card-title">
-      📝 क्लास नोट्स (Aman Sir's Uploads)
-      <button class="teacher-login-btn" onclick="toggleTeacherForm()">👨‍🏫 शिक्षक लॉगिन</button>
-    </div>
-
-    <!-- Teacher Portal Panel (Unlocked with password '1234') -->
-    <div class="teacher-form" id="teacherForm">
-      <h3 style="font-size:13px; color:var(--accent); margin-bottom:10px;">नया स्टडी नोट अपलोड करें</h3>
-      <div class="tf-row">
-        <select class="tf-select" id="tfClass">
-          <option value="9">कक्षा ९</option>
-          <option value="10">कक्षा १०</option>
-        </select>
-        <select class="tf-select" id="tfSubj">
-          <option value="ganit">गणित</option>
-          <option value="vigyan">विज्ञान</option>
-          <option value="english">English</option>
-          <option value="sst">समाजिक विज्ञान</option>
-        </select>
+  <!-- NOTES -->
+  <div id="notes" class="section">
+    <div class="card">
+      <div class="card-title">नोट्स बनाओ</div>
+      <div class="notes-subj-row">
+        <button class="subj-btn active" onclick="setNoteSubj('गणित',this)">📐 गणित</button>
+        <button class="subj-btn" onclick="setNoteSubj('विज्ञान',this)">🔬 विज्ञान</button>
+        <button class="subj-btn" onclick="setNoteSubj('हिंदी',this)">📖 हिंदी</button>
+        <button class="subj-btn" onclick="setNoteSubj('अंग्रेज़ी',this)">🔤 अंग्रेज़ी</button>
+        <button class="subj-btn" onclick="setNoteSubj('सामाजिक',this)">🌍 सामाजिक</button>
       </div>
-      <div class="tf-row">
-        <input type="text" class="tf-inp" id="tfTitle" placeholder="नोट का शीर्षक (जैसे: त्रिकोणमिति सूत्र)">
+      <textarea class="note-area" id="noteInput" placeholder="यहाँ अपने नोट्स लिखो — formula, important points, याद रखने वाली बातें..."></textarea>
+      <div class="notes-btns">
+        <button class="btn btn-p" onclick="saveNote()">💾 सहेजो</button>
+        <button class="btn btn-g" onclick="clearNoteInput()">🗑 साफ़ करो</button>
       </div>
-      <textarea class="tf-textarea" id="tfContent" placeholder="यहाँ नोट्स विस्तार से लिखें..."></textarea>
-      <button class="btn green" onclick="saveTeacherNote()" style="margin-top:0; padding:8px;">📤 नोट्स प्रकाशित (Publish) करें</button>
     </div>
-
-    <!-- Subject filters for notes -->
-    <div class="note-tabs" style="margin-top:10px; margin-bottom:12px;">
-      <div class="ctab active" id="noteFilt9" onclick="setNoteClassFilter(9)">कक्षा ९ के नोट्स</div>
-      <div class="ctab" id="noteFilt10" onclick="setNoteClassFilter(10)">कक्षा १० के नोट्स</div>
-    </div>
-
-    <div class="notes-container" id="notesList">
-      <!-- Notes generated dynamically from DB/LocalStorage -->
+    <div class="card">
+      <div class="card-title">सहेजे गए नोट्स</div>
+      <div class="saved-notes" id="savedNotes"><div class="empty">अभी कोई नोट नहीं है। ऊपर लिखो!</div></div>
     </div>
   </div>
-</div>
 
-<!-- ===== लीडरबोर्ड (RANK) ===== -->
-<div class="page" id="page-leader">
-  <div class="card">
-    <div class="card-title">🏆 दैनिक फ़ास्टेस्ट टॉपर रिकॉर्ड</div>
-    <p style="font-size:12px;color:#94a3b8;margin-bottom:12px;">दैनिक क्विज़ में शत-प्रतिशत अंक लाकर सबसे कम समय में हल करने वाले होनहार छात्र:</p>
-    <table class="lb-table">
-      <thead>
-        <tr>
-          <th style="width:50px;">रैंक</th>
-          <th>छात्र का नाम</th>
-          <th>स्कोर</th>
-          <th style="text-align:right;">समय (Speed)</th>
-        </tr>
-      </thead>
-      <tbody id="lbList">
-        <!-- Ranks populated dynamically -->
-      </tbody>
-    </table>
-  </div>
-</div>
-
-<!-- ===== AI कोच ===== -->
-<div class="page" id="page-coach">
-  <div class="card">
-    <div class="card-title">🤖 AI सफलता कोच</div>
-    <div class="coach-chat" id="coachChat"></div>
-    <div class="typing-ind" id="typingInd">कोच सोच रहा है...</div>
-    <div class="coach-row">
-      <input class="coach-inp" id="coachInp" placeholder="अपना सवाल हिंदी में पूछो..." onkeydown="if(event.key==='Enter')coachBhejo()"/>
-      <button class="coach-send" onclick="coachBhejo()">➤</button>
+  <!-- TIMER -->
+  <div id="timer" class="section">
+    <div class="card">
+      <div class="card-title">पोमोडोरो टाइमर</div>
+      <div class="presets">
+        <button class="pre-btn" onclick="setTimer(25*60,'पोमोडोरो 25 मिनट')">🍅 25 मिनट</button>
+        <button class="pre-btn" onclick="setTimer(45*60,'गहरी पढ़ाई 45 मिनट')">🧠 45 मिनट</button>
+        <button class="pre-btn" onclick="setTimer(60*60,'1 घंटा फोकस')">⚡ 60 मिनट</button>
+        <button class="pre-btn" onclick="setTimer(5*60,'ब्रेक 5 मिनट')">☕ 5 मिनट ब्रेक</button>
+      </div>
+      <div class="timer-disp" id="timerDisp">25:00</div>
+      <div class="timer-label-txt" id="timerLbl">पोमोडोरो 25 मिनट</div>
+      <div class="timer-btns">
+        <button class="btn btn-p" id="startBtn" onclick="toggleTimer()">▶ शुरू करो</button>
+        <button class="btn btn-g" onclick="resetTimer()">↺ रीसेट</button>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">आज के सत्र</div>
+      <div class="sess-log" id="sessLog"><div class="empty">अभी कोई सत्र पूरा नहीं हुआ</div></div>
     </div>
   </div>
-  <div class="card">
-    <div class="card-title">⚡ अक्सर पूछे जाने वाले सवाल</div>
-    <div class="quick-btns">
-      <button class="qbtn" onclick="quickQ('आज पढ़ाई की शुरुआत कैसे करूँ?')">📚 शुरुआत</button>
-      <button class="qbtn" onclick="quickQ('गणित में कमज़ोर हूँ, क्या करूँ?')">📐 गणित</button>
-      <button class="qbtn" onclick="quickQ('ध्यान भटकता है, कैसे रोकूँ?')">🎯 फोकस</button>
-      <button class="qbtn" onclick="quickQ('कोडिंग कहाँ से शुरू करूँ?')">💻 Coding</button>
-      <button class="qbtn" onclick="quickQ('कक्षा 10 की तैयारी कैसे करूँ?')">🏆 Class 10</button>
-      <button class="qbtn" onclick="quickQ('English कैसे सुधारूँ?')">📖 English</button>
-      <button class="qbtn" onclick="quickQ('बोर्ड परीक्षा में अच्छे अंक कैसे लाएं?')">🥇 टूल्स</button>
+
+  <!-- LEADERBOARD -->
+  <div id="leaderboard" class="section">
+    <div class="card">
+      <div class="card-title">शीर्ष विद्यार्थी</div>
+      <div id="lbList"></div>
     </div>
   </div>
-</div>
 
-<!-- BOTTOM NAV -->
-<div class="bnav">
-  <button class="nbtn active" onclick="gp('ghar',this)"><span class="ni">🏠</span>घर</button>
-  <button class="nbtn" onclick="gp('pomo',this)"><span class="ni">🍅</span>टाइमर</button>
-  <button class="nbtn" onclick="gp('quiz',this)"><span class="ni">📚</span>प्रश्नोत्तरी</button>
-  <button class="nbtn" onclick="gp('notes',this)"><span class="ni">📝</span>नोट्स</button>
-  <button class="nbtn" onclick="gp('leader',this)"><span class="ni">🏆</span>रैंक</button>
-  <button class="nbtn" onclick="gp('coach',this)"><span class="ni">🤖</span>कोच</button>
-</div>
+</main>
 
-<div id="toast"></div>
+<div class="toast" id="toast"></div>
 
 <script>
-// ===== CENTRAL SYNCRONIZATION (Real/Mock DB wrapper for extreme compatibility) =====
-const appId = typeof __app_id !== 'undefined' ? __app_id : 'topper-hub-poor-students';
-let db = null;
-let useCloud = false;
-
-// Attempt Firebase Connection safely for real-time collaboration
-try {
-  if (typeof __firebase_config !== 'undefined') {
-    const firebaseConfig = JSON.parse(__firebase_config);
-    firebase.initializeApp(firebaseConfig);
-    db = firebase.firestore();
-    useCloud = true;
-    console.log("Firebase initialized successfully.");
-  }
-} catch(e) {
-  console.log("Using super-fast local sync fallback mode.", e);
-}
-
-// Global state variables
-let xp = Number(localStorage.getItem('xp')) || 0;
-let streak = Number(localStorage.getItem('streak')) || 1;
-let pomos = Number(localStorage.getItem('pomos')) || 0;
-let studentName = localStorage.getItem('studentName') || '';
-
-function syncLocal(){
-  localStorage.setItem('xp', xp);
-  localStorage.setItem('streak', streak);
-  localStorage.setItem('pomos', pomos);
-}
-function lvl(){ return Math.floor(xp/100)+1; }
-
-// ===== USER AUTHENTICATION SCREEN WITH MOCK SMS (OTP) =====
-if(!studentName) {
-  document.getElementById('loginScreen').style.display = 'flex';
-} else {
-  document.getElementById('loginScreen').style.display = 'none';
-}
-
-let generatedOTP = "";
-function sendMockOTP(){
-  const phone = document.getElementById('phoneInput').value.trim();
-  if(phone.length < 10 || isNaN(phone)){
-    toast("कृपया १० अंकों का वैध मोबाइल नंबर दर्ज करें! ⚠️", "#ef4444");
-    return;
-  }
-  
-  // Generate random 6-digit verification code
-  generatedOTP = Math.floor(100000 + Math.random() * 900000).toString();
-  
-  // Show beautiful fake notification toast with verification code
-  document.getElementById('smsToastText').textContent = `प्रिय छात्र, आपका टॉपर हब ओटीपी सत्यापन कोड है: ${generatedOTP}। इसका उपयोग ऐप में प्रवेश करने के लिए करें।`;
-  const sms = document.getElementById('smsToast');
-  sms.style.display = 'block';
-  
-  // Transition to Verification Code Entry Screen
-  document.getElementById('loginStep1').style.display = 'none';
-  document.getElementById('loginStep2').style.display = 'block';
-  document.getElementById('otpSentLabel').textContent = `${phone} पर भेजा गया कोड दर्ज करें:`;
-  
-  toast("सत्यापन कोड भेजा गया! 💬");
-}
-
-function verifyMockOTP(){
-  const otpInp = document.getElementById('otpInput').value.trim();
-  if(otpInp === generatedOTP || otpInp === "123456") { // Master override to bypass if needed
-    // Successful Verification: prompt name input
-    const n = window.prompt("सत्यापन सफल! अपना प्यारा नाम दर्ज करें:");
-    if(n && n.trim()) {
-      studentName = n.trim();
-      localStorage.setItem('studentName', studentName);
-      
-      // Save user record to local storage
-      syncLocal();
-      upd();
-      
-      // Hide login screen
-      document.getElementById('loginScreen').style.display = 'none';
-      document.getElementById('smsToast').style.display = 'none';
-      toast(`स्वागत है, ${studentName}! 🎉`);
-      
-      // Sync leaderboard entry if active
-      pushToLeaderboardOffline(studentName, xp, 9999);
-    } else {
-      toast("सत्यापन पूर्ण करने के लिए नाम लिखना आवश्यक है!", "#ef4444");
-    }
-  } else {
-    toast("अवैध या गलत कोड! फिर से प्रयास करें। ❌", "#ef4444");
-  }
-}
-
-function backToLoginStep1(){
-  document.getElementById('loginStep2').style.display = 'none';
-  document.getElementById('loginStep1').style.display = 'block';
-  document.getElementById('smsToast').style.display = 'none';
-}
-
-// ===== CUSTOM USER TASKS (तो मर्जी से बनाओ!) =====
-let defaultTasks = [
-  {id: 1, text: "गणित के १० सूत्र दोहराएं", done: false},
-  {id: 2, text: "विज्ञान का एक चैप्टर ध्यान से पढ़ें", done: false}
-];
-
-let customTasks = JSON.parse(localStorage.getItem('custom_user_tasks')) || defaultTasks;
-
-function renderCustomTasks(){
-  const list = document.getElementById('taskList');
-  list.innerHTML = '';
-  customTasks.forEach((t) => {
-    const div = document.createElement('div');
-    div.className = 'task' + (t.done ? ' done' : '');
-    div.innerHTML = `
-      <div class="task-box" onclick="toggleCustomTask(${t.id})">${t.done ? '✓' : ''}</div>
-      <div class="task-txt" onclick="toggleCustomTask(${t.id})">${t.text}</div>
-      <button class="task-del" onclick="deleteCustomTask(${t.id}, event)">🗑️</button>
-    `;
-    list.appendChild(div);
-  });
-  updateProgressPercent();
-}
-
-function addNewCustomTask(){
-  const inp = document.getElementById('newTaskInp');
-  const text = inp.value.trim();
-  if(!text) return;
-  const newTask = {
-    id: Date.now(),
-    text: text,
-    done: false
-  };
-  customTasks.push(newTask);
-  localStorage.setItem('custom_user_tasks', JSON.stringify(customTasks));
-  inp.value = '';
-  renderCustomTasks();
-  toast("नया लक्ष्य जोड़ा गया! 🎯");
-}
-
-function toggleCustomTask(id){
-  customTasks = customTasks.map(t => {
-    if(t.id === id) {
-      t.done = !t.done;
-      if(t.done) {
-        xp += 5; syncLocal(); upd();
-        toast("+५ XP प्राप्त 🎯");
-      }
-    }
-    return t;
-  });
-  localStorage.setItem('custom_user_tasks', JSON.stringify(customTasks));
-  renderCustomTasks();
-}
-
-function deleteCustomTask(id, event){
-  event.stopPropagation();
-  customTasks = customTasks.filter(t => t.id !== id);
-  localStorage.setItem('custom_user_tasks', JSON.stringify(customTasks));
-  renderCustomTasks();
-  toast("लक्ष्य हटाया गया 🗑️", "#ef4444");
-}
-
-function updateProgressPercent(){
-  if(customTasks.length === 0) {
-    document.getElementById('pBar').style.width = '0%';
-    document.getElementById('pTxt').textContent = 'कोई काम सेट नहीं किया गया है';
-    return;
-  }
-  const completed = customTasks.filter(t => t.done).length;
-  const p = Math.round(completed / customTasks.length * 100);
-  document.getElementById('pBar').style.width = p + '%';
-  document.getElementById('pTxt').textContent = p + '% पूर्ण';
-}
-
-function missionComplete(){
-  const uncompleted = customTasks.filter(t => !t.done).length;
-  if(uncompleted > 0){
-    toast('पहले आज के सभी लक्ष्यों को पूरा करें! ⚠️', '#f59e0b');
-    return;
-  }
-  if(customTasks.length === 0) {
-    toast("मिशन पूरा करने के लिए पहले कुछ लक्ष्य जोड़ें! 🎯", "#f59e0b");
-    return;
-  }
-  xp += 50; streak++; syncLocal();
-  customTasks = [];
-  localStorage.setItem('custom_user_tasks', JSON.stringify(customTasks));
-  renderCustomTasks();
-  upd();
-  toast('🎉 शानदार! दैनिक मिशन पूरा हुआ! +५० XP प्राप्त 🔥');
-}
-
-// ===== POMODORO TIMER =====
-let pTotal=25*60,pLeft=25*60,pRun=false,pInt=null,pMode='focus';
-const CIRC=439.82;
-function setPMode(min,el){
-  document.querySelectorAll('.pmode').forEach(e=>e.classList.remove('active'));
-  el.classList.add('active');
-  pTotal=min*60;pLeft=min*60;pRun=false;clearInterval(pInt);
-  pMode=min===25?'focus':min===5?'break':'long';
-  document.getElementById('pomoLbl').textContent=min===25?'फोकस समय':'ब्रेक समय';
-  pomoRender();
-}
-function pomoStart(){
-  if(pRun)return;pRun=true;
-  pInt=setInterval(()=>{
-    if(pLeft<=0){
-      clearInterval(pInt);pRun=false;
-      if(pMode==='focus'){pomos++;syncLocal();xp+=25;syncLocal();upd();toast('🍅 फोकस सत्र पूर्ण! +२५ XP 🌟');}
-      else toast('✅ ब्रेक खत्म! वापस पढ़ाई शुरू करें।');
-      pLeft=pTotal;pomoRender();return;
-    }
-    pLeft--;pomoRender();
-  },1000);
-}
-function pomoPause(){pRun=false;clearInterval(pInt);}
-function pomoReset(){pomoPause();pLeft=pTotal;pomoRender();}
-function pomoRender(){
-  const m=String(Math.floor(pLeft/60)).padStart(2,'0');
-  const s=String(pLeft%60).padStart(2,'0');
-  document.getElementById('pomoTimer').textContent=`${m}:${s}`;
-  document.getElementById('pomoRing').style.strokeDashoffset=CIRC-(CIRC*(pTotal-pLeft)/pTotal);
-  document.getElementById('hPomo').textContent=pomos;
-}
-
-// ===== 📚 SUBJECT QUESTION BANKS (WITH EXPLANATIONS & HELP VIDEOS) =====
-const QB={
-  9:{
-    ganit:[
-      {
-        q:'(a+b)² का सही विस्तार क्या है?',
-        a:['a²+b²','a²+2ab+b²','a²-2ab+b²','2a+2b'],
-        c:1,
-        exp: '(a+b)² का अर्थ है (a+b) को स्वयं से गुणा करना। जब आप इसे हल करते हैं, तो a(a+b) + b(a+b) = a² + ab + ba + b² = a² + 2ab + b² प्राप्त होता है।',
-        yt: 'https://www.youtube.com/results?search_query=algebraic+identities+class+9+hindi'
-      },
-      {
-        q:'√169 का धनात्मक वर्गमूल क्या होगा?',
-        a:['११','१२','१३','१४'],
-        c:2,
-        exp: 'चूँकि १३ को स्वयं १३ से गुणा करने पर १६९ मिलता है (१३ × १३ = १६९), इसलिए १६९ का वर्गमूल १३ होगा।',
-        yt: 'https://www.youtube.com/results?search_query=square+root+class+9+maths+hindi'
-      },
-      {
-        q:'x² - 9 = 0 समीकरण में x का मान क्या होगा?',
-        a:['±२','±३','±४','±९'],
-        c:1,
-        exp: 'x² - 9 = 0 को हल करने पर x² = 9 प्राप्त होता है। दोनों पक्षों का वर्गमूल लेने पर x = ±३ मिलता है।',
-        yt: 'https://www.youtube.com/results?search_query=quadratic+equation+factorization+hindi'
-      }
-    ],
-    vigyan:[
-      {
-        q:'पेड़-पौधे अपना भोजन बनाने के लिए किस मुख्य प्रक्रिया का उपयोग करते हैं?',
-        a:['श्वसन','वाष्पोत्सर्जन','प्रकाश संश्लेषण','पाचन'],
-        c:2,
-        exp: 'पौधे सूर्य के प्रकाश, कार्बन डाइऑक्साइड और जल की सहायता से क्लोरोफिल के अंदर ग्लूकोज का निर्माण करते हैं, इस जटिल प्रक्रिया को "प्रकाश संश्लेषण" (Photosynthesis) कहा जाता है।',
-        yt: 'https://www.youtube.com/results?search_query=photosynthesis+class+9+science'
-      },
-      {
-        q:'शुद्ध जल का रासायनिक सूत्र क्या है?',
-        a:['CO₂','H₂O','O₂','NaCl'],
-        c:1,
-        exp: 'जल का एक अणु हाइड्रोजन के दो परमाणुओं और ऑक्सीजन के एक परमाणु से मिलकर बनता है, इसलिए इसका सूत्र H₂O होता है।',
-        yt: 'https://www.youtube.com/results?search_query=chemical+formulas+matter+in+our+surroundings'
-      }
-    ],
-    english:[
-      {
-        q:'Choose the correct form of verb: "She ___ to school every day."',
-        a:['go','goes','going','gone'],
-        c:1,
-        exp: 'चूँकि "She" एक एकवचन (Singular Third Person) कर्ता है, Simple Present Tense के नियम के अनुसार क्रिया (verb) के साथ "s" या "es" का प्रयोग होता है, इसलिए "goes" सही है।',
-        yt: 'https://www.youtube.com/results?search_query=simple+present+tense+english+grammar+hindi'
-      }
-    ],
-    sst:[
-      {
-        q:'भारत का संविधान किस तिथि को पूरी तरह से लागू हुआ था?',
-        a:['१५ अगस्त १९४७','२६ जनवरी १९५०','२ अक्टूबर १९४९','१ जनवरी १९५०'],
-        c:1,
-        exp: '२६ जनवरी १९५० को भारत का संविधान पूर्णतः लागू हुआ और भारत एक लोकतांत्रिक गणराज्य घोषित हुआ, इसी उपलक्ष्य में गणतंत्र दिवस मनाया जाता है।',
-        yt: 'https://www.youtube.com/results?search_query=making+of+indian+constitution+hindi'
-      }
-    ]
-  },
-  10:{
-    ganit:[
-      {
-        q:'sin²θ + cos²θ का मान क्या होता है?',
-        a:['०','१','२','sin2θ'],
-        c:1,
-        exp: 'त्रिकोणमिति की मूलभूत सर्वसमिका (Trigonometric Identity) के अनुसार, किसी भी कोण θ के लिए sin²θ और cos²θ का योग सदैव १ होता है।',
-        yt: 'https://www.youtube.com/results?search_query=trigonometry+identities+class+10+hindi'
-      },
-      {
-        q:'tan 45° का सटीक मान क्या होगा?',
-        a:['०','१/√2','१','√3'],
-        c:2,
-        exp: 'त्रिकोणमितीय सारणी में tan 45° = sin 45° / cos 45° = (१/√2) / (१/√2) = १ होता है।',
-        yt: 'https://www.youtube.com/results?search_query=trigonometry+table+tricks+hindi'
-      }
-    ],
-    vigyan:[
-      {
-        q:'किसी अम्लीय विलयन (Acidic Solution) का pH मान कितना होता है?',
-        a:['७ से अधिक','७ के बराबर','७ से कम','१४ के बराबर'],
-        c:2,
-        exp: 'pH स्केल पर 0 से 14 तक मान होते हैं। ७ उदासीन (Neutral) होता है, ७ से कम अम्लीय (Acidic) और ७ से अधिक क्षारीय (Basic) होता है।',
-        yt: 'https://www.youtube.com/results?search_query=acids+bases+and+salts+class+10+science'
-      }
-    ],
-    english:[
-      {
-        q:'Change to Passive voice: "Ram eats a mango."',
-        a:['A mango is eaten by Ram','A mango was eaten','A mango eaten by Ram','Ram is eating a mango'],
-        c:0,
-        exp: 'Active Voice में Simple Present Tense होने पर Passive Voice की संरचना Subject + is/am/are + V3 + by + Object होती है। अतः "A mango is eaten by Ram" सही है।',
-        yt: 'https://www.youtube.com/results?search_query=active+passive+voice+hindi+grammar'
-      }
-    ],
-    sst:[
-      {
-        q:'भारत में वस्तु एवं सेवा कर (GST) कब लागू किया गया था?',
-        a:['२०१६','२०१७','२०१८','२०१५'],
-        c:1,
-        exp: 'भारत में १ जुलाई २०१७ से पूरे देश में अप्रत्यक्ष कर प्रणाली के सुधार स्वरूप एकीकृत वस्तु एवं सेवा कर (GST) लागू किया गया।',
-        yt: 'https://www.youtube.com/results?search_query=what+is+gst+hindi+civics'
-      }
-    ]
-  }
+// ========== STATE ==========
+const S = {
+  xp: +localStorage.getItem('thXP')||0,
+  streak: +localStorage.getItem('thStreak')||0,
+  correct: +localStorage.getItem('thCorrect')||0,
+  total: +localStorage.getItem('thTotal')||0,
+  sub: JSON.parse(localStorage.getItem('thSub')||'{}'),
+  lastDate: localStorage.getItem('thLastDate')||'',
+  sessions: JSON.parse(localStorage.getItem('thSess')||'[]'),
+  notes: JSON.parse(localStorage.getItem('thNotes')||'[]'),
+  subject: 'math',
+  diff: 'easy',
+  noteSubj: 'गणित',
+  qCount: 0,
+  qCorrect: 0,
 };
 
-// ===== INTERACTIVE QUIZ ENGINE WITH LIVE TIMING & TIME RECORDING =====
-let kaksha=9,cQuiz=[],cQ=0,cScore=0,isDQ=false;
-let quizStartTime = 0;
-let quizTimerInterval = null;
-
-const SMETA={ganit:{i:'📘',n:'गणित'},vigyan:{i:'🔬',n:'विज्ञान'},english:{i:'📖',n:'English'},sst:{i:'🌍',n:'समाजिक विज्ञान'}};
-
-function setKaksha(k,el){
-  kaksha=k;
-  document.querySelectorAll('.ctab').forEach(t=>t.classList.remove('active'));
-  el.classList.add('active');
-  gridBanao();
+function save(){
+  localStorage.setItem('thXP',S.xp);
+  localStorage.setItem('thStreak',S.streak);
+  localStorage.setItem('thCorrect',S.correct);
+  localStorage.setItem('thTotal',S.total);
+  localStorage.setItem('thSub',JSON.stringify(S.sub));
+  localStorage.setItem('thLastDate',S.lastDate);
+  localStorage.setItem('thSess',JSON.stringify(S.sessions));
+  localStorage.setItem('thNotes',JSON.stringify(S.notes));
 }
 
-function gridBanao(){
-  document.getElementById('subjGrid').innerHTML=Object.keys(SMETA).map(s=>`
-    <div class="subj-card" onclick="quizShuru('${s}')">
-      <span class="si">${SMETA[s].i}</span>
-      <div class="sn">${SMETA[s].n}</div>
-      <div class="sq">कक्षा ${kaksha} • ${QB[kaksha][s].length} प्रश्न</div>
-    </div>`).join('');
-}
-
-let dqHoGaya=localStorage.getItem('dqDate')===new Date().toDateString();
-function dqBadgeUpd(){
-  const b=document.getElementById('dqBadge'),btn=document.getElementById('dqBtn');
-  if(dqHoGaya){
-    b.textContent='✅ आज का हो गया!';
-    b.className='dq-badge dq-done-badge';
-    btn.disabled=true;
-    btn.textContent='✅ कल पुनः आएं';
+// Streak check
+function checkStreak(){
+  const today = new Date().toDateString();
+  const yest = new Date(Date.now()-86400000).toDateString();
+  if(S.lastDate!==today){
+    if(S.lastDate===yest) S.streak++;
+    else if(!S.lastDate) S.streak=1;
+    else S.streak=1;
+    S.lastDate=today; save();
   }
 }
 
-// Start Daily Fast-Track Quiz
-function dailyQuiz(){
-  isDQ=true;
-  const pool=[];
-  Object.keys(QB[kaksha]).forEach(s=>{
-    pool.push(...[...QB[kaksha][s]].sort(()=>Math.random()-.5).slice(0,3));
-  });
-  cQuiz=pool.sort(()=>Math.random()-.5).slice(0,5); // 5 mix questions
-  cQ=0;cScore=0;
-  quizDikha();
+// ========== TAB ==========
+const tabNames=['dashboard','quiz','aicoach','notes','timer','leaderboard'];
+function switchTab(name){
+  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById(name).classList.add('active');
+  document.querySelectorAll('.tab')[tabNames.indexOf(name)].classList.add('active');
+  if(name==='dashboard') updateDash();
+  if(name==='leaderboard') renderLB();
+  if(name==='notes') renderNotes();
+  if(name==='timer') renderSess();
 }
 
-function quizShuru(s){
-  isDQ=false;
-  cQuiz=[...QB[kaksha][s]].sort(()=>Math.random()-.5).slice(0,5);
-  cQ=0;cScore=0;
-  quizDikha();
-}
+// ========== DASHBOARD ==========
+const ranks=['नया','खोजी','प्रयासी','चमक','विजेता','टॉपर','किंवदंती'];
+function updateDash(){
+  document.getElementById('dXP').textContent=S.xp;
+  document.getElementById('hXP').textContent=S.xp+' XP';
+  document.getElementById('dStreak').textContent=S.streak;
+  document.getElementById('hStreak').textContent='🔥'+S.streak;
+  document.getElementById('dCorrect').textContent=S.correct;
+  const acc=S.total>0?Math.round(S.correct/S.total*100):0;
+  document.getElementById('dAcc').textContent=acc+'%';
+  const lv=Math.floor(S.xp/100)+1;
+  const xpIn=S.xp%100;
+  document.getElementById('dLevel').textContent='स्तर '+lv;
+  document.getElementById('dBar').style.width=xpIn+'%';
+  document.getElementById('dXPInfo').textContent=xpIn+' / 100 XP — स्तर '+(lv+1)+' के लिए';
+  document.getElementById('dRank').textContent='🏅 '+( ranks[Math.min(lv-1,ranks.length-1)]);
 
-function quizDikha(){
-  document.getElementById('subjCard').style.display='none';
-  document.getElementById('dqCard').style.display='none';
-  document.getElementById('quizBox').style.display='block';
-  document.getElementById('qResult').style.display='none';
-  document.getElementById('expPanel').style.display='none';
-  
-  // Timer setup
-  quizStartTime = performance.now();
-  if(quizTimerInterval) clearInterval(quizTimerInterval);
-  quizTimerInterval = setInterval(()=>{
-    const elapsed = ((performance.now() - quizStartTime) / 1000).toFixed(1);
-    document.getElementById('qTimer').textContent = `⏱️ ${elapsed}s`;
-  }, 100);
-
-  sawaalDikha();
-}
-
-function sawaalDikha(){
-  document.getElementById('expPanel').style.display='none';
-  const q=cQuiz[cQ];
-  document.getElementById('qCount').textContent=`प्रश्न ${cQ+1}/${cQuiz.length}`;
-  document.getElementById('qText').textContent=q.q;
-  document.getElementById('qOpts').innerHTML=q.a.map((a,i)=>`<button class="opt" onclick="jawabCheck(${i},this)">${a}</button>`).join('');
-}
-
-function jawabCheck(sel,btn){
-  const q=cQuiz[cQ];
-  document.querySelectorAll('.opt').forEach(b=>b.onclick=null);
-  
-  if(sel===q.c){
-    btn.classList.add('sahi');
-    cScore++;
-    xp+=10; syncLocal();
-    toast('+१० XP प्राप्त ✅');
-    setTimeout(()=>{
-      cQ++;
-      cQ < cQuiz.length ? sawaalDikha() : quizKhatam();
-    }, 1000);
-  } else {
-    // Show incorrect answer indicator and correct answer key
-    btn.classList.add('galat');
-    document.querySelectorAll('.opt')[q.c].classList.add('sahi');
-    
-    // Display comprehensive explanation with video link
-    document.getElementById('expText').textContent = q.exp;
-    document.getElementById('expYtLink').href = q.yt;
-    document.getElementById('expPanel').style.display = 'block';
-    
-    // Add "Proceed" button inside explanation panel for seamless flow
-    const proceedBtn = document.createElement('button');
-    proceedBtn.className = 'btn green';
-    proceedBtn.textContent = 'अगला प्रश्न देखें ➡️';
-    proceedBtn.style.marginTop = '10px';
-    proceedBtn.onclick = () => {
-      cQ++;
-      cQ < cQuiz.length ? sawaalDikha() : quizKhatam();
-    };
-    document.getElementById('expPanel').appendChild(proceedBtn);
-  }
-}
-
-function quizKhatam(){
-  clearInterval(quizTimerInterval);
-  const totalTimeTaken = ((performance.now() - quizStartTime) / 1000).toFixed(2);
-  
-  if(isDQ){
-    xp+=30; syncLocal();
-    localStorage.setItem('dqDate',new Date().toDateString());
-    dqHoGaya=true;
-    toast('🎯 दैनिक बोनस: +३० XP प्राप्त!');
-    
-    // Register score to Leaderboard
-    pushToLeaderboard(studentName, cScore, totalTimeTaken);
-  } else {
-    pushToLeaderboard(studentName, cScore, totalTimeTaken);
-  }
-  
-  const p=cScore/cQuiz.length;
-  document.getElementById('qCount').textContent = 'समाप्त!';
-  document.getElementById('qText').textContent = 'प्रश्नोत्तरी पूर्ण हुई!';
-  document.getElementById('qOpts').innerHTML = '';
-  document.getElementById('expPanel').style.display = 'none';
-  
-  document.getElementById('qResult').style.display='block';
-  document.getElementById('rEmoji').textContent=p>=.8?'🏆':p>=.5?'👍':'💪';
-  document.getElementById('rTitle').textContent=p>=.8?'शानदार तैयारी!':p>=.5?'अच्छा प्रयास!':'और अभ्यास की आवश्यकता!';
-  document.getElementById('rMeta').textContent=`अंक: ${cScore}/${cQuiz.length} | कुल समय: ${totalTimeTaken} सेकंड`;
-  upd();
-}
-
-function quizBand(){
-  document.getElementById('quizBox').style.display='none';
-  document.getElementById('subjCard').style.display='block';
-  document.getElementById('dqCard').style.display='block';
-  dqBadgeUpd();
-}
-
-// ===== REAL-TIME CLOUD LEADERBOARD INTEGRATION =====
-function pushToLeaderboard(name, score, timeTaken) {
-  const scoreRecord = {
-    name: name,
-    score: score,
-    time: parseFloat(timeTaken),
-    timestamp: new Date().getTime()
-  };
-
-  if(useCloud) {
-    db.collection('artifacts').doc(appId).collection('public').doc('data').collection('leaderboard').add(scoreRecord)
-      .then(() => {
-        console.log("Score pushed to Cloud Database");
-        loadLeaderboard();
-      })
-      .catch((e) => {
-        console.error("Cloud push failed, using local sync:", e);
-        pushToLeaderboardOffline(name, score, timeTaken);
-      });
-  } else {
-    pushToLeaderboardOffline(name, score, timeTaken);
-  }
-}
-
-function pushToLeaderboardOffline(name, score, timeTaken) {
-  let localLeaderboard = JSON.parse(localStorage.getItem('local_leaderboard')) || [
-    {name: "राहुल राज", score: 5, time: 14.20},
-    {name: "आरती कुमारी", score: 5, time: 18.50},
-    {name: "अभिषेक सिंह", score: 4, time: 12.10},
-    {name: "मुस्कान खातून", score: 4, time: 21.30}
-  ];
-  
-  localLeaderboard.push({name: name, score: score, time: parseFloat(timeTaken)});
-  // Sort by highest score first, then by lowest time taken
-  localLeaderboard.sort((a,b) => {
-    if(b.score !== a.score) return b.score - a.score;
-    return a.time - b.time;
-  });
-  
-  localStorage.setItem('local_leaderboard', JSON.stringify(localLeaderboard));
-  loadLeaderboard();
-}
-
-function loadLeaderboard(){
-  const lbList = document.getElementById('lbList');
-  lbList.innerHTML = '';
-
-  if(useCloud) {
-    db.collection('artifacts').doc(appId).collection('public').doc('data').collection('leaderboard')
-      .get()
-      .then((snap) => {
-        let entries = [];
-        snap.forEach(doc => entries.push(doc.data()));
-        
-        // Offline default entries to make leaderboard look lively instantly
-        if(entries.length === 0) {
-          entries = [
-            {name: "राहुल राज", score: 5, time: 14.20},
-            {name: "आरती कुमारी", score: 5, time: 18.50},
-            {name: "अभिषेक सिंह", score: 4, time: 12.10}
-          ];
-        }
-
-        // Sort dynamically client-side (compound index prevention rules)
-        entries.sort((a,b) => {
-          if(b.score !== a.score) return b.score - a.score;
-          return a.time - b.time;
-        });
-
-        renderLeaderboardRows(entries);
-      })
-      .catch(e => {
-        console.error("Offline fallback active.", e);
-        loadLocalLeaderboardFallback();
-      });
-  } else {
-    loadLocalLeaderboardFallback();
-  }
-}
-
-function loadLocalLeaderboardFallback(){
-  let entries = JSON.parse(localStorage.getItem('local_leaderboard')) || [
-    {name: "राहुल राज", score: 5, time: 14.2},
-    {name: "आरती कुमारी", score: 5, time: 18.5},
-    {name: "अभिषेक सिंह", score: 4, time: 12.1},
-    {name: "मुस्कान खातून", score: 4, time: 21.3}
-  ];
-  entries.sort((a,b) => {
-    if(b.score !== a.score) return b.score - a.score;
-    return a.time - b.time;
-  });
-  renderLeaderboardRows(entries);
-}
-
-function renderLeaderboardRows(entries) {
-  const lbList = document.getElementById('lbList');
-  lbList.innerHTML = entries.map((e, i) => {
-    let medal = i + 1;
-    if(i===0) medal = '🥇';
-    else if(i===1) medal = '🥈';
-    else if(i===2) medal = '🥉';
-    
-    return `
-      <tr>
-        <td class="lb-rank">${medal}</td>
-        <td style="${e.name === studentName ? 'color:var(--accent); font-weight:bold;' : ''}">${e.name}</td>
-        <td style="font-weight:bold; color:var(--green);">${e.score}/5</td>
-        <td style="text-align:right; font-variant-numeric: tabular-nums;">${e.time.toFixed(1)}s</td>
-      </tr>
-    `;
+  const ss=document.getElementById('dSubStats');
+  if(!Object.keys(S.sub).length){ss.innerHTML='<div class="empty">क्विज़ खेलो — प्रगति यहाँ दिखेगी 📚</div>';return;}
+  const labels={math:'📐 गणित',science:'🔬 विज्ञान',hindi:'📖 हिंदी',english:'🔤 अंग्रेज़ी',social:'🌍 सामाजिक'};
+  ss.innerHTML=Object.entries(S.sub).map(([k,d])=>{
+    const a=d.total>0?Math.round(d.correct/d.total*100):0;
+    return `<div style="margin-bottom:11px;">
+      <div style="display:flex;justify-content:space-between;margin-bottom:3px;">
+        <span style="font-size:13px;">${labels[k]||k}</span>
+        <span style="font-size:11px;color:var(--muted);font-family:var(--mono);">${d.correct}/${d.total} (${a}%)</span>
+      </div>
+      <div class="prog-wrap"><div class="prog-fill" style="width:${a}%"></div></div>
+    </div>`;
   }).join('');
 }
 
-
-// ===== STUDY NOTES (TEACHER PORTAL UPLOAD & REAL-TIME DISCOVERY) =====
-let noteClassFilter = 9;
-
-function toggleTeacherForm() {
-  const pass = window.prompt("शिक्षक पोर्टल खोलने के लिए पासवर्ड डालें (डिफ़ॉल्ट पासवर्ड '1234' है):");
-  if(pass === "1234") {
-    const form = document.getElementById('teacherForm');
-    form.style.display = form.style.display === 'block' ? 'none' : 'block';
-    toast("शिक्षक पोर्टल अनलॉक हुआ! 👨‍🏫");
-  } else if(pass !== null) {
-    toast("गलत पासवर्ड! ❌", "#ef4444");
-  }
-}
-
-function saveTeacherNote() {
-  const k = document.getElementById('tfClass').value;
-  const subj = document.getElementById('tfSubj').value;
-  const title = document.getElementById('tfTitle').value.trim();
-  const content = document.getElementById('tfContent').value.trim();
-
-  if(!title || !content) {
-    toast("शीर्षक और सामग्री दोनों आवश्यक हैं!", "#ef4444");
-    return;
-  }
-
-  const newNote = {
-    class: Number(k),
-    subject: subj,
-    title: title,
-    content: content,
-    author: "अमन सर (टॉपर हब)",
-    timestamp: new Date().getTime(),
-    dateString: new Date().toLocaleDateString('hi-IN')
-  };
-
-  if(useCloud) {
-    db.collection('artifacts').doc(appId).collection('public').doc('data').collection('notes').add(newNote)
-      .then(() => {
-        toast("नोट्स सफलतापूर्वक क्लाउड पर अपलोड हुए! 📤");
-        clearTeacherForm();
-        loadNotesFromDB();
-      })
-      .catch((e) => {
-        console.error("Cloud notes error, fallback to local:", e);
-        saveNoteLocalStorage(newNote);
-      });
-  } else {
-    saveNoteLocalStorage(newNote);
-  }
-}
-
-function saveNoteLocalStorage(newNote){
-  let notes = JSON.parse(localStorage.getItem('uploaded_teacher_notes')) || [];
-  notes.unshift(newNote);
-  localStorage.setItem('uploaded_teacher_notes', JSON.stringify(notes));
-  toast("नोट्स सफलतापूर्वक स्थानीय स्टोरेज में सेव हुए! 📝");
-  clearTeacherForm();
-  loadNotesFromDB();
-}
-
-function clearTeacherForm(){
-  document.getElementById('tfTitle').value = '';
-  document.getElementById('tfContent').value = '';
-  document.getElementById('teacherForm').style.display = 'none';
-}
-
-function setNoteClassFilter(cls) {
-  noteClassFilter = cls;
-  document.getElementById('noteFilt9').classList.toggle('active', cls === 9);
-  document.getElementById('noteFilt10').classList.toggle('active', cls === 10);
-  loadNotesFromDB();
-}
-
-function loadNotesFromDB(){
-  const notesContainer = document.getElementById('notesList');
-  notesContainer.innerHTML = '';
-
-  if(useCloud) {
-    db.collection('artifacts').doc(appId).collection('public').doc('data').collection('notes')
-      .get()
-      .then((snap) => {
-        let list = [];
-        snap.forEach(doc => list.push(doc.data()));
-        
-        // Filter by class client-side safely
-        list = list.filter(n => n.class === noteClassFilter);
-        
-        // Sort newest first
-        list.sort((a,b) => b.timestamp - a.timestamp);
-
-        renderNotesList(list);
-      })
-      .catch(e => {
-        console.error("Notes cloud read error, using offline notes:", e);
-        loadNotesOfflineFallback();
-      });
-  } else {
-    loadNotesOfflineFallback();
-  }
-}
-
-function loadNotesOfflineFallback() {
-  const localNotes = JSON.parse(localStorage.getItem('uploaded_teacher_notes')) || [
-    {
-      class: 9,
-      subject: "ganit",
-      title: "त्रिकोणमिति (Trigonometry) के आवश्यक सूत्र",
-      content: "1. sin θ = लम्ब / कर्ण\n2. cos θ = आधार / कर्ण\n3. tan θ = लम्ब / आधार\n4. cosec θ = कर्ण / लम्ब\n5. sec θ = कर्ण / आधार\n6. cot θ = आधार / लम्ब\n\nयाद रखने का शॉर्टकट सूत्र: लाल / कक्का (LAL / KKA)",
-      author: "अमन भंडारी",
-      dateString: "23/6/2026"
-    },
-    {
-      class: 10,
-      subject: "vigyan",
-      title: "अम्ल, क्षारक एवं लवण (Notes Part-1)",
-      content: "1. अम्ल (Acids): स्वाद में खट्टे होते हैं तथा नीले लिटमस पत्र को लाल कर देते हैं। उदाहरण: HCl, H2SO4।\n2. क्षारक (Bases): स्वाद में कड़वे होते हैं तथा लाल लिटमस पत्र को नीला कर देते हैं। उदाहरण: NaOH, KOH।\n3. लवण (Salts): अम्ल एवं क्षारक की परस्पर उदासीनीकरण अभिक्रिया से लवण एवं जल प्राप्त होते हैं।",
-      author: "अमन भंडारी",
-      dateString: "23/6/2026"
-    }
-  ];
-
-  const filtered = localNotes.filter(n => n.class === noteClassFilter);
-  renderNotesList(filtered);
-}
-
-function renderNotesList(notesList) {
-  const notesContainer = document.getElementById('notesList');
-  if(notesList.length === 0) {
-    notesContainer.innerHTML = `<div class="no-notes">इस कक्षा के लिए अभी कोई स्टडी नोट उपलब्ध नहीं है।</div>`;
-    return;
-  }
-
-  notesContainer.innerHTML = notesList.map(n => `
-    <div class="note-item">
-      <div class="note-meta">
-        <span>📚 ${SMETA[n.subject]?.n || n.subject}</span>
-        <span>📅 ${n.dateString || 'आज'} | ${n.author || 'शिक्षक'}</span>
-      </div>
-      <div class="note-title">${n.title}</div>
-      <div class="note-body">${n.content}</div>
-    </div>
-  `).join('');
-}
-
-
-// ===== 🤖 MULTI-TOPIC UNLIMITED AI COACH (STUDENTS ASK ANYTHING!) =====
-const COACH_KNOWLEDGE_BASE={
-  'padhai':'पढ़ाई के लिए सबसे अच्छी वैज्ञानिक पद्धति "पोमोडोरो तकनीक" है। इसमें आपको २५ मिनट पूरी लगन से बिना फोन छुए पढ़ना है, फिर ५ मिनट का ब्रेक लेना है। इससे दिमाग थकता नहीं है और पढ़ी हुई चीजें लंबे समय तक याद रहती हैं। कोशिश करें कि कठिन विषयों को सुबह सबसे पहले पढ़ें।',
-  'ganit':'गणित में महारत हासिल करने का एकमात्र नियम है - नियमित अभ्यास! रोज़ कम से कम ५ से १० सवालों को खुद बिना उत्तर देखे हल करने का प्रयास करें। जब कोई सवाल गलत हो, तो हमारे वीडियो गाइड बटन पर क्लिक करें और उस चैप्टर का वीडियो देखें। सूत्रों की एक अलग छोटी डायरी बनाएं।',
-  'focus':'पढ़ाई करते समय ध्यान भटकने का सबसे बड़ा कारण मोबाइल नोटिफिकेशन हैं। पढ़ते समय फोन को सायलेंट करके दूसरे कमरे में रख दें। एक शांत और साफ जगह पर बैठकर ही पढ़ें। छोटे लक्ष्य बनाएं, जैसे - "अगले २० मिनट में मुझे यह २ पेज याद करने हैं"।',
-  'coding':'कोडिंग सीखने के लिए आपको गणित में बहुत तेज होना आवश्यक नहीं है। आप सीधे "यूट्यूब पर Code With Harry" चैनल की सहायता से मुफ़्त में Python कोडिंग सीख सकते हैं। रोज़ ३० मिनट कोड लिखने का अभ्यास करें, आने वाले समय में कोडिंग ही देश का भविष्य बदलेगी!',
-  'board':'बिहार बोर्ड परीक्षा में बेहतर अंक लाने का सबसे आसान तरीका है: NCERT पुस्तकों के सभी उदाहरणों और अभ्यासों को हल करना, तथा पिछले ५ वर्षों के प्रश्नपत्रों (Previous Year Papers) का गहराई से रिवीज़न करना। साफ-सुथरी लिखावट और मुख्य बिंदुओं को रेखांकित (underline) करना न भूलें।',
-  'english':'अंग्रेजी सुधारने के लिए सबसे पहले अपनी हिंदी से अंग्रेजी शब्दकोश (vocabulary) बढ़ाएं। रोज़ ५ नए अंग्रेजी शब्दों के अर्थ समझें और उन्हें अपने वाक्यों में प्रयोग करें। थोड़ा-बहुत अंग्रेजी अखबार या कहानियां पढ़ना शुरू करें और अपनी व्याकरण (Grammar) के लिए हमारे English प्रश्न बैंक का उपयोग करें।',
-  'default':'नमस्ते प्यारे छात्र! मैं आपका पर्सनल एआई सक्सेस कोच हूँ। आप मुझसे परीक्षा की तैयारी, पढ़ाई के तरीके, गणित और विज्ञान के कठिन प्रश्नों को हल करने का तरीका, या कोडिंग से जुड़ी कोई भी जानकारी हिंदी में पूछ सकते हैं। बताइए, आज आप किस विषय में मार्गदर्शन चाहते हैं?'
+// ========== QUIZ DATA ==========
+const QBank = {
+  math:{
+    easy:[
+      {q:"2 × 3 + 4 = ?",opts:["10","9","11","8"],ans:0,exp:"पहले गुणा: 2×3=6, फिर जोड़: 6+4=10"},
+      {q:"√81 = ?",opts:["9","8","7","10"],ans:0,exp:"9 × 9 = 81, इसलिए √81 = 9"},
+      {q:"एक आयत की लंबाई 6 cm और चौड़ाई 4 cm है। परिमाप = ?",opts:["20 cm","24 cm","10 cm","16 cm"],ans:0,exp:"परिमाप = 2(6+4) = 2×10 = 20 cm"},
+      {q:"यदि 4x = 20, तो x = ?",opts:["5","4","6","8"],ans:0,exp:"x = 20÷4 = 5"},
+      {q:"15 का 20% = ?",opts:["3","4","5","2"],ans:0,exp:"15 × 20/100 = 15 × 0.2 = 3"},
+    ],
+    medium:[
+      {q:"समीकरण x² - 5x + 6 = 0 के मूल क्या हैं?",opts:["2 और 3","1 और 6","3 और 4","2 और 4"],ans:0,exp:"(x-2)(x-3)=0 → x=2 या x=3"},
+      {q:"एक वृत्त की त्रिज्या 7 cm है। क्षेत्रफल = ? (π=22/7)",opts:["154 cm²","144 cm²","168 cm²","196 cm²"],ans:0,exp:"πr² = (22/7)×7×7 = 22×7 = 154 cm²"},
+      {q:"sin 30° = ?",opts:["1/2","√3/2","1","0"],ans:0,exp:"sin 30° = 1/2 — यह एक मानक मान है।"},
+      {q:"दो संख्याओं का LCM 60, HCF 5 है। एक संख्या 15 है तो दूसरी = ?",opts:["20","25","30","10"],ans:0,exp:"LCM×HCF = a×b → 60×5 = 15×b → b=20"},
+      {q:"(a+b)² = ?",opts:["a²+2ab+b²","a²+b²","a²-b²","2(a+b)"],ans:0,exp:"(a+b)² = a² + 2ab + b² — बीजगणित का सर्वसमिका"},
+    ],
+    hard:[
+      {q:"यदि tan θ = 3/4, तो sin θ = ?",opts:["3/5","4/5","3/4","4/3"],ans:0,exp:"Pythagoras: hyp=√(9+16)=5 → sinθ = लंब/कर्ण = 3/5"},
+      {q:"2x + 3y = 12 और x - y = 1 तो x = ?",opts:["3","4","2","5"],ans:0,exp:"x=y+1 → 2(y+1)+3y=12 → 5y=10 → y=2 → x=3"},
+      {q:"एक त्रिभुज के कोण 2:3:4 के अनुपात में हैं। सबसे बड़ा कोण = ?",opts:["80°","60°","90°","70°"],ans:0,exp:"2x+3x+4x=180° → 9x=180° → x=20° → सबसे बड़ा = 4×20=80°"},
+      {q:"(3x - 2y)² का विस्तार = ?",opts:["9x²-12xy+4y²","9x²+4y²","9x²-4y²","3x²-2y²"],ans:0,exp:"(a-b)² = a²-2ab+b² → 9x²-2×3x×2y+4y² = 9x²-12xy+4y²"},
+      {q:"AP: 3, 7, 11, 15... का 10वाँ पद = ?",opts:["39","40","38","41"],ans:0,exp:"a=3, d=4 → a₁₀ = 3 + (10-1)×4 = 3+36 = 39"},
+    ],
+  },
+  science:{
+    easy:[
+      {q:"जल का रासायनिक सूत्र क्या है?",opts:["H₂O","HO","H₂O₂","H₃O"],ans:0,exp:"पानी में 2 हाइड्रोजन और 1 ऑक्सीजन परमाणु होते हैं → H₂O"},
+      {q:"कोशिका का 'पावरहाउस' किसे कहते हैं?",opts:["माइटोकॉन्ड्रिया","नाभिक","राइबोसोम","क्लोरोप्लास्ट"],ans:0,exp:"माइटोकॉन्ड्रिया ATP (ऊर्जा) बनाता है इसलिए इसे पावरहाउस कहते हैं।"},
+      {q:"पृथ्वी पर गुरुत्वाकर्षण g = ?",opts:["9.8 m/s²","8.9 m/s²","10.5 m/s²","9.5 m/s²"],ans:0,exp:"g ≈ 9.8 m/s² (लगभग 10 m/s² लिया जाता है)"},
+      {q:"प्रकाश संश्लेषण में उपोत्पाद कौन सा गैस है?",opts:["ऑक्सीजन","CO₂","नाइट्रोजन","हाइड्रोजन"],ans:0,exp:"6CO₂ + 6H₂O → C₆H₁₂O₆ + 6O₂ — ऑक्सीजन उपोत्पाद है।"},
+      {q:"DNA का पूरा नाम क्या है?",opts:["Deoxyribonucleic Acid","Double Nucleic Acid","Diribonucleic Acid","Deoxyribose Acid"],ans:0,exp:"DNA = Deoxyribonucleic Acid — यह आनुवंशिक जानकारी रखता है।"},
+    ],
+    medium:[
+      {q:"ओम का नियम: V = ?",opts:["IR","I/R","R/I","I²R"],ans:0,exp:"V = IR — विभवान्तर = धारा × प्रतिरोध"},
+      {q:"न्यूटन का दूसरा नियम: F = ?",opts:["ma","mv","m/a","m+a"],ans:0,exp:"F = ma — बल = द्रव्यमान × त्वरण"},
+      {q:"प्रकाश की गति = ?",opts:["3×10⁸ m/s","3×10⁶ m/s","3×10¹⁰ m/s","3×10⁷ m/s"],ans:0,exp:"निर्वात में प्रकाश की गति = 3 × 10⁸ m/s"},
+      {q:"pH 7 से कम होने पर पदार्थ क्या होता है?",opts:["अम्लीय","क्षारीय","उदासीन","तटस्थ"],ans:0,exp:"pH<7 = अम्लीय, pH=7 = उदासीन, pH>7 = क्षारीय"},
+      {q:"मानव शरीर में सबसे लंबी हड्डी कौन सी है?",opts:["फीमर","टीबिया","ह्यूमरस","फिबुला"],ans:0,exp:"फीमर (जांघ की हड्डी) शरीर की सबसे लंबी हड्डी है।"},
+    ],
+    hard:[
+      {q:"किस प्रकार के दर्पण का उपयोग वाहनों के पीछे देखने के लिए होता है?",opts:["उत्तल दर्पण","अवतल दर्पण","समतल दर्पण","गोलीय दर्पण"],ans:0,exp:"उत्तल दर्पण का दृष्टि क्षेत्र बड़ा होता है इसलिए rear-view mirror में उपयोग होता है।"},
+      {q:"विद्युत शक्ति P = ?",opts:["VI","V/I","I/V","V²I"],ans:0,exp:"P = VI = I²R = V²/R — विद्युत शक्ति का सूत्र"},
+      {q:"प्रकाश का वायु से काँच में जाने पर अपवर्तन कोण = ?",opts:["आपतन कोण से कम","आपतन कोण से अधिक","आपतन कोण के बराबर","शून्य"],ans:0,exp:"सघन माध्यम में प्रकाश मुड़ता है, गति घटती है, अपवर्तन कोण छोटा होता है।"},
+      {q:"मेंडल के प्रभाविता के नियम के अनुसार F1 संकर में कौन सा लक्षण दिखता है?",opts:["प्रभावी","अप्रभावी","दोनों","कोई नहीं"],ans:0,exp:"F1 संकर में केवल प्रभावी (Dominant) लक्षण दिखता है।"},
+      {q:"एक विद्युत परिपथ में 2Ω और 3Ω के प्रतिरोध श्रेणी में जुड़े हैं। कुल प्रतिरोध = ?",opts:["5Ω","1.2Ω","6Ω","2.5Ω"],ans:0,exp:"श्रेणी में R = R₁+R₂ = 2+3 = 5Ω"},
+    ],
+  },
+  hindi:{
+    easy:[
+      {q:"'कमल' का पर्यायवाची शब्द क्या है?",opts:["पद्म","जल","वन","नभ"],ans:0,exp:"कमल के पर्यायवाची: पद्म, नलिन, जलज, अरविंद, सरोज"},
+      {q:"'आकाश' का विलोम शब्द क्या है?",opts:["पाताल","धरती","जमीन","ज़मीन"],ans:0,exp:"आकाश का विलोम = पाताल"},
+      {q:"'पुस्तक' का बहुवचन क्या है?",opts:["पुस्तकें","पुस्तकों","पुस्तको","पुस्तकि"],ans:0,exp:"पुस्तक → पुस्तकें (बहुवचन)"},
+      {q:"हिंदी वर्णमाला में स्वरों की संख्या कितनी है?",opts:["11","13","9","12"],ans:0,exp:"हिंदी में 11 स्वर होते हैं: अ, आ, इ, ई, उ, ऊ, ए, ऐ, ओ, औ, ऋ"},
+      {q:"'सूरदास' किस काल के कवि थे?",opts:["भक्तिकाल","रीतिकाल","आदिकाल","आधुनिककाल"],ans:0,exp:"सूरदास भक्तिकाल के महान कवि थे।"},
+    ],
+    medium:[
+      {q:"'राम ने सेब खाया' — इस वाक्य में कर्ता कौन है?",opts:["राम","सेब","खाया","ने"],ans:0,exp:"कर्ता वह होता है जो क्रिया करता है — यहाँ 'राम' कर्ता है।"},
+      {q:"'सूर्योदय' में कौन सी संधि है?",opts:["गुण संधि","दीर्घ संधि","वृद्धि संधि","यण संधि"],ans:0,exp:"सूर्य + उदय = सूर्योदय — अ+उ = ओ → गुण संधि"},
+      {q:"'तुलसीदास' की प्रसिद्ध रचना कौन सी है?",opts:["रामचरितमानस","सूरसागर","पद्मावत","बीजक"],ans:0,exp:"तुलसीदास की रामचरितमानस (अवधी में) सबसे प्रसिद्ध रचना है।"},
+      {q:"'जो पढ़ा-लिखा हो' — एक शब्द में क्या होगा?",opts:["साक्षर","निरक्षर","विद्वान","पंडित"],ans:0,exp:"साक्षर = जो पढ़ा-लिखा हो"},
+      {q:"'रहिमन पानी राखिए' — यह किसकी कविता है?",opts:["रहीम","कबीर","तुलसीदास","रसखान"],ans:0,exp:"यह रहीम (अब्दुर्रहीम खानखाना) का प्रसिद्ध दोहा है।"},
+    ],
+    hard:[
+      {q:"'अनेकार्थी' शब्द 'कर' का एक अर्थ 'हाथ' है। दूसरा अर्थ क्या है?",opts:["टैक्स","काम","खेत","पैर"],ans:0,exp:"'कर' के अर्थ हैं: हाथ, टैक्स (कर), करना (क्रिया)"},
+      {q:"वीर रस का स्थायी भाव क्या है?",opts:["उत्साह","भय","क्रोध","प्रेम"],ans:0,exp:"वीर रस का स्थायी भाव = उत्साह"},
+      {q:"'उत्कर्ष' का विलोम क्या है?",opts:["अपकर्ष","निम्न","हीन","पतन"],ans:0,exp:"उत्कर्ष (उन्नति) का विलोम = अपकर्ष (पतन)"},
+      {q:"'प्रत्यय' से बना शब्द कौन सा है?",opts:["लिखावट","प्रतिदिन","अनुकरण","विज्ञान"],ans:0,exp:"लिखावट = लिख + आवट (प्रत्यय)"},
+      {q:"महाकाव्य और खंडकाव्य में मुख्य अंतर क्या है?",opts:["कथा की विशालता","भाषा","काल","नायक"],ans:0,exp:"महाकाव्य में पूरा जीवन-वृत्त होता है, खंडकाव्य में एक ही खंड/प्रसंग होता है।"},
+    ],
+  },
+  english:{
+    easy:[
+      {q:"Past tense of 'go' is:",opts:["went","gone","goed","going"],ans:0,exp:"'Go' is an irregular verb. Past tense = went"},
+      {q:"Plural of 'child' is:",opts:["children","childs","childrens","child's"],ans:0,exp:"Irregular plural: child → children"},
+      {q:"'The sun rises in the east.' — Subject is:",opts:["The sun","rises","east","the"],ans:0,exp:"Subject performs the action — 'The sun' rises."},
+      {q:"Synonym of 'happy' is:",opts:["joyful","sad","angry","tired"],ans:0,exp:"Joyful, glad, pleased are synonyms of happy."},
+      {q:"Fill in the blank: She ___ to school every day.",opts:["goes","go","went","going"],ans:0,exp:"With 'she' (3rd person singular) → goes (present simple)"},
+    ],
+    medium:[
+      {q:"Which tense: 'I have eaten my food.'",opts:["Present Perfect","Simple Past","Past Continuous","Simple Present"],ans:0,exp:"'Have + V3' = Present Perfect tense"},
+      {q:"Antonym of 'ancient' is:",opts:["modern","old","new","fresh"],ans:0,exp:"Ancient = very old. Antonym = modern"},
+      {q:"Passive voice of 'She writes a letter':",opts:["A letter is written by her","A letter was written","She wrote a letter","Letter is write by her"],ans:0,exp:"Active → Passive: Object becomes subject. 'A letter is written by her.'"},
+      {q:"'Despite his illness, he came to school.' — 'Despite' is:",opts:["Preposition","Conjunction","Adverb","Verb"],ans:0,exp:"'Despite' is a preposition used to show contrast."},
+      {q:"Choose correct sentence:",opts:["Neither of them is correct.","Neither of them are correct.","Neither them is correct.","Neither of them was correct always."],ans:0,exp:"'Neither of' takes singular verb → 'is'"},
+    ],
+    hard:[
+      {q:"'The news is good.' — 'news' is:",opts:["Uncountable noun","Countable noun","Proper noun","Abstract noun"],ans:0,exp:"'News' is an uncountable noun, always used with singular verb."},
+      {q:"'Scarcely had I reached when it rained.' — This uses:",opts:["Inverted structure","Simple sentence","Passive voice","Reported speech"],ans:0,exp:"Scarcely/Hardly + had + subject + V3 uses inverted/negative structure."},
+      {q:"Identify the figure of speech: 'Life is a journey.'",opts:["Metaphor","Simile","Personification","Alliteration"],ans:0,exp:"Direct comparison without 'like/as' = Metaphor. (Simile would use 'like': 'Life is like a journey')"},
+      {q:"'He said, \"I am happy.\"' — Indirect speech:",opts:["He said that he was happy.","He said that he is happy.","He told he was happy.","He said he will be happy."],ans:0,exp:"Reporting verb past → tense changes. 'am' → 'was'. Pronoun 'I' → 'he'."},
+      {q:"Choose the correct form: 'I wish I ___ a bird.'",opts:["were","was","am","be"],ans:0,exp:"After 'wish' for imaginary situations, use 'were' (subjunctive mood) for all persons."},
+    ],
+  },
+  social:{
+    easy:[
+      {q:"भारत का राष्ट्रीय पशु कौन है?",opts:["बाघ","शेर","हाथी","मोर"],ans:0,exp:"बंगाल टाइगर (बाघ) भारत का राष्ट्रीय पशु है।"},
+      {q:"भारत में कितने राज्य हैं?",opts:["28","29","27","30"],ans:0,exp:"वर्तमान में भारत में 28 राज्य और 8 केंद्र शासित प्रदेश हैं।"},
+      {q:"भारत की राजधानी क्या है?",opts:["नई दिल्ली","मुंबई","कोलकाता","चेन्नई"],ans:0,exp:"भारत की राजधानी नई दिल्ली है।"},
+      {q:"गंगा नदी किस दिशा में बहती है?",opts:["पश्चिम से पूर्व","पूर्व से पश्चिम","उत्तर से दक्षिण","दक्षिण से उत्तर"],ans:0,exp:"गंगा नदी पश्चिम से पूर्व दिशा में बहती है और बंगाल की खाड़ी में मिलती है।"},
+      {q:"भारतीय संविधान कब लागू हुआ?",opts:["26 जनवरी 1950","15 अगस्त 1947","26 नवंबर 1949","2 अक्टूबर 1950"],ans:0,exp:"संविधान 26 जनवरी 1950 को लागू हुआ — इसलिए गणतंत्र दिवस 26 जनवरी को मनाते हैं।"},
+    ],
+    medium:[
+      {q:"क्षेत्रफल में भारत का सबसे बड़ा राज्य कौन सा है?",opts:["राजस्थान","मध्य प्रदेश","उत्तर प्रदेश","महाराष्ट्र"],ans:0,exp:"राजस्थान (342,239 km²) क्षेत्रफल में भारत का सबसे बड़ा राज्य है।"},
+      {q:"'हरित क्रांति' किससे संबंधित है?",opts:["कृषि उत्पादन","उद्योग","वन","जल"],ans:0,exp:"हरित क्रांति 1960 के दशक में आई जिसने गेहूँ-चावल उत्पादन बढ़ाया।"},
+      {q:"संयुक्त राष्ट्र की स्थापना कब हुई?",opts:["1945","1950","1947","1919"],ans:0,exp:"संयुक्त राष्ट्र (UN) की स्थापना 24 अक्टूबर 1945 को हुई।"},
+      {q:"भारत में 'प्रथम पंचवर्षीय योजना' कब शुरू हुई?",opts:["1951","1947","1956","1961"],ans:0,exp:"भारत की प्रथम पंचवर्षीय योजना 1951 में शुरू हुई।"},
+      {q:"लोकसभा में सदस्यों की अधिकतम संख्या कितनी है?",opts:["552","545","500","600"],ans:0,exp:"लोकसभा में अधिकतम 552 सीटें (543 निर्वाचित + 2 मनोनीत) होती हैं।"},
+    ],
+    hard:[
+      {q:"भारत में 'उदारीकरण' (Liberalisation) किस वर्ष शुरू हुआ?",opts:["1991","1985","2000","1975"],ans:0,exp:"1991 में डॉ. मनमोहन सिंह ने नई आर्थिक नीति के तहत उदारीकरण शुरू किया।"},
+      {q:"'अर्थशास्त्र' ग्रंथ किसने लिखा?",opts:["चाणक्य","अशोक","अकबर","विक्रमादित्य"],ans:0,exp:"चाणक्य (कौटिल्य) ने 'अर्थशास्त्र' लिखा — यह राजनीति और अर्थव्यवस्था पर ग्रंथ है।"},
+      {q:"1857 की क्रांति का मुख्य कारण क्या था?",opts:["चर्बी वाले कारतूस","नमक कानून","इनकार टैक्स","जमींदारी"],ans:0,exp:"चर्बी वाले कारतूस (गाय और सुअर की) ने सैनिकों की धार्मिक भावनाओं को ठेस पहुँचाई।"},
+      {q:"भारत की GDP में किस क्षेत्र का सबसे अधिक योगदान है?",opts:["सेवा क्षेत्र","कृषि","उद्योग","खनन"],ans:0,exp:"सेवा क्षेत्र (IT, बैंकिंग, व्यापार) भारतीय GDP का लगभग 55-60% है।"},
+      {q:"'मानव विकास सूचकांक' (HDI) किसने विकसित किया?",opts:["महबूब उल हक","अमर्त्य सेन","जवाहरलाल नेहरू","मनमोहन सिंह"],ans:0,exp:"HDI को महबूब उल हक (पाकिस्तानी अर्थशास्त्री) और अमर्त्य सेन ने विकसित किया।"},
+    ],
+  },
 };
 
-function coachJawab(msg){
-  msg=msg.toLowerCase();
-  if(msg.includes('padhai')||msg.includes('पढ़ाई')||msg.includes('shuruat')||msg.includes('शुरुआत')||msg.includes('तरीका'))return COACH_KNOWLEDGE_BASE.padhai;
-  if(msg.includes('math')||msg.includes('ganit')||msg.includes('गणित')||msg.includes('sutra')||msg.includes('सूत्र'))return COACH_KNOWLEDGE_BASE.ganit;
-  if(msg.includes('distract')||msg.includes('ध्यान')||msg.includes('focus')||msg.includes('phone')||msg.includes('मन'))return COACH_KNOWLEDGE_BASE.focus;
-  if(msg.includes('cod')||msg.includes('python')||msg.includes('program')||msg.includes('कंप्यूटर'))return COACH_KNOWLEDGE_BASE.coding;
-  if(msg.includes('board')||msg.includes('exam')||msg.includes('परीक्षा')||msg.includes('10th')||msg.includes('9th'))return COACH_KNOWLEDGE_BASE.board;
-  if(msg.includes('english')||msg.includes('angreji')||msg.includes('अंग्रेजी'))return COACH_KNOWLEDGE_BASE.english;
-  
-  // Dynamic Gemini-style Fallback response to guide them through any educational query
-  return `बहुत ही अच्छा सवाल पूछा है! पढ़ाई में निरंतर प्रगति करने के लिए आपको हमेशा सीखते रहना चाहिए। NCERT पर पूरा ध्यान दें। रोज़ टॉपर हब की दैनिक प्रश्नोत्तरी (Quiz) और टाइमर का उपयोग करें। यदि आप किसी खास विषय (गणित, कोडिंग, टाइम मैनेजमेंट) के बारे में कुछ विस्तार से जानना चाहते हैं, तो मुझे नीचे लिखकर बताएं!`;
+// ========== QUIZ LOGIC ==========
+let currQ=null, answered=false, quizEnded=false;
+const MAX_Q=10;
+
+function setSubj(subj,btn){
+  S.subject=subj;
+  document.querySelectorAll('.subj-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  restartQuiz();
+}
+function setDiff(d,btn){
+  S.diff=d;
+  document.querySelectorAll('.diff-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  restartQuiz();
+}
+function restartQuiz(){
+  S.qCount=0; S.qCorrect=0;
+  quizEnded=false;
+  document.getElementById('scoreSummary').className='score-sum';
+  document.getElementById('quizArea').style.display='block';
+  loadQ();
+}
+function skipQ(){ loadQ(); }
+
+function loadQ(){
+  if(S.qCount>=MAX_Q){ endQuiz(); return; }
+  answered=false;
+  const pool=QBank[S.subject][S.diff];
+  currQ=pool[Math.floor(Math.random()*pool.length)];
+  document.getElementById('qTag').textContent=`प्रश्न ${S.qCount+1}/${MAX_Q} • ${S.diff==='easy'?'आसान':S.diff==='medium'?'मध्यम':'कठिन'}`;
+  document.getElementById('qText').textContent=currQ.q;
+  document.getElementById('optsGrid').innerHTML=currQ.opts.map((o,i)=>
+    `<button class="opt-btn" onclick="pick(${i},this)">${String.fromCharCode(65+i)}. ${o}</button>`
+  ).join('');
+  document.getElementById('resBanner').className='result-bar';
+  document.getElementById('resBanner').textContent='';
+  document.getElementById('expBox').className='exp-box';
+  document.getElementById('nextBtn').style.display='none';
 }
 
-function msgAdd(txt,role){
+function pick(idx,btn){
+  if(answered) return;
+  answered=true;
+  S.qCount++;
+  S.total++;
+  if(!S.sub[S.subject]) S.sub[S.subject]={correct:0,total:0};
+  S.sub[S.subject].total++;
+
+  document.querySelectorAll('.opt-btn').forEach(b=>b.disabled=true);
+  const rb=document.getElementById('resBanner');
+  const xpGain = S.diff==='easy'?5:S.diff==='medium'?10:15;
+
+  if(idx===currQ.ans){
+    S.correct++; S.xp+=xpGain; S.qCorrect++;
+    S.sub[S.subject].correct++;
+    btn.classList.add('correct');
+    rb.textContent=`✅ सही! +${xpGain} XP मिला!`;
+    rb.className='result-bar ok';
+    showToast(`✅ सही जवाब! +${xpGain} XP`);
+  } else {
+    S.xp=Math.max(0,S.xp-2);
+    btn.classList.add('wrong');
+    document.querySelectorAll('.opt-btn')[currQ.ans].classList.add('correct');
+    rb.textContent=`❌ गलत! सही जवाब: ${String.fromCharCode(65+currQ.ans)}`;
+    rb.className='result-bar bad';
+  }
+  document.getElementById('expBox').innerHTML=`<strong>💡 स्पष्टीकरण:</strong> ${currQ.exp}`;
+  document.getElementById('expBox').className='exp-box show';
+  document.getElementById('nextBtn').style.display='inline-flex';
+  save(); updateDash();
+  document.getElementById('hXP').textContent=S.xp+' XP';
+}
+
+function nextQ(){
+  if(S.qCount>=MAX_Q) endQuiz();
+  else loadQ();
+}
+
+function endQuiz(){
+  quizEnded=true;
+  document.getElementById('quizArea').style.display='none';
+  const sc=document.getElementById('scoreSummary');
+  sc.className='score-sum show';
+  document.getElementById('sumScore').textContent=`${S.qCorrect}/${MAX_Q}`;
+  const pct=Math.round(S.qCorrect/MAX_Q*100);
+  const msgs=['थोड़ी और मेहनत करो! 💪','अच्छी कोशिश! 👍','बहुत अच्छा! 🌟','शाबाश! 🔥','अद्भुत! 🏆 टॉपर!'];
+  document.getElementById('sumMsg').textContent=msgs[Math.min(Math.floor(pct/25),4)]+` (${pct}%)`;
+}
+
+// ========== AI COACH ==========
+const chatH=[];
+async function sendMsg(){
+  const inp=document.getElementById('chatIn');
+  const txt=inp.value.trim();
+  if(!txt) return;
+  addBubble(txt,'user'); inp.value='';
+  chatH.push({role:'user',content:txt});
+  const tid=addTyping();
+  try{
+    const r=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        model:'claude-sonnet-4-6',
+        max_tokens:1000,
+        system:`Tu ek friendly AI study coach hai jo Bihar Board Class 9 ke garib bacchon ki madad karta hai. Hamesha Hindi mein jawab de (Devanagari script mein). Simple, clear aur encouraging tone rakho. Step-by-step samjhao. Bihar Board NCERT syllabus follow karo. Motivate karo. Chhote chhote paragraphs mein likho. Formulae aur examples zaroor do.`,
+        messages:chatH.slice(-8),
+      }),
+    });
+    const d=await r.json();
+    removeTyping(tid);
+    const rep=d.content?.[0]?.text||'कुछ गलती हुई। दोबारा कोशिश करो।';
+    chatH.push({role:'assistant',content:rep});
+    addBubble(rep,'ai');
+  }catch(e){
+    removeTyping(tid);
+    addBubble('नेटवर्क की समस्या है। इंटरनेट चेक करो और दोबारा कोशिश करो। 🔄','ai');
+  }
+}
+function sendQ(btn){ document.getElementById('chatIn').value=btn.textContent; sendMsg(); }
+function addBubble(txt,role){
+  const w=document.getElementById('chatWrap');
   const d=document.createElement('div');
-  d.className='cmsg '+role;
-  d.innerHTML=`<div class="bubble">${txt}</div>`;
-  const chat = document.getElementById('coachChat');
-  chat.appendChild(d);
-  chat.scrollTop=chat.scrollHeight;
+  d.className='msg'+(role==='user'?' user':'');
+  d.innerHTML=`<div class="msg-av ${role}-av">${role==='ai'?'🤖':'👤'}</div>
+    <div class="bubble ${role==='ai'?'ai-bub':'user-bub'}">${txt.replace(/\n/g,'<br>')}</div>`;
+  w.appendChild(d); w.scrollTop=w.scrollHeight;
+}
+function addTyping(){
+  const w=document.getElementById('chatWrap');
+  const id='t'+Date.now();
+  const d=document.createElement('div');
+  d.className='msg'; d.id=id;
+  d.innerHTML=`<div class="msg-av ai-av">🤖</div><div class="typing"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>`;
+  w.appendChild(d); w.scrollTop=w.scrollHeight;
+  return id;
+}
+function removeTyping(id){ const e=document.getElementById(id); if(e) e.remove(); }
+
+// ========== NOTES ==========
+function setNoteSubj(subj,btn){
+  S.noteSubj=subj;
+  document.querySelectorAll('.notes-subj-row .subj-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+}
+function saveNote(){
+  const txt=document.getElementById('noteInput').value.trim();
+  if(!txt){showToast('कुछ लिखो पहले!');return;}
+  S.notes.unshift({subj:S.noteSubj,text:txt,date:new Date().toLocaleDateString('hi-IN')});
+  if(S.notes.length>50) S.notes.pop();
+  save(); renderNotes();
+  document.getElementById('noteInput').value='';
+  showToast('✅ नोट सहेजा गया!');
+}
+function clearNoteInput(){ document.getElementById('noteInput').value=''; }
+function deleteNote(i){ if(confirm('यह नोट हटाएँ?')){ S.notes.splice(i,1); save(); renderNotes(); } }
+function renderNotes(){
+  const c=document.getElementById('savedNotes');
+  if(!S.notes.length){c.innerHTML='<div class="empty">अभी कोई नोट नहीं है। ऊपर लिखो!</div>';return;}
+  c.innerHTML=S.notes.map((n,i)=>`
+    <div class="note-item">
+      <div class="note-item-head">
+        <span class="note-tag">${n.subj}</span>
+        <div style="display:flex;gap:10px;align-items:center;">
+          <span class="note-date">${n.date}</span>
+          <button class="note-del" onclick="deleteNote(${i})">🗑 हटाओ</button>
+        </div>
+      </div>
+      <div class="note-preview">${n.text.substring(0,200)}${n.text.length>200?'...':''}</div>
+    </div>`).join('');
 }
 
-function coachBhejo(){
-  const inp=document.getElementById('coachInp');
-  const msg=inp.value.trim();if(!msg)return;
-  msgAdd(msg,'user');inp.value='';
-  document.getElementById('typingInd').style.display='block';
-  setTimeout(()=>{
-    document.getElementById('typingInd').style.display='none';
-    msgAdd(coachJawab(msg),'ai');
-  },900);
+// ========== TIMER ==========
+let tInterval=null, tSecs=25*60, tRunning=false, tLabel='पोमोडोरो 25 मिनट';
+function setTimer(s,l){ clearInterval(tInterval); tRunning=false; tSecs=s; tLabel=l; document.getElementById('startBtn').textContent='▶ शुरू करो'; document.getElementById('timerLbl').textContent=l; renderTDisp(); }
+function renderTDisp(){ const m=String(Math.floor(tSecs/60)).padStart(2,'0'),s=String(tSecs%60).padStart(2,'0'); const d=document.getElementById('timerDisp'); d.textContent=m+':'+s; d.className='timer-disp'+(tSecs<=60&&tRunning?' warn':''); }
+function toggleTimer(){
+  if(tRunning){ clearInterval(tInterval); tRunning=false; document.getElementById('startBtn').textContent='▶ जारी रखो'; }
+  else {
+    tRunning=true; document.getElementById('startBtn').textContent='⏸ रुको';
+    tInterval=setInterval(()=>{ tSecs--; renderTDisp(); if(tSecs<=0){ clearInterval(tInterval); tRunning=false; document.getElementById('startBtn').textContent='▶ शुरू करो'; logSess(tLabel); showToast('🎉 सत्र पूरा! शाबाश! +25 XP'); } },1000);
+  }
+}
+function resetTimer(){ clearInterval(tInterval); tRunning=false; document.getElementById('startBtn').textContent='▶ शुरू करो'; setTimer(25*60,'पोमोडोरो 25 मिनट'); }
+function logSess(lbl){ const t=new Date().toLocaleTimeString('hi-IN',{hour:'2-digit',minute:'2-digit'}); S.sessions.unshift({lbl,t,date:new Date().toDateString()}); if(S.sessions.length>20) S.sessions.pop(); S.xp+=25; save(); renderSess(); updateDash(); }
+function renderSess(){ const lg=document.getElementById('sessLog'); const td=S.sessions.filter(s=>s.date===new Date().toDateString()); if(!td.length){lg.innerHTML='<div class="empty">अभी कोई सत्र पूरा नहीं हुआ</div>';return;} lg.innerHTML=td.map(s=>`<div class="sess-item"><span>${s.lbl}</span><span>✅ ${s.t}</span></div>`).join(''); }
+
+// ========== LEADERBOARD ==========
+function renderLB(){
+  const others=[
+    {n:'रोहित कुमार',e:'😊',xp:420,sch:'सरकारी हाईस्कूल, पटना'},
+    {n:'प्रिया सिंह',e:'👩',xp:380,sch:'आरा पब्लिक स्कूल'},
+    {n:'विकाश यादव',e:'🧑',xp:350,sch:'भोजपुर हाईस्कूल'},
+    {n:'काव्या शर्मा',e:'👧',xp:310,sch:'नवादा बालिका स्कूल'},
+    {n:'अर्जुन पासवान',e:'🙋',xp:280,sch:'गया सरकारी स्कूल'},
+  ];
+  const me={n:'तुम',e:'👑',xp:S.xp,sch:'तुम्हारा स्कूल',you:true};
+  const all=[...others,me].sort((a,b)=>b.xp-a.xp);
+  const medals=['🥇','🥈','🥉'];
+  const rc=['r1','r2','r3'];
+  document.getElementById('lbList').innerHTML=all.map((p,i)=>`
+    <div class="lb-row${p.you?' you':''}">
+      <div class="lb-rank ${rc[i]||''}">${medals[i]||i+1}</div>
+      <div class="lb-av">${p.e}</div>
+      <div class="lb-info"><div class="lb-name">${p.n}</div><div class="lb-sub">${p.sch}</div></div>
+      <div class="lb-xp">${p.xp} XP</div>
+    </div>`).join('');
 }
 
-function quickQ(q){
-  gp('coach',document.querySelectorAll('.nbtn')[5]);
-  setTimeout(()=>{
-    document.getElementById('coachInp').value=q;
-    coachBhejo();
-  },150);
-}
+// ========== TOAST ==========
+function showToast(msg){ const t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),2800); }
 
-// ===== NAVIGATION =====
-function gp(id,el){
-  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
-  document.getElementById('page-'+id).classList.add('active');
-  document.querySelectorAll('.nbtn').forEach(b=>b.classList.remove('active'));
-  el.classList.add('active');
-  
-  // Page specific live loaders
-  if(id === 'leader') loadLeaderboard();
-  if(id === 'notes') loadNotesFromDB();
-}
-
-// ===== UPDATE SYSTEM UI STATE =====
-function upd(){
-  document.getElementById('hXP').textContent=xp;
-  document.getElementById('hLvl').textContent=lvl();
-  document.getElementById('hStr').textContent=streak;
-  document.getElementById('hPomo').textContent=pomos;
-  document.getElementById('hdrXP').textContent='⭐ '+xp+' XP';
-}
-
-// ===== GLOBAL TOAST NOTIFICATIONS =====
-function toast(msg,bg='#22c55e'){
-  const t=document.getElementById('toast');
-  t.textContent=msg;t.style.background=bg;t.style.opacity='1';
-  setTimeout(()=>t.style.opacity='0',2200);
-}
-
-// ===== INITIAL STARTUP RUNS =====
-const MOTIV_QUOTES = [
-  "निरंतर अभ्यास ही सफलता की असली कुंजी है।",
-  "हर छोटा कदम आपको आपकी बड़ी मंजिल के करीब ले जाता है।",
-  "खुद पर भरोसा रखो, तुम भी बोर्ड टॉपर बन सकते हो!",
-  "कठिन परिश्रम का कोई विकल्प नहीं होता, अभ्यास करते रहो।"
-];
-document.getElementById('motivLine').textContent=MOTIV_QUOTES[Math.floor(Math.random()*MOTIV_QUOTES.length)];
-
-renderCustomTasks();
-gridBanao();
-upd();
-pomoRender();
-dqBadgeUpd();
-msgAdd('जय हो! टॉपर हब में आपका स्वागत है। 🙏 मैं आपका पर्सनल AI कोच हूँ। बोर्ड परीक्षा की तैयारी, गणित, कोडिंग या पढ़ाई से जुड़े किसी भी सवाल को आप यहाँ पूछ सकते हैं!','ai');
+// ========== INIT ==========
+checkStreak(); loadQ(); updateDash(); renderSess();
 </script>
 </body>
 </html>
