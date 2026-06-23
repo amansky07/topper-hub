@@ -183,8 +183,7 @@ body{font-family:'Segoe UI',Arial,sans-serif;background:var(--bg);color:var(--te
 <div class="page active" id="page-ghar">
 
   <div class="welcome">
-    <div class="welcome-name">🙏 जय हो, अमन भंडारी!</div>
-    <div class="welcome-line">बिहार बोर्ड रैंक १ → JEE टॉप १० → MIT कंप्यूटर साइंस<br>आज का दिन अपने सपने को पूरी तरह दो।</div>
+    <div class="welcome-name">🙏 अमन भंडारी!</div>
     <div class="welcome-streak">
       <div class="sv" id="hStr">१</div>
       <div class="sl">🔥 स्ट्रीक</div>
@@ -441,13 +440,7 @@ const MOTIV=[
 ];
 
 // ===== कार्य (TASKS) =====
-const TASKS=[
-  'गणित के १० सवाल हल करो',
-  'विज्ञान का अध्याय पढ़ो और नोट्स बनाओ',
-  'English के ५ नए शब्द सीखो',
-  'सामाजिक विज्ञान का पुनरावलोकन करो',
-  'एक विषय की प्रश्नोत्तरी पूरी करो',
-  'एक पोमोडोरो सेशन पूरा करो',
+  user apne man se 
 ];
 let tdone=JSON.parse(localStorage.getItem('tdone')||'[]');
 
@@ -694,34 +687,15 @@ function noteSwitch(i,el){
   el.classList.add('active');
   document.getElementById('notesArea').value=localStorage.getItem('note_'+i)||'';
 }
-function notesSaaf(){
-  if(confirm('यह नोट साफ करें?')){ document.getElementById('notesArea').value=''; localStorage.removeItem('note_'+curNote); }
-}
 
 // ===== AI कोच =====
-const COACH={
-  'padhai':'पढ़ाई के लिए सबसे अच्छी तकनीक है पोमोडोरो — २५ मिनट फोकस, ५ मिनट ब्रेक। फोन दूर रखो। एक विषय एक समय में करो। NCERT पहले समझो।',
-  'ganit':'गणित में अभ्यास ही सब कुछ है। रोज सिर्फ १० सवाल हल करो। फॉर्मूले याद करो, फिर लागू करो। हर गलत सवाल दोबारा करो।',
-  'distract':'ध्यान भटकने से बचने के लिए: फोन दूसरे कमरे में रखो, पढ़ाई की जगह साफ रखो, पोमोडोरो टाइमर चलाओ। सुबह ५ बजे उठना पहले से ही ध्यान लगाता है।',
-  'coding':'Python से शुरुआत करो। YouTube पर "Code With Harry Python" मुफ्त है। रोज सिर्फ ३० मिनट — एक महीने में basics आ जाएंगे। तेरा IT career यहीं से शुरू होगा।',
-  'jee':'JEE की तैयारी कक्षा ९ से ही शुरू होती है। NCERT १००% समझो पहले। गणित, भौतिकी, रसायन — तीनों में concept clear होना चाहिए। तू सही रास्ते पर है!',
-  'english':'English सुधारने के लिए रोज ५ नए शब्द सीखो, English में सोचो, और एक paragraph English में लिखो। धीरे धीरे fluency आएगी।',
-  'rank':'बिहार बोर्ड रैंक १ के लिए: रोज NCERT पढ़ो, दैनिक प्रश्नोत्तरी करो, और नोट्स बनाओ। निरंतरता ही असली रैंक दिलाएगी। तू कर सकता है!',
-  'mit':'MIT Computer Science के लिए JEE में top आना जरूरी है, फिर research और projects। कक्षा ९ से शुरुआत — यह सबसे बड़ा फायदा है! भारत में MIT के alumni बहुत कम हैं — तू वहाँ जाएगा।',
-  'default':'जय हो अमन! मैं तेरा personal AI Success Coach हूँ। बिहार बोर्ड रैंक १ से MIT तक — पूरी यात्रा में साथ हूँ। कोई भी सवाल पूछो!'
+const COACH
+  
+
+  dafult:कोई भी सवाल पूछो!'
 };
 function coachJawab(msg){
-  msg=msg.toLowerCase();
-  if(msg.includes('padhai')||msg.includes('पढ़ाई')||msg.includes('shuruat')||msg.includes('शुरुआत'))return COACH.padhai;
-  if(msg.includes('math')||msg.includes('ganit')||msg.includes('गणित'))return COACH.ganit;
-  if(msg.includes('distract')||msg.includes('ध्यान')||msg.includes('focus')||msg.includes('phone'))return COACH.distract;
-  if(msg.includes('cod')||msg.includes('python')||msg.includes('program'))return COACH.coding;
-  if(msg.includes('jee')||msg.includes('iit'))return COACH.jee;
-  if(msg.includes('english')||msg.includes('angreji'))return COACH.english;
-  if(msg.includes('rank')||msg.includes('topper')||msg.includes('रैंक')||msg.includes('1'))return COACH.rank;
-  if(msg.includes('mit'))return COACH.mit;
-  if(msg.includes('dhoni')||msg.includes('kalam')||msg.includes('tata')||msg.includes('musk'))return 'ये सब तेरे role models हैं — और एक चीज़ common है: सबने अपने सपने पर यकीन रखा और काम किया। तू भी कर!';
-  return COACH.default;
+ai se
 }
 function msgAdd(txt,role){
   const d=document.createElement('div');
@@ -768,8 +742,7 @@ function toast(msg,bg='#22c55e'){
 
 // ===== शुरुआत =====
 document.getElementById('motivLine').textContent=MOTIV[Math.floor(Math.random()*MOTIV.length)];
-kaamDikha();gridBanao();upd();notesBanao();pomoRender();pomoDotsRender();dqBadgeUpd();
-msgAdd('जय हो अमन भंडारी! 🙏 मैं तेरा personal AI Success Coach हूँ। बिहार बोर्ड रैंक १, JEE टॉप १०, और MIT — यह सब संभव है। आज क्या जानना है?','ai');
-</script>
+kaamDikha();gridBanao();upd();notesBanao();pomoRender();pomoDotsRender();dqBadgeUpd()
+</s
 </body>
 </html>
