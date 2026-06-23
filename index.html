@@ -1,1 +1,776 @@
 hi
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🔥 टॉपर हब – अमन भंडारी</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{
+  --bg:#060d1a;--bg2:#0d1b30;--bg3:#112240;
+  --accent:#f59e0b;--blue:#3b82f6;--green:#22c55e;
+  --red:#ef4444;--purple:#8b5cf6;--text:#e2e8f0;
+  --muted:#64748b;--border:#1e3a5f;
+}
+body{font-family:'Segoe UI',Arial,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;padding-bottom:75px;font-size:15px;}
+
+/* HEADER */
+.hdr{background:linear-gradient(135deg,#0d1b30,#112240);border-bottom:2px solid var(--accent);padding:10px 16px;position:sticky;top:0;z-index:50;}
+.hdr-top{display:flex;justify-content:space-between;align-items:center;}
+.hdr-title{font-size:17px;font-weight:800;color:var(--accent);}
+.hdr-name{font-size:11px;color:#94a3b8;margin-top:2px;}
+.xp-chip{background:var(--accent);color:#000;font-weight:700;font-size:12px;padding:4px 11px;border-radius:20px;white-space:nowrap;}
+
+/* WELCOME */
+.welcome{background:linear-gradient(135deg,#1e3a5f,#2d1b69);border:1px solid var(--purple);border-radius:14px;padding:14px 16px;margin-bottom:13px;position:relative;overflow:hidden;}
+.welcome::before{content:'';position:absolute;top:-20px;right:-20px;width:80px;height:80px;background:rgba(139,92,246,.15);border-radius:50%;}
+.welcome-name{font-size:16px;font-weight:800;color:#fff;margin-bottom:3px;}
+.welcome-line{font-size:12px;color:#c4b5fd;line-height:1.6;}
+.welcome-streak{position:absolute;top:14px;right:14px;text-align:center;}
+.welcome-streak .sv{font-size:22px;font-weight:800;color:var(--accent);}
+.welcome-streak .sl{font-size:9px;color:var(--muted);}
+
+/* PAGE */
+.page{display:none;padding:14px;}
+.page.active{display:block;}
+
+/* CARD */
+.card{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:15px;margin-bottom:13px;}
+.card-title{font-size:14px;font-weight:700;color:#93c5fd;margin-bottom:11px;}
+
+/* STAT ROW */
+.stat-row{display:flex;gap:9px;margin-bottom:13px;}
+.stat{flex:1;background:var(--bg3);border:1px solid var(--border);border-radius:11px;padding:11px 6px;text-align:center;}
+.stat-val{font-size:20px;font-weight:800;color:var(--accent);}
+.stat-lbl{font-size:10px;color:var(--muted);margin-top:2px;}
+
+/* PROGRESS */
+.prog-wrap{background:#0a0f1e;border-radius:20px;height:13px;overflow:hidden;margin:9px 0 5px;}
+.prog-bar{height:100%;background:linear-gradient(90deg,var(--green),#86efac);border-radius:20px;transition:width .5s;}
+
+/* TASKS */
+.task{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--border);cursor:pointer;}
+.task:last-child{border:none;}
+.task-box{width:21px;height:21px;border:2px solid var(--blue);border-radius:6px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:12px;transition:all .2s;}
+.task.done .task-box{background:var(--green);border-color:var(--green);}
+.task.done .task-txt{text-decoration:line-through;color:var(--muted);}
+.task-txt{font-size:13px;line-height:1.4;}
+
+/* MOTIVATIONAL */
+.motiv{background:linear-gradient(135deg,#1e3a5f,#2d1b69);border:1px solid var(--purple);border-radius:12px;padding:14px 14px 14px 30px;font-size:13px;font-style:italic;line-height:1.7;color:#ddd6fe;position:relative;margin-bottom:13px;}
+.motiv::before{content:'"';font-size:40px;color:rgba(139,92,246,.3);position:absolute;top:2px;left:10px;line-height:1;}
+
+/* POMODORO */
+.pmode-tabs{display:flex;gap:7px;margin-bottom:13px;}
+.pmode{flex:1;padding:8px 4px;border:1px solid var(--border);border-radius:8px;background:var(--bg3);color:var(--muted);font-size:11px;font-weight:600;cursor:pointer;text-align:center;}
+.pmode.active{background:var(--accent);border-color:var(--accent);color:#000;}
+.pomo-wrap{text-align:center;padding:6px 0 14px;}
+.pomo-ring{width:160px;height:160px;margin:0 auto 14px;position:relative;}
+.pomo-ring svg{transform:rotate(-90deg);}
+.ring-bg{fill:none;stroke:#1e3a5f;stroke-width:10;}
+.ring-fg{fill:none;stroke:var(--accent);stroke-width:10;stroke-linecap:round;transition:stroke-dashoffset .5s;}
+.pomo-center{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center;}
+.pomo-timer{font-size:46px;font-weight:800;color:#fff;letter-spacing:2px;font-variant-numeric:tabular-nums;}
+.pomo-lbl{font-size:10px;color:var(--muted);margin-top:2px;}
+.pomo-btns{display:flex;gap:10px;justify-content:center;margin-bottom:12px;}
+.pbtn{padding:10px 22px;border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;}
+.pomo-dots{display:flex;gap:6px;justify-content:center;}
+.pdot{width:10px;height:10px;border-radius:50%;background:var(--border);}
+.pdot.done{background:var(--accent);}
+
+/* QUIZ */
+.class-tabs{display:flex;gap:8px;margin-bottom:12px;}
+.ctab{flex:1;padding:8px;border:1px solid var(--border);border-radius:8px;background:var(--bg3);color:var(--muted);font-size:13px;font-weight:600;cursor:pointer;text-align:center;}
+.ctab.active{background:var(--blue);border-color:var(--blue);color:#fff;}
+.subj-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px;}
+.subj-card{background:var(--bg3);border:1px solid var(--border);border-radius:12px;padding:16px 8px;text-align:center;cursor:pointer;transition:all .2s;}
+.subj-card:hover{border-color:var(--blue);transform:scale(1.02);}
+.subj-card .si{font-size:28px;display:block;margin-bottom:5px;}
+.subj-card .sn{font-size:13px;font-weight:600;}
+.subj-card .sq{font-size:10px;color:var(--muted);margin-top:2px;}
+.dq-badge{display:inline-block;background:var(--green);color:#000;font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;margin-left:6px;}
+.dq-done-badge{background:var(--muted);}
+.qz-counter{font-size:11px;color:var(--muted);margin-bottom:8px;}
+.qz-q{font-size:15px;font-weight:600;line-height:1.6;margin-bottom:14px;}
+.qz-opts{display:flex;flex-direction:column;gap:9px;}
+.opt{background:var(--bg3);border:2px solid var(--border);border-radius:10px;padding:11px 13px;color:var(--text);font-size:13px;cursor:pointer;text-align:left;transition:all .2s;}
+.opt:hover{border-color:var(--blue);}
+.opt.sahi{background:#14532d;border-color:var(--green);color:#86efac;}
+.opt.galat{background:#450a0a;border-color:var(--red);color:#fca5a5;}
+.qz-result{text-align:center;padding:20px 0;}
+.qz-result .rbig{font-size:50px;}
+.qz-result h3{font-size:17px;margin:8px 0 4px;}
+.qz-meta{font-size:12px;color:var(--muted);}
+
+/* NOTES */
+.note-tabs{display:flex;gap:7px;margin-bottom:10px;flex-wrap:wrap;}
+.ntab{padding:6px 11px;border:1px solid var(--border);border-radius:20px;background:var(--bg3);color:var(--muted);font-size:12px;cursor:pointer;}
+.ntab.active{background:var(--blue);border-color:var(--blue);color:#fff;}
+.notes-area{width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:12px;color:var(--text);font-size:13px;line-height:1.7;resize:vertical;min-height:150px;outline:none;font-family:inherit;}
+.notes-area:focus{border-color:var(--blue);}
+.note-saved{font-size:11px;color:var(--green);margin-top:5px;opacity:0;transition:opacity .3s;}
+
+/* MUSIC / VIDEO */
+.sec-title{font-size:11px;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:.5px;margin:14px 0 8px;}
+.link-card{background:var(--bg3);border:1px solid var(--border);border-radius:11px;padding:12px;margin-bottom:8px;display:flex;align-items:center;gap:11px;text-decoration:none;color:var(--text);transition:all .2s;}
+.link-card:hover{border-color:var(--blue);}
+.link-icon{width:44px;height:44px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;}
+.link-info .lt{font-size:13px;font-weight:600;margin-bottom:2px;}
+.link-info .ls{font-size:11px;color:var(--muted);}
+.link-arrow{margin-left:auto;color:var(--muted);}
+
+/* AI COACH */
+.coach-chat{max-height:280px;overflow-y:auto;margin-bottom:10px;}
+.cmsg{margin-bottom:10px;}
+.cmsg.user{text-align:right;}
+.bubble{display:inline-block;max-width:85%;padding:10px 13px;border-radius:14px;font-size:13px;line-height:1.6;text-align:left;}
+.cmsg.ai .bubble{background:var(--bg3);border:1px solid var(--border);}
+.cmsg.user .bubble{background:var(--blue);color:#fff;}
+.coach-row{display:flex;gap:8px;}
+.coach-inp{flex:1;background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:10px 13px;color:var(--text);font-size:13px;outline:none;font-family:inherit;}
+.coach-inp:focus{border-color:var(--blue);}
+.coach-send{padding:10px 16px;background:var(--blue);border:none;border-radius:10px;color:#fff;font-size:18px;cursor:pointer;}
+.typing-ind{display:none;font-size:12px;color:var(--muted);margin-bottom:8px;padding-left:4px;}
+.quick-btns{display:flex;flex-wrap:wrap;gap:7px;}
+.qbtn{padding:7px 11px;border:1px solid var(--border);border-radius:20px;background:var(--bg3);color:var(--text);font-size:12px;cursor:pointer;}
+.qbtn:hover{border-color:var(--blue);}
+
+/* PROFILE */
+.prof-avatar{width:72px;height:72px;background:linear-gradient(135deg,#3b82f6,#8b5cf6);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:30px;margin:0 auto 10px;}
+.prof-name{text-align:center;font-size:18px;font-weight:800;margin-bottom:2px;}
+.prof-sub{text-align:center;font-size:11px;color:var(--muted);margin-bottom:14px;}
+.pstat-row{display:flex;gap:8px;}
+.pstat{flex:1;background:var(--bg3);border-radius:10px;padding:11px 6px;text-align:center;}
+.pstat-v{font-size:18px;font-weight:800;color:var(--accent);}
+.pstat-l{font-size:10px;color:var(--muted);}
+.lb-row{display:flex;align-items:center;gap:11px;padding:10px 0;border-bottom:1px solid var(--border);}
+.lb-row:last-child{border:none;}
+
+/* BTNS */
+.btn{width:100%;padding:12px;border:none;border-radius:10px;background:var(--blue);color:#fff;font-size:14px;font-weight:600;cursor:pointer;margin-top:10px;transition:opacity .2s;}
+.btn:hover{opacity:.85;}
+.btn.amber{background:var(--accent);color:#000;}
+.btn.green{background:var(--green);color:#000;}
+.btn.purple{background:var(--purple);}
+.btn.outline{background:none;border:1px solid var(--border);color:var(--text);}
+
+/* BOTTOM NAV */
+.bnav{position:fixed;bottom:0;left:0;width:100%;background:var(--bg2);border-top:1px solid var(--border);display:flex;z-index:100;}
+.nbtn{flex:1;padding:8px 0 6px;background:none;border:none;color:var(--muted);font-size:9px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:2px;transition:color .2s;}
+.nbtn .ni{font-size:18px;}
+.nbtn.active{color:var(--accent);}
+
+/* TOAST */
+#toast{position:fixed;bottom:82px;left:50%;transform:translateX(-50%);background:var(--green);color:#000;padding:9px 18px;border-radius:20px;font-weight:700;font-size:13px;opacity:0;transition:opacity .3s;pointer-events:none;z-index:999;white-space:nowrap;}
+::-webkit-scrollbar{width:4px;}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:4px;}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="hdr">
+  <div class="hdr-top">
+    <div>
+      <div class="hdr-title">🔥 टॉपर हब</div>
+      <div class="hdr-name">अमन भंडारी • बिहार बोर्ड • कक्षा ९ • हिंदी माध्यम</div>
+    </div>
+    <div class="xp-chip" id="hdrXP">⭐ ० XP</div>
+  </div>
+</div>
+
+<!-- ===== घर (HOME) ===== -->
+<div class="page active" id="page-ghar">
+
+  <div class="welcome">
+    <div class="welcome-name">🙏 जय हो, अमन भंडारी!</div>
+    <div class="welcome-line">बिहार बोर्ड रैंक १ → JEE टॉप १० → MIT कंप्यूटर साइंस<br>आज का दिन अपने सपने को पूरी तरह दो।</div>
+    <div class="welcome-streak">
+      <div class="sv" id="hStr">१</div>
+      <div class="sl">🔥 स्ट्रीक</div>
+    </div>
+  </div>
+
+  <div class="motiv" id="motivLine">अनुशासन + निरंतरता + स्मार्ट कार्य = असाधारण सफलता।</div>
+
+  <div class="stat-row">
+    <div class="stat"><div class="stat-val" id="hXP">०</div><div class="stat-lbl">⭐ XP</div></div>
+    <div class="stat"><div class="stat-val" id="hLvl">१</div><div class="stat-lbl">🏅 स्तर</div></div>
+    <div class="stat"><div class="stat-val" id="hPomo">०</div><div class="stat-lbl">🍅 पोमोडोरो</div></div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">🎯 आज का मिशन</div>
+    <div id="taskList"></div>
+    <button class="btn amber" onclick="missionComplete()">⚡ मिशन पूरा करो (+५० XP)</button>
+  </div>
+
+  <div class="card">
+    <div class="card-title">📊 आज की प्रगति</div>
+    <div class="prog-wrap"><div class="prog-bar" id="pBar" style="width:0%"></div></div>
+    <p id="pTxt" style="font-size:12px;color:var(--muted);margin-top:4px;">०% पूर्ण</p>
+  </div>
+
+</div>
+
+<!-- ===== पोमोडोरो टाइमर ===== -->
+<div class="page" id="page-pomo">
+  <div class="card">
+    <div class="card-title">🍅 पोमोडोरो टाइमर</div>
+    <div class="pmode-tabs">
+      <div class="pmode active" onclick="setPMode(25,this)">📚 फोकस (२५ मि)</div>
+      <div class="pmode" onclick="setPMode(5,this)">☕ ब्रेक (५ मि)</div>
+      <div class="pmode" onclick="setPMode(15,this)">🛌 लंबा ब्रेक (१५ मि)</div>
+    </div>
+    <div class="pomo-wrap">
+      <div class="pomo-ring">
+        <svg width="160" height="160" viewBox="0 0 160 160">
+          <circle class="ring-bg" cx="80" cy="80" r="70"/>
+          <circle class="ring-fg" id="pomoRing" cx="80" cy="80" r="70" stroke-dasharray="439.82" stroke-dashoffset="0"/>
+        </svg>
+        <div class="pomo-center">
+          <div class="pomo-timer" id="pomoTimer">२५:००</div>
+          <div class="pomo-lbl" id="pomoLbl">फोकस समय</div>
+        </div>
+      </div>
+      <div class="pomo-btns">
+        <button class="pbtn" style="background:var(--green);color:#000;" onclick="pomoStart()">▶ शुरू</button>
+        <button class="pbtn" style="background:var(--border);color:#fff;" onclick="pomoPause()">⏸ रोको</button>
+        <button class="pbtn" style="background:var(--red);color:#fff;" onclick="pomoReset()">↺ रीसेट</button>
+      </div>
+      <div class="pomo-dots" id="pomoDots"></div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-title">💡 पोमोडोरो के फायदे</div>
+    <p style="font-size:12px;color:#94a3b8;line-height:1.9;">
+      ✅ २५ मिनट पढ़ाई → ५ मिनट ब्रेक → दोहराओ<br>
+      ✅ फोकस समय में फोन बंद रखो<br>
+      ✅ हर ४ सेशन के बाद १५ मिनट का बड़ा ब्रेक<br>
+      ✅ एक सेशन में एक ही विषय पढ़ो<br>
+      ✅ हर सेशन = +२५ XP मिलेगा
+    </p>
+  </div>
+</div>
+
+<!-- ===== प्रश्नोत्तरी (QUIZ) ===== -->
+<div class="page" id="page-quiz">
+
+  <div class="card" id="dqCard">
+    <div class="card-title">📅 आज की प्रश्नोत्तरी <span class="dq-badge" id="dqBadge">आज का बाकी है!</span></div>
+    <p style="font-size:12px;color:#94a3b8;margin-bottom:10px;">रोज एक विशेष प्रश्नोत्तरी करो — +३० XP बोनस मिलेगा!</p>
+    <button class="btn purple" onclick="dailyQuiz()" id="dqBtn">🎯 आज की प्रश्नोत्तरी शुरू करो</button>
+  </div>
+
+  <div class="card" id="subjCard">
+    <div class="card-title">📚 विषय चुनो</div>
+    <div class="class-tabs">
+      <div class="ctab active" onclick="setKaksha(9,this)">कक्षा ९</div>
+      <div class="ctab" onclick="setKaksha(10,this)">कक्षा १०</div>
+    </div>
+    <div class="subj-grid" id="subjGrid"></div>
+  </div>
+
+  <div class="card" id="quizBox" style="display:none;">
+    <div class="qz-counter" id="qCount">प्रश्न १/७</div>
+    <div class="qz-q" id="qText">—</div>
+    <div class="qz-opts" id="qOpts"></div>
+    <div class="qz-result" id="qResult" style="display:none;">
+      <div class="rbig" id="rEmoji">🎉</div>
+      <h3 id="rTitle">—</h3>
+      <p class="qz-meta" id="rMeta">—</p>
+      <button class="btn green" onclick="quizBand()" style="margin-top:14px;">← वापस जाओ</button>
+    </div>
+  </div>
+
+</div>
+
+<!-- ===== नोट्स ===== -->
+<div class="page" id="page-notes">
+  <div class="card">
+    <div class="card-title">📝 मेरे नोट्स</div>
+    <div class="note-tabs" id="noteTabs"></div>
+    <textarea class="notes-area" id="notesArea" placeholder="यहाँ अपने नोट्स लिखो... (अपने आप सेव होता है)"></textarea>
+    <div class="note-saved" id="noteSaved">✅ सेव हो गया!</div>
+    <button class="btn outline" onclick="notesSaaf()" style="margin-top:8px;">🗑️ यह नोट साफ करो</button>
+  </div>
+  <div class="card">
+    <div class="card-title">💡 नोट्स बनाने के तरीके</div>
+    <p style="font-size:12px;color:#94a3b8;line-height:1.9;">
+      ✅ शीर्षक और बुलेट पॉइंट इस्तेमाल करो<br>
+      ✅ अपने शब्दों में लिखो — याद ज़्यादा रहेगा<br>
+      ✅ फॉर्मूले अलग से नोट करो<br>
+      ✅ रोज़ रिवीजन के लिए पढ़ो
+    </p>
+  </div>
+</div>
+
+<!-- ===== प्रेरणा (MUSIC & MOTIVATION) ===== -->
+<div class="page" id="page-prerna">
+  <div class="card">
+    <div class="card-title">🎵 प्रेरणादायक वीडियो और गाने</div>
+
+    <div class="sec-title">🔥 पढ़ाई की प्रेरणा</div>
+    <a class="link-card" href="https://www.youtube.com/results?search_query=alakh+pandey+motivation+hindi" target="_blank">
+      <div class="link-icon" style="background:#1a1a3a;">⚡</div>
+      <div class="link-info"><div class="lt">अलख पांडे — टॉपर की सोच</div><div class="ls">Physics Wallah • Hindi</div></div>
+      <div class="link-arrow">↗</div>
+    </a>
+    <a class="link-card" href="https://www.youtube.com/results?search_query=apj+abdul+kalam+speech+hindi+students" target="_blank">
+      <div class="link-icon" style="background:#1a2a1a;">🚀</div>
+      <div class="link-info"><div class="lt">APJ अब्दुल कलाम — सपने बड़े देखो</div><div class="ls">हिंदी भाषण • छात्रों के लिए</div></div>
+      <div class="link-arrow">↗</div>
+    </a>
+    <a class="link-card" href="https://www.youtube.com/results?search_query=ratan+tata+motivational+speech+hindi" target="_blank">
+      <div class="link-icon" style="background:#2a1a0a;">👑</div>
+      <div class="link-info"><div class="lt">रतन टाटा — ज़िंदगी की सीख</div><div class="ls">Leadership • India First</div></div>
+      <div class="link-arrow">↗</div>
+    </a>
+    <a class="link-card" href="https://www.youtube.com/results?search_query=ms+dhoni+motivational+speech+hindi" target="_blank">
+      <div class="link-icon" style="background:#1a0a0a;">🏏</div>
+      <div class="link-info"><div class="lt">MS धोनी — दबाव में शांत रहो</div><div class="ls">कभी हार मत मानो</div></div>
+      <div class="link-arrow">↗</div>
+    </a>
+    <a class="link-card" href="https://www.youtube.com/results?search_query=elon+musk+hindi+motivation" target="_blank">
+      <div class="link-icon" style="background:#0a1a2a;">🌍</div>
+      <div class="link-info"><div class="lt">Elon Musk — असंभव को संभव करो</div><div class="ls">Technology • Innovation</div></div>
+      <div class="link-arrow">↗</div>
+    </a>
+
+    <div class="sec-title">🎧 फोकस म्यूज़िक</div>
+    <a class="link-card" href="https://www.youtube.com/results?search_query=lofi+study+music+hindi+focus" target="_blank">
+      <div class="link-icon" style="background:#0a1a2a;">🎵</div>
+      <div class="link-info"><div class="lt">Lofi पढ़ाई संगीत</div><div class="ls">फोकस के लिए सबसे अच्छा</div></div>
+      <div class="link-arrow">↗</div>
+    </a>
+    <a class="link-card" href="https://www.youtube.com/results?search_query=deep+focus+study+music+no+lyrics+3+hours" target="_blank">
+      <div class="link-icon" style="background:#0a1a2a;">🧠</div>
+      <div class="link-info"><div class="lt">गहरा फोकस संगीत</div><div class="ls">बिना शब्द • शुद्ध एकाग्रता</div></div>
+      <div class="link-arrow">↗</div>
+    </a>
+
+    <div class="sec-title">📚 यूट्यूब पर पढ़ाई</div>
+    <a class="link-card" href="https://www.youtube.com/@PhysicsWallah" target="_blank">
+      <div class="link-icon" style="background:#1e3a5f;">🔬</div>
+      <div class="link-info"><div class="lt">Physics Wallah</div><div class="ls">विज्ञान और गणित • कक्षा ९-१०</div></div>
+      <div class="link-arrow">↗</div>
+    </a>
+    <a class="link-card" href="https://www.youtube.com/@KhanGlobalStudies" target="_blank">
+      <div class="link-icon" style="background:#1a2f1a;">🌍</div>
+      <div class="link-info"><div class="lt">Khan Sir — सामाजिक विज्ञान</div><div class="ls">SST और GK • बिहार बोर्ड</div></div>
+      <div class="link-arrow">↗</div>
+    </a>
+    <a class="link-card" href="https://www.youtube.com/@MagnetBrains" target="_blank">
+      <div class="link-icon" style="background:#2a1a3a;">🧲</div>
+      <div class="link-info"><div class="lt">Magnet Brains</div><div class="ls">सभी विषय • कक्षा ९-१०</div></div>
+      <div class="link-arrow">↗</div>
+    </a>
+    <a class="link-card" href="https://www.youtube.com/@Doubtnut" target="_blank">
+      <div class="link-icon" style="background:#2a1f0a;">💡</div>
+      <div class="link-info"><div class="lt">Doubtnut</div><div class="ls">गणित हल • कदम दर कदम</div></div>
+      <div class="link-arrow">↗</div>
+    </a>
+    <a class="link-card" href="https://www.youtube.com/@CodeWithHarry" target="_blank">
+      <div class="link-icon" style="background:#0f2a1a;">💻</div>
+      <div class="link-info"><div class="lt">Code With Harry — Python</div><div class="ls">Hindi में • बिल्कुल मुफ़्त</div></div>
+      <div class="link-arrow">↗</div>
+    </a>
+  </div>
+</div>
+
+<!-- ===== AI कोच ===== -->
+<div class="page" id="page-coach">
+  <div class="card">
+    <div class="card-title">🤖 AI सफलता कोच</div>
+    <div class="coach-chat" id="coachChat"></div>
+    <div class="typing-ind" id="typingInd">कोच सोच रहा है...</div>
+    <div class="coach-row">
+      <input class="coach-inp" id="coachInp" placeholder="अपना सवाल हिंदी में लिखो..." onkeydown="if(event.key==='Enter')coachBhejo()"/>
+      <button class="coach-send" onclick="coachBhejo()">➤</button>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-title">⚡ जल्दी सवाल</div>
+    <div class="quick-btns">
+      <button class="qbtn" onclick="quickQ('आज पढ़ाई की शुरुआत कैसे करूँ?')">📚 शुरुआत</button>
+      <button class="qbtn" onclick="quickQ('गणित में कमज़ोर हूँ, क्या करूँ?')">📐 गणित</button>
+      <button class="qbtn" onclick="quickQ('ध्यान भटकता है, कैसे रोकूँ?')">🎯 फोकस</button>
+      <button class="qbtn" onclick="quickQ('Coding कहाँ से शुरू करूँ?')">💻 Coding</button>
+      <button class="qbtn" onclick="quickQ('JEE की तैयारी कब और कैसे शुरू करूँ?')">🏆 JEE</button>
+      <button class="qbtn" onclick="quickQ('English कैसे सुधारूँ?')">📖 English</button>
+      <button class="qbtn" onclick="quickQ('Bihar Board Rank 1 कैसे बनूँ?')">🥇 रैंक १</button>
+      <button class="qbtn" onclick="quickQ('MIT के लिए क्या करना होगा?')">🎓 MIT</button>
+    </div>
+  </div>
+</div>
+
+<!-- BOTTOM NAV -->
+<div class="bnav">
+  <button class="nbtn active" onclick="gp('ghar',this)"><span class="ni">🏠</span>घर</button>
+  <button class="nbtn" onclick="gp('pomo',this)"><span class="ni">🍅</span>टाइमर</button>
+  <button class="nbtn" onclick="gp('quiz',this)"><span class="ni">📚</span>प्रश्नोत्तरी</button>
+  <button class="nbtn" onclick="gp('notes',this)"><span class="ni">📝</span>नोट्स</button>
+  <button class="nbtn" onclick="gp('prerna',this)"><span class="ni">🎵</span>प्रेरणा</button>
+  <button class="nbtn" onclick="gp('coach',this)"><span class="ni">🤖</span>कोच</button>
+</div>
+
+<div id="toast"></div>
+
+<script>
+// ===== डेटा =====
+let xp    = +localStorage.getItem('xp')    || 0;
+let streak= +localStorage.getItem('streak')|| 1;
+let pomos = +localStorage.getItem('pomos') || 0;
+
+function sv(){ localStorage.setItem('xp',xp); localStorage.setItem('streak',streak); localStorage.setItem('pomos',pomos); }
+function star(n){ return n; } // kept simple for numbers
+function lvl(){ return Math.floor(xp/100)+1; }
+
+// ===== प्रेरणादायक उद्धरण =====
+const MOTIV=[
+  'अनुशासन + निरंतरता + स्मार्ट कार्य = असाधारण सफलता।',
+  'बिहार बोर्ड रैंक १ सिर्फ तेरी है — कोई छीन नहीं सकता।',
+  'सुबह ५ बजे उठना सबसे बड़ा फर्क करता है। तू पहले से जीत रहा है।',
+  'रतन टाटा ने भी शुरुआत एक छोटी जगह से की थी। तू भी करेगा।',
+  'हर सवाल जो आज हल किया, कल की रैंक पक्की करता है।',
+  'APJ कलाम के सपने बड़े थे, मेहनत भी बड़ी थी। दोनों अपनाओ।',
+  'JEE की तैयारी कक्षा ९ से ही शुरू होती है। तू सही रास्ते पर है।',
+  'धोनी ने कभी ज़्यादा नहीं सोचा — बस किया। तू भी बस कर।',
+  'MIT का रास्ता बंदा, बिहार से ही शुरू होता है। चल।',
+  'भारत को तेरे जैसे इंजीनियर की ज़रूरत है। असफल होने का विकल्प नहीं।',
+];
+
+// ===== कार्य (TASKS) =====
+const TASKS=[
+  'गणित के १० सवाल हल करो',
+  'विज्ञान का अध्याय पढ़ो और नोट्स बनाओ',
+  'English के ५ नए शब्द सीखो',
+  'सामाजिक विज्ञान का पुनरावलोकन करो',
+  'एक विषय की प्रश्नोत्तरी पूरी करो',
+  'एक पोमोडोरो सेशन पूरा करो',
+];
+let tdone=JSON.parse(localStorage.getItem('tdone')||'[]');
+
+function kaamDikha(){
+  document.getElementById('taskList').innerHTML=TASKS.map((t,i)=>`
+    <div class="task${tdone.includes(i)?' done':''}" onclick="tgl(${i})">
+      <div class="task-box">${tdone.includes(i)?'✓':''}</div>
+      <div class="task-txt">${t}</div>
+    </div>`).join('');
+  const p=Math.round(tdone.length/TASKS.length*100);
+  document.getElementById('pBar').style.width=p+'%';
+  document.getElementById('pTxt').textContent=p+'% पूर्ण';
+}
+function tgl(i){
+  if(tdone.includes(i))tdone=tdone.filter(x=>x!==i);
+  else{tdone.push(i);xp+=5;sv();toast('+५ XP ✅');}
+  localStorage.setItem('tdone',JSON.stringify(tdone));
+  kaamDikha();upd();
+}
+function missionComplete(){
+  if(tdone.length<TASKS.length){toast('पहले सब काम पूरे करो! ⚠️','#f59e0b');return;}
+  xp+=50;streak++;sv();
+  tdone=[];localStorage.setItem('tdone','[]');
+  kaamDikha();upd();toast('🎉 मिशन पूरा! +५० XP 🔥');
+}
+
+// ===== पोमोडोरो =====
+let pTotal=25*60,pLeft=25*60,pRun=false,pInt=null,pSess=0,pMode='focus';
+const CIRC=439.82;
+function setPMode(min,el){
+  document.querySelectorAll('.pmode').forEach(e=>e.classList.remove('active'));
+  el.classList.add('active');
+  pTotal=min*60;pLeft=min*60;pRun=false;clearInterval(pInt);
+  pMode=min===25?'focus':min===5?'break':'long';
+  document.getElementById('pomoLbl').textContent=min===25?'फोकस समय':min===5?'छोटा ब्रेक':'बड़ा ब्रेक';
+  pomoRender();
+}
+function pomoStart(){
+  if(pRun)return;pRun=true;
+  pInt=setInterval(()=>{
+    if(pLeft<=0){
+      clearInterval(pInt);pRun=false;
+      if(pMode==='focus'){pSess++;pomos++;sv();xp+=25;sv();upd();toast('🍅 फोकस सेशन पूरा! +२५ XP');pomoDotsRender();}
+      else toast('✅ ब्रेक खत्म! वापस पढ़ाई शुरू करो।');
+      pLeft=pTotal;pomoRender();return;
+    }
+    pLeft--;pomoRender();
+  },1000);
+}
+function pomoPause(){pRun=false;clearInterval(pInt);}
+function pomoReset(){pomoPause();pLeft=pTotal;pomoRender();}
+function pomoRender(){
+  const m=String(Math.floor(pLeft/60)).padStart(2,'0');
+  const s=String(pLeft%60).padStart(2,'0');
+  document.getElementById('pomoTimer').textContent=`${m}:${s}`;
+  document.getElementById('pomoRing').style.strokeDashoffset=CIRC-(CIRC*(pTotal-pLeft)/pTotal);
+  document.getElementById('hPomo').textContent=pomos;
+}
+function pomoDotsRender(){
+  document.getElementById('pomoDots').innerHTML=Array(Math.min(pSess,8)).fill(0).map((_,i)=>`<div class="pdot${i<pSess?' done':''}"></div>`).join('');
+}
+
+// ===== प्रश्न बैंक =====
+const QB={
+  9:{
+    ganit:[
+      {q:'(a+b)² का सही विस्तार?',a:['a²+b²','a²+2ab+b²','a²-2ab+b²','2a+2b'],c:1},
+      {q:'√169 = ?',a:['११','१२','१३','१४'],c:2},
+      {q:'x² - 9 = 0 में x = ?',a:['±२','±३','±४','±९'],c:1},
+      {q:'समांतर श्रेणी का n-वाँ पद?',a:['a+(n-1)d','a+nd','a-(n-1)d','nd'],c:0},
+      {q:'0.3333... बराबर है?',a:['१/४','१/३','३/९','३/१०'],c:1},
+      {q:'दो पूरक कोणों का योग?',a:['९०°','१८०°','३६०°','२७०°'],c:0},
+      {q:'समकोण त्रिभुज में सबसे बड़ा भुजा?',a:['लंबाई','आधार','कर्ण','ऊँचाई'],c:2},
+      {q:'√2 किस प्रकार की संख्या है?',a:['परिमेय','अपरिमेय','पूर्णांक','भिन्न'],c:1},
+      {q:'गोले का आयतन?',a:['2πr','πr²','4/3πr³','4πr²'],c:2},
+      {q:'sin 30° = ?',a:['१','√3/2','१/२','१/√2'],c:2},
+      {q:'cos 0° = ?',a:['०','१/२','√3/2','१'],c:3},
+      {q:'5 का वर्ग?',a:['२०','२५','३०','१५'],c:1},
+    ],
+    vigyan:[
+      {q:'प्रकाश संश्लेषण कहाँ होता है?',a:['जड़ें','तना','पत्ती','फूल'],c:2},
+      {q:'पानी का सूत्र?',a:['CO₂','H₂O','O₂','NaCl'],c:1},
+      {q:'Newton का दूसरा नियम: F = ?',a:['mv','ma','m/a','v/t'],c:1},
+      {q:'बिजली की इकाई?',a:['Watt','Joule','Ampere','Volt'],c:3},
+      {q:'DNA का पूरा नाम?',a:['Deoxyribose Nucleic Acid','Double Nucleic Acid','Deoxy Natural Acid','None'],c:0},
+      {q:'परमाणु के केंद्र में क्या होता है?',a:['इलेक्ट्रॉन','प्रोटॉन+न्यूट्रॉन','सिर्फ प्रोटॉन','सिर्फ न्यूट्रॉन'],c:1},
+      {q:'g का मान ≈ ?',a:['9.8 m/s²','8.9 m/s²','10.8 m/s²','9 m/s²'],c:0},
+      {q:'सबसे छोटा जीव?',a:['बैक्टीरिया','वायरस','फफूंद','शैवाल'],c:1},
+      {q:'प्रकाश की गति?',a:['3×10⁸ m/s','3×10⁶ m/s','3×10¹⁰ m/s','3×10⁴ m/s'],c:0},
+      {q:'प्रकाश संश्लेषण में कौन सी गैस अवशोषित होती है?',a:['O₂','N₂','CO₂','H₂'],c:2},
+    ],
+    english:[
+      {q:'"Benevolent" का अर्थ?',a:['दयाहीन','दयालु','आक्रमण','क्रूर'],c:1},
+      {q:'"She ___ to school every day."',a:['go','goes','going','gone'],c:1},
+      {q:'"Courage" का विपरीत?',a:['Bravery','Strength','Cowardice','Power'],c:2},
+      {q:'"Ephemeral" का अर्थ?',a:['स्थायी','अस्थायी','बड़ा','तेज़'],c:1},
+      {q:'"Child" का बहुवचन?',a:['Childs','Children','Childrens','Childes'],c:1},
+      {q:'"I ___ here since 2020." — सही शब्द?',a:['am','was','have been','had been'],c:2},
+      {q:'"Happy" का समानार्थी?',a:['Sad','Joyful','Angry','Tired'],c:1},
+      {q:'"Ambiguous" का अर्थ?',a:['स्पष्ट','अस्पष्ट','निश्चित','सरल'],c:1},
+    ],
+    sst:[
+      {q:'भारत का संविधान कब लागू हुआ?',a:['१५ अग॰ १९४७','२६ जन॰ १९५०','२ अक्टूबर १९४९','१ जन॰ १९५०'],c:1},
+      {q:'भारत में कितने राज्य हैं?',a:['२५','२८','२९','३०'],c:1},
+      {q:'बिहार की राजधानी?',a:['गया','भागलपुर','पटना','मुजफ्फरपुर'],c:2},
+      {q:'गंगा नदी का उद्गम?',a:['यमनोत्री','गंगोत्री','केदारनाथ','बद्रीनाथ'],c:1},
+      {q:'प्रथम प्रधानमंत्री कौन थे?',a:['सरदार पटेल','राजेंद्र प्रसाद','नेहरू','अंबेडकर'],c:2},
+      {q:'भारत का सबसे बड़ा राज्य (क्षेत्रफल)?',a:['महाराष्ट्र','UP','राजस्थान','MP'],c:2},
+      {q:'पृथ्वी दिवस कब मनाया जाता है?',a:['५ जून','२२ अप्रैल','२१ मार्च','१६ सितंबर'],c:1},
+      {q:'भारत का राष्ट्रीय खेल?',a:['क्रिकेट','फुटबॉल','हॉकी','कबड्डी'],c:2},
+    ],
+  },
+  10:{
+    ganit:[
+      {q:'द्विघात सूत्र क्या है?',a:['x=(-b±√(b²-4ac))/2a','x=b/2a','x=-c/a','x=±√c'],c:0},
+      {q:'sin²θ + cos²θ = ?',a:['०','१','२','sin2θ'],c:1},
+      {q:'tan 45° = ?',a:['०','१/√2','१','√3'],c:2},
+      {q:'वृत्त की परिधि = ?',a:['πr²','2πr','πd²','4πr'],c:1},
+      {q:'AP 2,5,8... का १०-वाँ पद?',a:['२७','२९','३०','३२'],c:1},
+      {q:'log₁₀ 1000 = ?',a:['२','३','४','१०'],c:1},
+      {q:'गोले का आयतन = ?',a:['4/3πr³','πr²h','2πrh','πr²'],c:0},
+      {q:'cos 60° = ?',a:['१','१/२','√3/2','०'],c:1},
+      {q:'1 + tan²θ = ?',a:['sin²θ','cos²θ','sec²θ','cosec²θ'],c:2},
+      {q:'बाहरी बिंदु से वृत्त पर कितनी स्पर्श रेखाएं?',a:['१','२','३','अनेक'],c:1},
+    ],
+    vigyan:[
+      {q:'अम्ल का pH मान?',a:['>7','=7','<7','=14'],c:2},
+      {q:'NaCl का IUPAC नाम?',a:['Sodium Chloride','Sodium Salt','Salt Chloride','None'],c:0},
+      {q:'मनुष्य में गुणसूत्रों की संख्या?',a:['४४','४६','४८','२३'],c:1},
+      {q:'प्रतिरोध की इकाई?',a:['Ampere','Volt','Ohm','Watt'],c:2},
+      {q:'विकास का सिद्धांत किसने दिया?',a:['मेंडल','Newton','Darwin','Lamarck'],c:2},
+      {q:'Ohm का नियम: V = ?',a:['I/R','IR','I+R','I-R'],c:1},
+      {q:'CO₂ + H₂O → ?',a:['Glucose+O₂','CH₄+O₂','H₂CO₃','CO+H₂'],c:2},
+      {q:'चुंबकीय क्षेत्र की इकाई?',a:['Tesla','Weber','Gauss','Newton'],c:0},
+    ],
+    english:[
+      {q:'Passive: "Ram eats mango."',a:['Mango is eaten by Ram','Mango was eaten','Mango eaten Ram','Ram is eating mango'],c:0},
+      {q:'"Perseverance" का अर्थ?',a:['आलस','लगन/धैर्य','गुस्सा','झूठ'],c:1},
+      {q:'Reported speech: He said "I am fine."',a:['He said he was fine','He said he is fine','He said I am fine','He told I was fine'],c:0},
+      {q:'"Transparent" का विपरीत?',a:['Clear','Opaque','Bright','Visible'],c:1},
+      {q:'"___ you please help me?" (विनम्र)',a:['Will','Could','Should','Must'],c:1},
+      {q:'"Neither Ram nor Shyam ___ coming."',a:['are','were','is','have'],c:2},
+    ],
+    sst:[
+      {q:'पहली पंचवर्षीय योजना कब?',a:['१९४७','१९५१','१९५६','१९६०'],c:1},
+      {q:'WTO का पूर्ण रूप?',a:['World Trade Organization','World Tourism Org','World Tax Org','None'],c:0},
+      {q:'GST कब लागू हुआ?',a:['२०१६','२०१७','२०१८','२०१५'],c:1},
+      {q:'HDI किसकी अवधारणा है?',a:['World Bank','IMF','UNDP','WHO'],c:2},
+      {q:'सर्व शिक्षा अभियान कब?',a:['१९९८','२००१','२००५','२००९'],c:1},
+      {q:'प्रति व्यक्ति आय = ?',a:['कुल GDP','GDP÷जनसंख्या','GDP-मुद्रास्फीति','None'],c:1},
+    ],
+  }
+};
+
+// ===== कक्षा और प्रश्नोत्तरी =====
+let kaksha=9,cQuiz=[],cQ=0,cScore=0,isDQ=false;
+const SMETA={ganit:{i:'📘',n:'गणित'},vigyan:{i:'🔬',n:'विज्ञान'},english:{i:'📖',n:'English'},sst:{i:'🌍',n:'सामाजिक विज्ञान'}};
+
+function setKaksha(k,el){
+  kaksha=k;
+  document.querySelectorAll('.ctab').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active');gridBanao();
+}
+function gridBanao(){
+  document.getElementById('subjGrid').innerHTML=Object.keys(SMETA).map(s=>`
+    <div class="subj-card" onclick="quizShuru('${s}')">
+      <span class="si">${SMETA[s].i}</span>
+      <div class="sn">${SMETA[s].n}</div>
+      <div class="sq">कक्षा ${kaksha} • ${QB[kaksha][s].length} प्रश्न</div>
+    </div>`).join('');
+}
+let dqHoGaya=localStorage.getItem('dqDate')===new Date().toDateString();
+function dqBadgeUpd(){
+  const b=document.getElementById('dqBadge'),btn=document.getElementById('dqBtn');
+  if(dqHoGaya){b.textContent='✅ आज का हो गया!';b.className='dq-badge dq-done-badge';btn.disabled=true;btn.textContent='✅ कल वापस आओ';}
+}
+function dailyQuiz(){
+  isDQ=true;
+  const pool=[];
+  Object.keys(QB[kaksha]).forEach(s=>{
+    pool.push(...[...QB[kaksha][s]].sort(()=>Math.random()-.5).slice(0,3));
+  });
+  cQuiz=pool.sort(()=>Math.random()-.5).slice(0,10);
+  cQ=0;cScore=0;quizDikha();
+}
+function quizShuru(s){
+  isDQ=false;
+  cQuiz=[...QB[kaksha][s]].sort(()=>Math.random()-.5).slice(0,7);
+  cQ=0;cScore=0;quizDikha();
+}
+function quizDikha(){
+  document.getElementById('subjCard').style.display='none';
+  document.getElementById('dqCard').style.display='none';
+  document.getElementById('quizBox').style.display='block';
+  document.getElementById('qResult').style.display='none';
+  ['qCount','qText','qOpts'].forEach(id=>document.getElementById(id).style.display='block');
+  sawaalDikha();
+}
+function sawaalDikha(){
+  const q=cQuiz[cQ];
+  document.getElementById('qCount').textContent=`प्रश्न ${cQ+1}/${cQuiz.length}`;
+  document.getElementById('qText').textContent=q.q;
+  document.getElementById('qOpts').innerHTML=q.a.map((a,i)=>`<button class="opt" onclick="jawabCheck(${i},this)">${a}</button>`).join('');
+}
+function jawabCheck(sel,btn){
+  const q=cQuiz[cQ];
+  document.querySelectorAll('.opt').forEach(b=>b.onclick=null);
+  if(sel===q.c){btn.classList.add('sahi');cScore++;xp+=10;sv();toast('+१० XP ✅');}
+  else{btn.classList.add('galat');document.querySelectorAll('.opt')[q.c].classList.add('sahi');}
+  setTimeout(()=>{cQ++;cQ<cQuiz.length?sawaalDikha():quizKhatam();},1000);
+}
+function quizKhatam(){
+  if(isDQ){xp+=30;sv();localStorage.setItem('dqDate',new Date().toDateString());dqHoGaya=true;toast('🎯 दैनिक बोनस: +३० XP!');}
+  const p=cScore/cQuiz.length;
+  ['qCount','qText','qOpts'].forEach(id=>document.getElementById(id).style.display='none');
+  document.getElementById('qResult').style.display='block';
+  document.getElementById('rEmoji').textContent=p>=.8?'🏆':p>=.5?'👍':'💪';
+  document.getElementById('rTitle').textContent=p>=.8?'शानदार अमन!':p>=.5?'अच्छा किया!':'और अभ्यास करो!';
+  document.getElementById('rMeta').textContent=`अंक: ${cScore}/${cQuiz.length} | XP मिला: ${cScore*10}${isDQ?' + ३० बोनस':''}`;
+  upd();
+}
+function quizBand(){
+  document.getElementById('quizBox').style.display='none';
+  document.getElementById('subjCard').style.display='block';
+  document.getElementById('dqCard').style.display='block';
+  dqBadgeUpd();
+}
+
+// ===== नोट्स =====
+const NTABS=['📘 गणित','🔬 विज्ञान','📖 English','🌍 SST','📋 सामान्य'];
+let curNote=0;
+function notesBanao(){
+  document.getElementById('noteTabs').innerHTML=NTABS.map((t,i)=>`
+    <div class="ntab${i===0?' active':''}" onclick="noteSwitch(${i},this)">${t}</div>`).join('');
+  document.getElementById('notesArea').value=localStorage.getItem('note_0')||'';
+  document.getElementById('notesArea').addEventListener('input',()=>{
+    localStorage.setItem('note_'+curNote,document.getElementById('notesArea').value);
+    const s=document.getElementById('noteSaved');s.style.opacity='1';setTimeout(()=>s.style.opacity='0',1500);
+  });
+}
+function noteSwitch(i,el){
+  curNote=i;
+  document.querySelectorAll('.ntab').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('notesArea').value=localStorage.getItem('note_'+i)||'';
+}
+function notesSaaf(){
+  if(confirm('यह नोट साफ करें?')){ document.getElementById('notesArea').value=''; localStorage.removeItem('note_'+curNote); }
+}
+
+// ===== AI कोच =====
+const COACH={
+  'padhai':'पढ़ाई के लिए सबसे अच्छी तकनीक है पोमोडोरो — २५ मिनट फोकस, ५ मिनट ब्रेक। फोन दूर रखो। एक विषय एक समय में करो। NCERT पहले समझो।',
+  'ganit':'गणित में अभ्यास ही सब कुछ है। रोज सिर्फ १० सवाल हल करो। फॉर्मूले याद करो, फिर लागू करो। हर गलत सवाल दोबारा करो।',
+  'distract':'ध्यान भटकने से बचने के लिए: फोन दूसरे कमरे में रखो, पढ़ाई की जगह साफ रखो, पोमोडोरो टाइमर चलाओ। सुबह ५ बजे उठना पहले से ही ध्यान लगाता है।',
+  'coding':'Python से शुरुआत करो। YouTube पर "Code With Harry Python" मुफ्त है। रोज सिर्फ ३० मिनट — एक महीने में basics आ जाएंगे। तेरा IT career यहीं से शुरू होगा।',
+  'jee':'JEE की तैयारी कक्षा ९ से ही शुरू होती है। NCERT १००% समझो पहले। गणित, भौतिकी, रसायन — तीनों में concept clear होना चाहिए। तू सही रास्ते पर है!',
+  'english':'English सुधारने के लिए रोज ५ नए शब्द सीखो, English में सोचो, और एक paragraph English में लिखो। धीरे धीरे fluency आएगी।',
+  'rank':'बिहार बोर्ड रैंक १ के लिए: रोज NCERT पढ़ो, दैनिक प्रश्नोत्तरी करो, और नोट्स बनाओ। निरंतरता ही असली रैंक दिलाएगी। तू कर सकता है!',
+  'mit':'MIT Computer Science के लिए JEE में top आना जरूरी है, फिर research और projects। कक्षा ९ से शुरुआत — यह सबसे बड़ा फायदा है! भारत में MIT के alumni बहुत कम हैं — तू वहाँ जाएगा।',
+  'default':'जय हो अमन! मैं तेरा personal AI Success Coach हूँ। बिहार बोर्ड रैंक १ से MIT तक — पूरी यात्रा में साथ हूँ। कोई भी सवाल पूछो!'
+};
+function coachJawab(msg){
+  msg=msg.toLowerCase();
+  if(msg.includes('padhai')||msg.includes('पढ़ाई')||msg.includes('shuruat')||msg.includes('शुरुआत'))return COACH.padhai;
+  if(msg.includes('math')||msg.includes('ganit')||msg.includes('गणित'))return COACH.ganit;
+  if(msg.includes('distract')||msg.includes('ध्यान')||msg.includes('focus')||msg.includes('phone'))return COACH.distract;
+  if(msg.includes('cod')||msg.includes('python')||msg.includes('program'))return COACH.coding;
+  if(msg.includes('jee')||msg.includes('iit'))return COACH.jee;
+  if(msg.includes('english')||msg.includes('angreji'))return COACH.english;
+  if(msg.includes('rank')||msg.includes('topper')||msg.includes('रैंक')||msg.includes('1'))return COACH.rank;
+  if(msg.includes('mit'))return COACH.mit;
+  if(msg.includes('dhoni')||msg.includes('kalam')||msg.includes('tata')||msg.includes('musk'))return 'ये सब तेरे role models हैं — और एक चीज़ common है: सबने अपने सपने पर यकीन रखा और काम किया। तू भी कर!';
+  return COACH.default;
+}
+function msgAdd(txt,role){
+  const d=document.createElement('div');
+  d.className='cmsg '+role;
+  d.innerHTML=`<div class="bubble">${txt}</div>`;
+  document.getElementById('coachChat').appendChild(d);
+  document.getElementById('coachChat').scrollTop=9999;
+}
+function coachBhejo(){
+  const inp=document.getElementById('coachInp');
+  const msg=inp.value.trim();if(!msg)return;
+  msgAdd(msg,'user');inp.value='';
+  document.getElementById('typingInd').style.display='block';
+  setTimeout(()=>{document.getElementById('typingInd').style.display='none';msgAdd(coachJawab(msg),'ai');},900);
+}
+function quickQ(q){
+  gp('coach',document.querySelectorAll('.nbtn')[5]);
+  setTimeout(()=>{document.getElementById('coachInp').value=q;coachBhejo();},100);
+}
+
+// ===== नेविगेशन =====
+function gp(id,el){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById('page-'+id).classList.add('active');
+  document.querySelectorAll('.nbtn').forEach(b=>b.classList.remove('active'));
+  el.classList.add('active');
+}
+
+// ===== UI अपडेट =====
+function upd(){
+  document.getElementById('hXP').textContent=xp;
+  document.getElementById('hLvl').textContent=lvl();
+  document.getElementById('hStr').textContent=streak;
+  document.getElementById('hPomo').textContent=pomos;
+  document.getElementById('hdrXP').textContent='⭐ '+xp+' XP';
+}
+
+// ===== टोस्ट =====
+function toast(msg,bg='#22c55e'){
+  const t=document.getElementById('toast');
+  t.textContent=msg;t.style.background=bg;t.style.opacity='1';
+  setTimeout(()=>t.style.opacity='0',2200);
+}
+
+// ===== शुरुआत =====
+document.getElementById('motivLine').textContent=MOTIV[Math.floor(Math.random()*MOTIV.length)];
+kaamDikha();gridBanao();upd();notesBanao();pomoRender();pomoDotsRender();dqBadgeUpd();
+msgAdd('जय हो अमन भंडारी! 🙏 मैं तेरा personal AI Success Coach हूँ। बिहार बोर्ड रैंक १, JEE टॉप १०, और MIT — यह सब संभव है। आज क्या जानना है?','ai');
+</script>
+</body>
+</html>
