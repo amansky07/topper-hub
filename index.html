@@ -1376,6 +1376,200 @@ msgAdd('जय हो! टॉपर हब में आपका स्वा�
     </script>
 </body>
 </html>
+```html
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Topper Hub - Shiksha Sabke Liye</title>
+    <!-- Tailwind CSS ka use kiya hai design ke liye -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .page { display: none; }
+        .page.active { display: block; }
+        .card { background: white; padding: 20px; border-radius: 16px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); text-align: center; border: 1px solid #e2e8f0; }
+    </style>
+</head>
+<body class="bg-gray-50 pb-24">
+
+    <!-- Header -->
+    <header class="p-5 bg-green-600 text-white flex justify-between items-center sticky top-0 z-10">
+        <h1 class="font-bold text-xl">NCERT MCQ Hub</h1>
+        <div class="bg-green-700 px-3 py-1 rounded-full text-sm">⭐ 0 XP</div>
+    </header>
+
+    <main class="p-4" id="content">
+        <!-- Home Page (Sabhi Resources) -->
+        <div id="page-home" class="page active">
+            <h2 class="text-lg font-bold mb-4 text-gray-700">Quick Access (Tezi se padhen)</h2>
+            <div class="grid grid-cols-2 gap-4">
+                <div class="card">
+                    <div class="text-3xl mb-2">📝</div>
+                    <h2 class="font-bold">MCQ Test</h2>
+                </div>
+                <div class="card">
+                    <div class="text-3xl mb-2">📚</div>
+                    <h2 class="font-bold">NCERT Books</h2>
+                </div>
+                <div class="card">
+                    <div class="text-3xl mb-2">💡</div>
+                    <h2 class="font-bold">Solutions</h2>
+                </div>
+                <div class="card">
+                    <div class="text-3xl mb-2">🗓️</div>
+                    <h2 class="font-bold">Syllabus</h2>
+                </div>
+            </div>
+
+            <h2 class="text-lg font-bold mt-8 mb-4 text-gray-700">Garib Bachhon ki Madad</h2>
+            <div class="bg-white p-4 rounded-xl border-l-4 border-yellow-500 mb-4">
+                <h3 class="font-bold">🤝 Mentorship</h3>
+                <p class="text-sm text-gray-600">Senior students se doubt puchein.</p>
+            </div>
+            <div class="bg-white p-4 rounded-xl border-l-4 border-blue-500">
+                <h3 class="font-bold">💻 Free Coding</h3>
+                <p class="text-sm text-gray-600">Basic HTML/CSS seekhein.</p>
+            </div>
+        </div>
+
+        <!-- Yojnayein Page -->
+        <div id="page-schemes" class="page">
+            <h2 class="text-xl font-bold mb-4">Sarkari Chhatravriti Yojnayein</h2>
+            <div class="bg-white p-6 rounded-2xl shadow-sm">
+                <h3 class="font-bold text-green-700">PM Scholarship</h3>
+                <p class="text-sm text-gray-600 mt-2">Garib chhatron ke liye financial madat.</p>
+                <button class="mt-4 bg-green-600 text-white w-full py-2 rounded-lg font-bold">Details Dekhein</button>
+            </div>
+        </div>
+
+        <!-- Donate Page -->
+        <div id="page-donate" class="page">
+            <h2 class="text-xl font-bold mb-4">Maddat ka Haath</h2>
+            <div class="bg-white p-6 rounded-2xl shadow-sm text-center">
+                <p>Purani kitabein ya stationaries daan karein.</p>
+                <button class="mt-6 bg-yellow-500 text-white w-full py-3 rounded-xl font-bold">NGO se Sampark Karein</button>
+            </div>
+        </div>
+    </main>
+
+    <!-- Bottom Navigation -->
+    <nav class="fixed bottom-0 w-full bg-white p-4 flex justify-around border-t border-gray-200">
+        <button onclick="goPage('home', this)" class="nav-btn font-bold text-green-600">Home</button>
+        <button onclick="goPage('schemes', this)" class="nav-btn font-bold text-gray-400">Yojnayein</button>
+        <button onclick="goPage('donate', this)" class="nav-btn font-bold text-gray-400">Daan</button>
+    </nav>
+
+    <script>
+        // Page switch karne ka simple function
+        function goPage(id, btn) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.getElementById('page-' + id).classList.add('active');
+            document.querySelectorAll('.nav-btn').forEach(b => b.classList.replace('text-green-600', 'text-gray-400'));
+            btn.classList.replace('text-gray-400', 'text-green-600');
+        }
+    </script>
+</body>
+</html>
+
+``````html
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Topper Hub - Shiksha Sabke Liye</title>
+    <!-- Tailwind CSS ka use kiya hai design ke liye -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .page { display: none; }
+        .page.active { display: block; }
+        .card { background: white; padding: 20px; border-radius: 16px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); text-align: center; border: 1px solid #e2e8f0; }
+    </style>
+</head>
+<body class="bg-gray-50 pb-24">
+
+    <!-- Header -->
+    <header class="p-5 bg-green-600 text-white flex justify-between items-center sticky top-0 z-10">
+        <h1 class="font-bold text-xl">NCERT MCQ Hub</h1>
+        <div class="bg-green-700 px-3 py-1 rounded-full text-sm">⭐ 0 XP</div>
+    </header>
+
+    <main class="p-4" id="content">
+        <!-- Home Page (Sabhi Resources) -->
+        <div id="page-home" class="page active">
+            <h2 class="text-lg font-bold mb-4 text-gray-700">Quick Access (Tezi se padhen)</h2>
+            <div class="grid grid-cols-2 gap-4">
+                <div class="card">
+                    <div class="text-3xl mb-2">📝</div>
+                    <h2 class="font-bold">MCQ Test</h2>
+                </div>
+                <div class="card">
+                    <div class="text-3xl mb-2">📚</div>
+                    <h2 class="font-bold">NCERT Books</h2>
+                </div>
+                <div class="card">
+                    <div class="text-3xl mb-2">💡</div>
+                    <h2 class="font-bold">Solutions</h2>
+                </div>
+                <div class="card">
+                    <div class="text-3xl mb-2">🗓️</div>
+                    <h2 class="font-bold">Syllabus</h2>
+                </div>
+            </div>
+
+            <h2 class="text-lg font-bold mt-8 mb-4 text-gray-700">Garib Bachhon ki Madad</h2>
+            <div class="bg-white p-4 rounded-xl border-l-4 border-yellow-500 mb-4">
+                <h3 class="font-bold">🤝 Mentorship</h3>
+                <p class="text-sm text-gray-600">Senior students se doubt puchein.</p>
+            </div>
+            <div class="bg-white p-4 rounded-xl border-l-4 border-blue-500">
+                <h3 class="font-bold">💻 Free Coding</h3>
+                <p class="text-sm text-gray-600">Basic HTML/CSS seekhein.</p>
+            </div>
+        </div>
+
+        <!-- Yojnayein Page -->
+        <div id="page-schemes" class="page">
+            <h2 class="text-xl font-bold mb-4">Sarkari Chhatravriti Yojnayein</h2>
+            <div class="bg-white p-6 rounded-2xl shadow-sm">
+                <h3 class="font-bold text-green-700">PM Scholarship</h3>
+                <p class="text-sm text-gray-600 mt-2">Garib chhatron ke liye financial madat.</p>
+                <button class="mt-4 bg-green-600 text-white w-full py-2 rounded-lg font-bold">Details Dekhein</button>
+            </div>
+        </div>
+
+        <!-- Donate Page -->
+        <div id="page-donate" class="page">
+            <h2 class="text-xl font-bold mb-4">Maddat ka Haath</h2>
+            <div class="bg-white p-6 rounded-2xl shadow-sm text-center">
+                <p>Purani kitabein ya stationaries daan karein.</p>
+                <button class="mt-6 bg-yellow-500 text-white w-full py-3 rounded-xl font-bold">NGO se Sampark Karein</button>
+            </div>
+        </div>
+    </main>
+
+    <!-- Bottom Navigation -->
+    <nav class="fixed bottom-0 w-full bg-white p-4 flex justify-around border-t border-gray-200">
+        <button onclick="goPage('home', this)" class="nav-btn font-bold text-green-600">Home</button>
+        <button onclick="goPage('schemes', this)" class="nav-btn font-bold text-gray-400">Yojnayein</button>
+        <button onclick="goPage('donate', this)" class="nav-btn font-bold text-gray-400">Daan</button>
+    </nav>
+
+    <script>
+        // Page switch karne ka simple function
+        function goPage(id, btn) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.getElementById('page-' + id).classList.add('active');
+            document.querySelectorAll('.nav-btn').forEach(b => b.classList.replace('text-green-600', 'text-gray-400'));
+            btn.classList.replace('text-gray-400', 'text-green-600');
+        }
+    </script>
+</body>
+</html>
+
+```
+
 
 ```
 
