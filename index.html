@@ -1,781 +1,1385 @@
 <!DOCTYPE html>
 <html lang="hi">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>टॉपर हब – मुफ़्त पढ़ाई</title>
-<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<meta name="description" content="टॉपर हब — Bihar Board Class 9 के लिए मुफ़्त पढ़ाई ऐप"/>
+<meta name="theme-color" content="#06070f"/>
+<title>टॉपर हब – मुफ़्त पढ़ाई | Bihar Board Class 9</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet"/>
 <style>
-  :root {
-    --bg: #0b0c10;
-    --surface: #13141a;
-    --card: #1c1d26;
-    --border: #2c2d3e;
-    --accent: #4f8ef7;
-    --accent2: #f7666a;
-    --gold: #ffc94d;
-    --green: #2ecc71;
-    --text: #e9eaf0;
-    --muted: #6b6d88;
-    --radius: 12px;
-    --font: 'Noto Sans Devanagari', sans-serif;
-    --mono: 'JetBrains Mono', monospace;
-  }
-  * { margin:0; padding:0; box-sizing:border-box; }
-  body { font-family:var(--font); background:var(--bg); color:var(--text); min-height:100vh; overflow-x:hidden; }
+/* ═══════════════════════════════════════════
+   DESIGN TOKENS
+═══════════════════════════════════════════ */
+:root{
+  --bg:#06070f;
+  --s1:#0d0e1c;
+  --s2:#13141f;
+  --card:#181928;
+  --glass:rgba(255,255,255,.045);
+  --gb:rgba(255,255,255,.085);
+  --border:rgba(255,255,255,.07);
+  --accent:#6366f1;
+  --accent-g:linear-gradient(135deg,#6366f1,#8b5cf6);
+  --accent2:#f43f5e;
+  --gold:#f59e0b;
+  --green:#10b981;
+  --cyan:#06b6d4;
+  --purple:#8b5cf6;
+  --text:#f0f1f8;
+  --muted:#64748b;
+  --radius:14px;
+  --font:'Noto Sans Devanagari',sans-serif;
+  --mono:'JetBrains Mono',monospace;
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{scroll-behavior:smooth}
+body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;-webkit-font-smoothing:antialiased}
 
-  /* HEADER */
-  header {
-    background: var(--surface);
-    border-bottom: 1px solid var(--border);
-    padding: 0 16px;
-    height: 56px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    position: sticky; top:0; z-index:100;
-  }
-  .logo-wrap { display:flex; flex-direction:column; }
-  .logo-main { font-size:18px; font-weight:700; color:var(--text); letter-spacing:-0.3px; }
-  .logo-main span { color:var(--accent); }
-  .logo-sub { font-size:10px; color:var(--muted); }
-  .header-right { display:flex; align-items:center; gap:8px; }
-  .xp-chip { background:linear-gradient(135deg,var(--accent),#7b5ea7); color:#fff; padding:4px 10px; border-radius:20px; font-size:12px; font-weight:600; font-family:var(--mono); }
-  .streak-chip { font-size:13px; color:var(--gold); font-weight:600; }
+/* ── AMBIENT ── */
+.ambient{position:fixed;inset:0;pointer-events:none;z-index:0;
+  background:radial-gradient(ellipse 90% 50% at 50% -10%,rgba(99,102,241,.1) 0%,transparent 65%)}
 
-  /* TABS */
-  .tabs { display:flex; gap:4px; padding:10px 12px; background:var(--surface); border-bottom:1px solid var(--border); overflow-x:auto; scrollbar-width:none; }
-  .tabs::-webkit-scrollbar { display:none; }
-  .tab { padding:7px 14px; border-radius:8px; font-size:13px; font-weight:500; cursor:pointer; border:none; background:transparent; color:var(--muted); white-space:nowrap; transition:all 0.2s; font-family:var(--font); }
-  .tab:hover { background:var(--card); color:var(--text); }
-  .tab.active { background:var(--accent); color:#fff; }
+/* ── GLASS ── */
+.glass{background:var(--glass);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border:1px solid var(--border);border-radius:var(--radius)}
+.glass-strong{background:rgba(255,255,255,.065);backdrop-filter:blur(32px);-webkit-backdrop-filter:blur(32px);border:1px solid rgba(255,255,255,.11);border-radius:18px}
 
-  /* MAIN */
-  main { max-width:680px; margin:0 auto; padding:14px; }
-  .section { display:none; }
-  .section.active { display:block; }
+/* ── TYPOGRAPHY ── */
+.label{font-size:10px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:var(--muted)}
 
-  /* CARD */
-  .card { background:var(--card); border:1px solid var(--border); border-radius:var(--radius); padding:18px; margin-bottom:12px; }
-  .card-title { font-size:11px; font-weight:700; letter-spacing:1px; text-transform:uppercase; color:var(--muted); margin-bottom:12px; }
+/* ── INPUTS ── */
+.inp{width:100%;background:rgba(255,255,255,.055);border:1px solid var(--border);border-radius:11px;padding:12px 15px;color:var(--text);font-size:15px;font-family:var(--font);outline:none;transition:border-color .2s}
+.inp:focus{border-color:var(--accent)}
+.inp::placeholder{color:var(--muted)}
+textarea.inp{resize:vertical;min-height:130px;line-height:1.75}
 
-  /* STATS GRID */
-  .stats-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:10px; margin-bottom:12px; }
-  .stat-card { background:var(--card); border:1px solid var(--border); border-radius:var(--radius); padding:14px; text-align:center; }
-  .stat-num { font-size:26px; font-weight:700; font-family:var(--mono); color:var(--accent); }
-  .stat-num.gold { color:var(--gold); }
-  .stat-num.green { color:var(--green); }
-  .stat-num.red { color:var(--accent2); }
-  .stat-label { font-size:11px; color:var(--muted); margin-top:3px; }
+/* ── BUTTONS ── */
+.btn{display:inline-flex;align-items:center;gap:6px;padding:10px 20px;border-radius:10px;border:none;font-size:14px;font-weight:700;cursor:pointer;font-family:var(--font);transition:all .2s;white-space:nowrap}
+.btn-p{background:var(--accent-g);color:#fff;box-shadow:0 4px 20px rgba(99,102,241,.3)}
+.btn-p:hover{opacity:.9;transform:translateY(-1px)}
+.btn-g{background:rgba(255,255,255,.06);border:1px solid var(--border);color:var(--muted)}
+.btn-g:hover{border-color:var(--accent);color:var(--accent)}
+.btn-sm{padding:7px 14px;font-size:12px;border-radius:8px}
+.btn-red{background:rgba(244,63,94,.12);border:1px solid rgba(244,63,94,.3);color:var(--accent2)}
 
-  /* PROGRESS */
-  .prog-wrap { background:var(--border); border-radius:100px; height:7px; margin:6px 0 3px; overflow:hidden; }
-  .prog-fill { height:100%; border-radius:100px; background:linear-gradient(90deg,var(--accent),#7b5ea7); transition:width 0.5s; }
+/* ── TAGS ── */
+.tag{display:inline-block;padding:3px 10px;border-radius:20px;font-size:10px;font-weight:700;letter-spacing:.5px}
+.tag-blue{background:rgba(99,102,241,.15);border:1px solid rgba(99,102,241,.3);color:var(--accent)}
+.tag-green{background:rgba(16,185,129,.15);border:1px solid rgba(16,185,129,.3);color:var(--green)}
+.tag-gold{background:rgba(245,158,11,.15);border:1px solid rgba(245,158,11,.3);color:var(--gold)}
+.tag-muted{background:rgba(255,255,255,.06);border:1px solid var(--border);color:var(--muted)}
 
-  /* QUIZ */
-  .subj-row { display:flex; gap:6px; flex-wrap:wrap; margin-bottom:14px; }
-  .subj-btn { padding:7px 14px; border-radius:8px; border:1px solid var(--border); background:var(--surface); color:var(--muted); font-size:13px; cursor:pointer; font-family:var(--font); transition:all 0.2s; }
-  .subj-btn:hover, .subj-btn.active { border-color:var(--accent); color:var(--accent); background:rgba(79,142,247,0.1); }
+/* ── PROGRESS ── */
+.prog-wrap{background:rgba(255,255,255,.06);border-radius:100px;overflow:hidden}
+.prog-fill{height:100%;border-radius:100px;transition:width .7s ease}
 
-  .q-box { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:18px; margin-bottom:10px; }
-  .q-tag { font-size:11px; color:var(--muted); font-family:var(--mono); margin-bottom:6px; }
-  .q-text { font-size:15px; font-weight:500; line-height:1.65; }
+/* ── CARD ── */
+.card{padding:18px;margin-bottom:12px}
 
-  .opts-grid { display:grid; gap:8px; margin-bottom:12px; }
-  .opt-btn { padding:11px 15px; background:var(--surface); border:1px solid var(--border); border-radius:10px; color:var(--text); font-size:14px; text-align:left; cursor:pointer; transition:all 0.2s; font-family:var(--font); }
-  .opt-btn:hover:not(:disabled) { border-color:var(--accent); background:rgba(79,142,247,0.07); }
-  .opt-btn.correct { border-color:var(--green); background:rgba(46,204,113,0.1); color:var(--green); }
-  .opt-btn.wrong { border-color:var(--accent2); background:rgba(247,102,106,0.1); color:var(--accent2); }
-  .opt-btn:disabled { cursor:default; }
+/* ═══════════════════════════════════════════
+   LOGIN
+═══════════════════════════════════════════ */
+#loginScreen{
+  position:fixed;inset:0;background:var(--bg);z-index:9999;
+  display:flex;align-items:center;justify-content:center;padding:20px;
+}
+.login-box{width:100%;max-width:390px;padding:36px 30px;text-align:center}
+.login-logo{font-size:30px;font-weight:900;letter-spacing:-1px;margin-bottom:4px}
+.login-logo span{color:var(--accent)}
+.login-step{display:none}
+.login-step.active{display:block}
+.otp-row{display:flex;gap:9px;justify-content:center;margin-bottom:18px}
+.otp-box{width:46px;height:54px;text-align:center;font-size:22px;font-weight:800;background:rgba(255,255,255,.06);border:1.5px solid var(--border);border-radius:11px;color:var(--text);font-family:var(--mono);outline:none;transition:border-color .2s}
+.otp-box:focus{border-color:var(--accent)}
+.demo-hint{background:rgba(99,102,241,.1);border:1px solid rgba(99,102,241,.3);border-radius:10px;padding:10px;font-size:13px;color:var(--accent);margin-bottom:16px}
 
-  .exp-box { background:rgba(79,142,247,0.07); border:1px solid rgba(79,142,247,0.25); border-radius:10px; padding:12px; font-size:13px; color:var(--muted); line-height:1.65; margin-bottom:10px; display:none; }
-  .exp-box.show { display:block; }
+/* ═══════════════════════════════════════════
+   HEADER
+═══════════════════════════════════════════ */
+#mainHeader{
+  position:sticky;top:0;z-index:100;
+  background:rgba(6,7,15,.88);backdrop-filter:blur(28px);-webkit-backdrop-filter:blur(28px);
+  border-bottom:1px solid var(--border);padding:0 16px;height:56px;
+  display:none;align-items:center;justify-content:space-between;
+}
+.hlogo{font-size:19px;font-weight:900;letter-spacing:-.5px}
+.hlogo span{color:var(--accent)}
+.hsub{font-size:9px;color:var(--muted);display:block;margin-top:1px}
+.h-right{display:flex;align-items:center;gap:8px}
+.xp-chip{background:var(--accent-g);color:#fff;padding:4px 11px;border-radius:20px;font-size:11px;font-weight:800;font-family:var(--mono)}
+.streak-chip{font-size:14px;font-weight:800;color:var(--gold)}
+.user-av-btn{width:32px;height:32px;border-radius:50%;background:var(--accent-g);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:13px;font-weight:800;color:#fff;border:none;font-family:var(--font)}
 
-  .result-bar { border-radius:10px; padding:11px 14px; margin-bottom:10px; font-weight:600; font-size:14px; display:none; }
-  .result-bar.ok { background:rgba(46,204,113,0.1); border:1px solid rgba(46,204,113,0.3); color:var(--green); display:block; }
-  .result-bar.bad { background:rgba(247,102,106,0.1); border:1px solid rgba(247,102,106,0.3); color:var(--accent2); display:block; }
+/* ═══════════════════════════════════════════
+   BOTTOM NAV
+═══════════════════════════════════════════ */
+#mainNav{
+  position:fixed;bottom:0;left:0;right:0;z-index:100;
+  background:rgba(6,7,15,.92);backdrop-filter:blur(28px);-webkit-backdrop-filter:blur(28px);
+  border-top:1px solid var(--border);display:none;
+  padding-bottom:env(safe-area-inset-bottom,0);
+}
+.bnav-item{
+  flex:1;display:flex;flex-direction:column;align-items:center;
+  justify-content:center;padding:8px 2px 10px;cursor:pointer;
+  border:none;background:transparent;color:var(--muted);font-size:9px;
+  font-family:var(--font);gap:3px;transition:color .2s;min-width:0;
+}
+.bnav-item.active{color:var(--accent)}
+.bnav-icon{font-size:19px;line-height:1;transition:filter .2s}
+.bnav-item.active .bnav-icon{filter:drop-shadow(0 0 8px rgba(99,102,241,.8))}
 
-  .quiz-btns { display:flex; gap:8px; flex-wrap:wrap; }
-  .btn { display:inline-flex; align-items:center; gap:6px; padding:9px 18px; border-radius:8px; border:none; font-size:14px; font-weight:600; cursor:pointer; font-family:var(--font); transition:all 0.2s; }
-  .btn-p { background:var(--accent); color:#fff; }
-  .btn-p:hover { background:#3a7be0; }
-  .btn-g { background:transparent; border:1px solid var(--border); color:var(--muted); }
-  .btn-g:hover { border-color:var(--accent); color:var(--accent); }
-  .btn-red { background:var(--accent2); color:#fff; }
+/* ═══════════════════════════════════════════
+   MAIN
+═══════════════════════════════════════════ */
+#mainContent{display:none;max-width:680px;margin:0 auto;padding:14px 14px 90px;position:relative;z-index:1}
+.section{display:none}
+.section.active{display:block}
 
-  /* DIFFICULTY SELECTOR */
-  .diff-row { display:flex; gap:6px; margin-bottom:14px; }
-  .diff-btn { flex:1; padding:7px; border-radius:8px; border:1px solid var(--border); background:var(--surface); color:var(--muted); font-size:12px; cursor:pointer; text-align:center; font-family:var(--font); transition:all 0.2s; }
-  .diff-btn.active { border-color:var(--gold); color:var(--gold); background:rgba(255,201,77,0.08); }
+/* ─── DAILY BANNER ─── */
+.daily-banner{
+  border-radius:var(--radius);padding:14px 16px;margin-bottom:12px;
+  display:flex;align-items:center;gap:12px;
+}
+.daily-banner.pending{background:linear-gradient(135deg,rgba(99,102,241,.18),rgba(139,92,246,.12));border:1px solid rgba(99,102,241,.4)}
+.daily-banner.done{background:linear-gradient(135deg,rgba(16,185,129,.12),rgba(16,185,129,.07));border:1px solid rgba(16,185,129,.35)}
 
-  /* SCORE SUMMARY */
-  .score-sum { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:16px; margin-bottom:12px; display:none; text-align:center; }
-  .score-sum.show { display:block; }
-  .score-big { font-size:40px; font-weight:700; font-family:var(--mono); color:var(--accent); }
-  .score-msg { font-size:14px; color:var(--muted); margin-top:6px; }
+/* ─── STAT CARDS ─── */
+.stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:12px}
+.stat-c{padding:14px 10px;text-align:center}
+.stat-num{font-size:24px;font-weight:800;font-family:var(--mono);color:var(--accent)}
+.stat-lbl{font-size:10px;color:var(--muted);margin-top:3px}
 
-  /* AI COACH */
-  .chat-wrap { display:flex; flex-direction:column; gap:10px; min-height:180px; max-height:380px; overflow-y:auto; margin-bottom:14px; padding:2px; }
-  .msg { display:flex; gap:8px; align-items:flex-start; }
-  .msg.user { flex-direction:row-reverse; }
-  .msg-av { width:30px; height:30px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:14px; flex-shrink:0; }
-  .ai-av { background:linear-gradient(135deg,var(--accent),#7b5ea7); }
-  .user-av { background:linear-gradient(135deg,var(--gold),#f4a261); }
-  .bubble { max-width:85%; padding:10px 13px; border-radius:12px; font-size:14px; line-height:1.6; }
-  .ai-bub { background:var(--surface); border:1px solid var(--border); border-top-left-radius:4px; }
-  .user-bub { background:var(--accent); color:#fff; border-top-right-radius:4px; }
-  .typing { display:flex; gap:4px; padding:10px 13px; background:var(--surface); border:1px solid var(--border); border-radius:12px; border-top-left-radius:4px; }
-  .dot { width:6px; height:6px; background:var(--muted); border-radius:50%; animation:bounce 1.1s infinite; }
-  .dot:nth-child(2){animation-delay:.2s} .dot:nth-child(3){animation-delay:.4s}
-  @keyframes bounce { 0%,60%,100%{transform:translateY(0)} 30%{transform:translateY(-5px)} }
+/* ─── SUBJECTS GRID ─── */
+.subj-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:12px}
+.subj-card{padding:18px;cursor:pointer;transition:all .22s;border:1px solid var(--border);background:var(--glass);border-radius:var(--radius)}
+.subj-card:hover{border-color:var(--accent);transform:translateY(-2px);box-shadow:0 8px 28px rgba(99,102,241,.15)}
+.subj-card-wide{grid-column:span 2}
+.subj-icon-big{font-size:30px;display:block;margin-bottom:8px}
 
-  .quick-qs { display:flex; flex-wrap:wrap; gap:6px; margin-bottom:12px; }
-  .quick-q { padding:6px 11px; background:var(--surface); border:1px solid var(--border); border-radius:20px; font-size:12px; color:var(--muted); cursor:pointer; font-family:var(--font); transition:all 0.2s; }
-  .quick-q:hover { border-color:var(--accent); color:var(--accent); }
+/* ─── QUIZ OPTS ─── */
+.opt-btn{
+  width:100%;padding:12px 15px;border-radius:11px;border:1px solid var(--border);
+  background:rgba(255,255,255,.04);color:var(--text);font-size:14px;
+  text-align:left;cursor:pointer;transition:all .18s;font-family:var(--font);
+  display:block;margin-bottom:8px;
+}
+.opt-btn:hover:not(:disabled){border-color:var(--accent);background:rgba(99,102,241,.07)}
+.opt-btn.correct{border-color:var(--green);background:rgba(16,185,129,.1);color:var(--green);font-weight:700}
+.opt-btn.wrong{border-color:var(--accent2);background:rgba(244,63,94,.1);color:var(--accent2)}
+.opt-btn:disabled{cursor:default}
 
-  .chat-input-wrap { display:flex; gap:8px; }
-  .chat-in { flex:1; background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:10px 13px; color:var(--text); font-size:14px; font-family:var(--font); outline:none; transition:border-color 0.2s; }
-  .chat-in:focus { border-color:var(--accent); }
-  .chat-in::placeholder { color:var(--muted); }
+/* ─── SUBJ FILTER BTNS ─── */
+.filter-row{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}
+.filter-btn{padding:7px 13px;border-radius:8px;border:1px solid var(--border);background:rgba(255,255,255,.04);color:var(--muted);font-size:12px;cursor:pointer;font-family:var(--font);transition:all .18s;font-weight:600}
+.filter-btn:hover,.filter-btn.active{border-color:var(--accent);color:var(--accent);background:rgba(99,102,241,.1)}
+.filter-btn.gold.active{border-color:var(--gold);color:var(--gold);background:rgba(245,158,11,.1)}
 
-  /* NOTES */
-  .notes-subj-row { display:flex; gap:6px; flex-wrap:wrap; margin-bottom:12px; }
-  .note-area { width:100%; background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:12px; color:var(--text); font-size:14px; font-family:var(--font); resize:vertical; min-height:160px; outline:none; line-height:1.7; }
-  .note-area:focus { border-color:var(--accent); }
-  .notes-btns { display:flex; gap:8px; margin-top:10px; flex-wrap:wrap; }
-  .saved-notes { margin-top:14px; display:flex; flex-direction:column; gap:8px; }
-  .note-item { background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:12px; }
-  .note-item-head { display:flex; justify-content:space-between; align-items:center; margin-bottom:6px; }
-  .note-tag { font-size:11px; color:var(--accent); font-weight:600; text-transform:uppercase; letter-spacing:0.5px; }
-  .note-date { font-size:11px; color:var(--muted); }
-  .note-preview { font-size:13px; color:var(--muted); line-height:1.5; }
-  .note-del { background:none; border:none; color:var(--accent2); cursor:pointer; font-size:12px; font-family:var(--font); }
+/* ─── CHAT ─── */
+.chat-wrap{display:flex;flex-direction:column;gap:10px;max-height:360px;overflow-y:auto;margin-bottom:12px;padding:2px}
+.chat-msg{display:flex;gap:8px;align-items:flex-start}
+.chat-msg.user{flex-direction:row-reverse}
+.chat-av{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0}
+.ai-av{background:var(--accent-g)}
+.user-av{background:linear-gradient(135deg,var(--gold),#f97316)}
+.bubble{max-width:86%;padding:10px 13px;border-radius:12px;font-size:14px;line-height:1.6}
+.ai-bubble{background:rgba(255,255,255,.055);border:1px solid var(--border);border-top-left-radius:4px;white-space:pre-wrap}
+.user-bubble{background:var(--accent);color:#fff;border-top-right-radius:4px}
+.typing-dots{display:flex;gap:4px;padding:12px 14px;background:rgba(255,255,255,.055);border:1px solid var(--border);border-radius:12px;border-top-left-radius:4px}
+.dot{width:6px;height:6px;background:var(--muted);border-radius:50%;animation:dotBounce 1.1s infinite}
+.dot:nth-child(2){animation-delay:.2s}
+.dot:nth-child(3){animation-delay:.4s}
+@keyframes dotBounce{0%,60%,100%{transform:translateY(0)}30%{transform:translateY(-6px)}}
 
-  /* TIMER */
-  .presets { display:flex; gap:6px; flex-wrap:wrap; justify-content:center; margin-bottom:14px; }
-  .pre-btn { padding:7px 14px; background:var(--surface); border:1px solid var(--border); border-radius:8px; color:var(--muted); font-size:13px; cursor:pointer; font-family:var(--font); transition:all 0.2s; }
-  .pre-btn:hover { border-color:var(--accent); color:var(--accent); }
-  .timer-disp { font-size:60px; font-family:var(--mono); font-weight:700; color:var(--accent); text-align:center; margin:18px 0 6px; letter-spacing:2px; }
-  .timer-disp.warn { color:var(--accent2); animation:pulse 1s infinite; }
-  @keyframes pulse { 50%{opacity:0.55} }
-  .timer-label-txt { text-align:center; font-size:13px; color:var(--muted); margin-bottom:14px; }
-  .timer-btns { display:flex; justify-content:center; gap:10px; flex-wrap:wrap; margin-bottom:16px; }
-  .sess-log { display:flex; flex-direction:column; gap:6px; max-height:180px; overflow-y:auto; }
-  .sess-item { display:flex; justify-content:space-between; padding:8px 12px; background:var(--surface); border-radius:8px; font-size:13px; }
-  .sess-item span:last-child { font-family:var(--mono); color:var(--green); font-size:12px; }
+/* ─── NOTES ─── */
+.note-item{padding:12px;background:rgba(255,255,255,.035);border:1px solid var(--border);border-radius:11px;margin-bottom:8px}
+.note-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
 
-  /* LEADERBOARD */
-  .lb-row { display:flex; align-items:center; gap:10px; padding:11px; background:var(--surface); border-radius:10px; margin-bottom:7px; border:1px solid var(--border); }
-  .lb-row.you { border-color:var(--accent); background:rgba(79,142,247,0.07); }
-  .lb-rank { font-family:var(--mono); font-size:15px; font-weight:700; width:28px; text-align:center; }
-  .lb-rank.r1{color:var(--gold)} .lb-rank.r2{color:#c0c0c0} .lb-rank.r3{color:#cd7f32}
-  .lb-av { width:34px; height:34px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:15px; background:var(--card); }
-  .lb-info { flex:1; }
-  .lb-name { font-size:14px; font-weight:600; }
-  .lb-sub { font-size:11px; color:var(--muted); }
-  .lb-xp { font-family:var(--mono); font-size:14px; font-weight:600; color:var(--accent); }
+/* ─── PYQ ─── */
+.pyq-ans{background:rgba(16,185,129,.08);border:1px solid rgba(16,185,129,.22);border-radius:10px;padding:12px;font-size:13px;color:var(--green);line-height:1.7;white-space:pre-wrap;display:none;margin-top:8px}
+.pyq-ans.open{display:block}
 
-  /* TOAST */
-  .toast { position:fixed; bottom:20px; right:20px; background:var(--card); border:1px solid var(--green); color:var(--green); padding:11px 16px; border-radius:10px; font-size:14px; font-weight:600; z-index:999; transform:translateY(70px); opacity:0; transition:all 0.3s; max-width:280px; }
-  .toast.show { transform:translateY(0); opacity:1; }
+/* ─── PLANNER ─── */
+.plan-day{border-radius:var(--radius);border:1px solid var(--border);background:var(--glass);margin-bottom:8px;overflow:hidden}
+.plan-head{display:flex;justify-content:space-between;align-items:center;padding:12px 15px;cursor:pointer}
+.plan-body{display:none;padding:0 15px 12px}
+.plan-body.open{display:block}
+.task-row{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid rgba(255,255,255,.05)}
+.task-row:last-child{border-bottom:none}
+.task-cb{width:18px;height:18px;border-radius:5px;border:2px solid var(--border);cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .18s}
+.task-cb.done{background:var(--green);border-color:var(--green)}
 
-  /* MISC */
-  ::-webkit-scrollbar { width:3px; } ::-webkit-scrollbar-thumb { background:var(--border); border-radius:2px; }
-  .empty { text-align:center; padding:30px 20px; color:var(--muted); font-size:14px; }
+/* ─── TIMER ─── */
+.timer-circle-wrap{position:relative;margin:0 auto 8px;width:160px;height:160px}
+.tdisp{font-size:56px;font-weight:800;font-family:var(--mono);color:var(--accent);text-align:center;margin:16px 0 4px;letter-spacing:2px}
+.tdisp.warn{color:var(--accent2);animation:tPulse 1s infinite}
+@keyframes tPulse{50%{opacity:.5}}
 
-  /* FOOTER CREDIT */
-  .footer-credit { text-align:center; padding:20px 0 10px; font-size:11px; color:var(--muted); }
+/* ─── LEADERBOARD ─── */
+.lb-row{display:flex;align-items:center;gap:10px;padding:11px 12px;background:rgba(255,255,255,.035);border:1px solid var(--border);border-radius:11px;margin-bottom:7px;transition:border-color .2s}
+.lb-row.you{border-color:rgba(99,102,241,.5);background:rgba(99,102,241,.07)}
 
-  @media(max-width:480px) {
-    .timer-disp { font-size:46px; }
-    .stats-grid { grid-template-columns:repeat(2,1fr); }
-  }
+/* ─── SETTINGS TOGGLE ─── */
+.toggle{width:44px;height:24px;background:rgba(255,255,255,.1);border-radius:12px;cursor:pointer;position:relative;transition:background .2s;flex-shrink:0}
+.toggle.on{background:var(--accent)}
+.toggle::after{content:'';position:absolute;width:18px;height:18px;background:#fff;border-radius:50%;top:3px;left:3px;transition:left .2s;box-shadow:0 1px 4px rgba(0,0,0,.3)}
+.toggle.on::after{left:23px}
+
+/* ─── SETT ROWS ─── */
+.sett-row{display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid rgba(255,255,255,.05)}
+.sett-row:last-child{border-bottom:none}
+
+/* ─── PROFILE ─── */
+.profile-av{width:76px;height:76px;border-radius:50%;background:var(--accent-g);display:flex;align-items:center;justify-content:center;font-size:30px;font-weight:900;color:#fff;margin:0 auto 12px;border:3px solid rgba(99,102,241,.35)}
+
+/* ─── TOAST ─── */
+#toast{
+  position:fixed;bottom:80px;right:16px;z-index:9998;
+  background:rgba(16,20,40,.95);border:1px solid rgba(16,185,129,.45);
+  color:var(--green);padding:10px 16px;border-radius:11px;font-size:13px;
+  font-weight:700;backdrop-filter:blur(20px);
+  transform:translateY(70px);opacity:0;transition:all .3s;max-width:270px;pointer-events:none;
+}
+#toast.show{transform:translateY(0);opacity:1}
+
+/* ─── SKELETON ─── */
+.skel{background:linear-gradient(90deg,rgba(255,255,255,.05) 25%,rgba(255,255,255,.09) 50%,rgba(255,255,255,.05) 75%);background-size:200%;animation:skelAnim 1.4s infinite;border-radius:8px}
+@keyframes skelAnim{0%{background-position:200% 0}100%{background-position:-200% 0}}
+
+/* ─── SCORE SUMMARY ─── */
+.score-sum{text-align:center;padding:40px 20px;display:none}
+.score-sum.show{display:block}
+.score-big{font-size:64px;font-weight:900;font-family:var(--mono);color:var(--accent)}
+
+/* ─── MISC ─── */
+.sep{height:1px;background:var(--border);margin:12px 0}
+.empty{text-align:center;padding:28px 0;color:var(--muted);font-size:13px}
+::-webkit-scrollbar{width:3px}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
+.back-row{display:flex;align-items:center;gap:8px;margin-bottom:12px}
+.back-title{font-size:15px;font-weight:700}
+.exp-box{background:rgba(99,102,241,.07);border:1px solid rgba(99,102,241,.22);border-radius:10px;padding:12px;font-size:13px;color:var(--muted);line-height:1.65;margin-bottom:10px;display:none}
+.exp-box.show{display:block}
+.res-bar{border-radius:10px;padding:10px 13px;margin-bottom:10px;font-weight:700;font-size:14px;display:none}
+.res-bar.ok{background:rgba(16,185,129,.1);border:1px solid rgba(16,185,129,.3);color:var(--green);display:block}
+.res-bar.bad{background:rgba(244,63,94,.1);border:1px solid rgba(244,63,94,.3);color:var(--accent2);display:block}
+
+@media(max-width:480px){
+  .stats-row{grid-template-columns:repeat(2,1fr)}
+  .stat-num{font-size:20px}
+  .tdisp{font-size:44px}
+}
 </style>
 </head>
 <body>
+<div class="ambient"></div>
 
-<header>
-  <div class="logo-wrap">
-    <div class="logo-main">टॉपर<span>हब</span></div>
-    <div class="logo-sub">मुफ़्त पढ़ाई • Bihar Board Class 9</div>
+<!-- ══════════════════════════════════════
+     LOGIN SCREEN
+══════════════════════════════════════ -->
+<div id="loginScreen">
+  <div class="login-box glass-strong">
+    <div class="login-logo">टॉपर<span>हब</span></div>
+    <div style="font-size:12px;color:var(--muted);margin-bottom:28px">Bihar Board Class 9 • मुफ़्त पढ़ाई 🇮🇳</div>
+
+    <!-- Step 1 -->
+    <div class="login-step active" id="step1">
+      <div style="text-align:left;margin-bottom:10px">
+        <div class="label" style="margin-bottom:6px">पूरा नाम</div>
+        <input class="inp" id="lName" placeholder="जैसे: Rahul Kumar"/>
+      </div>
+      <div style="text-align:left;margin-bottom:18px">
+        <div class="label" style="margin-bottom:6px">मोबाइल नंबर (10 अंक)</div>
+        <input class="inp" id="lPhone" type="tel" maxlength="10" placeholder="जैसे: 9876543210"/>
+      </div>
+      <div id="l1Err" style="color:var(--accent2);font-size:13px;margin-bottom:10px;display:none"></div>
+      <button class="btn btn-p" style="width:100%;padding:14px;font-size:15px" onclick="sendOTP()">OTP भेजो 📱</button>
+      <div style="font-size:11px;color:var(--muted);margin-top:12px">यह ऐप बिल्कुल मुफ़्त है 💙</div>
+    </div>
+
+    <!-- Step 2 -->
+    <div class="login-step" id="step2">
+      <div style="font-size:36px;margin-bottom:8px">📱</div>
+      <div style="font-size:16px;font-weight:700;margin-bottom:4px">OTP दर्ज करो</div>
+      <div id="otpInfo" style="font-size:12px;color:var(--muted);margin-bottom:12px"></div>
+      <div class="demo-hint" id="demoHint"></div>
+      <div class="otp-row" id="otpRow">
+        <input class="otp-box" id="o0" maxlength="1" inputmode="numeric"/>
+        <input class="otp-box" id="o1" maxlength="1" inputmode="numeric"/>
+        <input class="otp-box" id="o2" maxlength="1" inputmode="numeric"/>
+        <input class="otp-box" id="o3" maxlength="1" inputmode="numeric"/>
+        <input class="otp-box" id="o4" maxlength="1" inputmode="numeric"/>
+        <input class="otp-box" id="o5" maxlength="1" inputmode="numeric"/>
+      </div>
+      <div id="l2Err" style="color:var(--accent2);font-size:13px;margin-bottom:10px;display:none"></div>
+      <button class="btn btn-p" style="width:100%;padding:14px;font-size:15px" onclick="verifyOTP()">लॉगिन करो ✅</button>
+      <button onclick="resendOTP()" style="background:none;border:none;color:var(--accent);font-size:13px;cursor:pointer;margin-top:12px;font-family:var(--font)">OTP दोबारा भेजो</button>
+    </div>
   </div>
-  <div class="header-right">
+</div>
+
+<!-- ══════════════════════════════════════
+     HEADER
+══════════════════════════════════════ -->
+<header id="mainHeader">
+  <div>
+    <div class="hlogo">टॉपर<span>हब</span></div>
+    <span class="hsub">Bihar Board Class 9</span>
+  </div>
+  <div class="h-right">
     <span class="xp-chip" id="hXP">0 XP</span>
     <span class="streak-chip" id="hStreak">🔥0</span>
+    <button class="user-av-btn" id="hAvBtn" onclick="switchTab('profile')"></button>
   </div>
 </header>
 
-<div class="tabs">
-  <button class="tab active" onclick="switchTab('dashboard')">📊 डैशबोर्ड</button>
-  <button class="tab" onclick="switchTab('quiz')">📝 क्विज़</button>
-  <button class="tab" onclick="switchTab('aicoach')">🤖 AI कोच</button>
-  <button class="tab" onclick="switchTab('notes')">📓 नोट्स</button>
-  <button class="tab" onclick="switchTab('timer')">⏱ टाइमर</button>
-  <button class="tab" onclick="switchTab('leaderboard')">🏆 रैंकिंग</button>
-</div>
+<!-- ══════════════════════════════════════
+     BOTTOM NAV
+══════════════════════════════════════ -->
+<nav id="mainNav" style="display:flex">
+  <button class="bnav-item active" data-tab="dashboard" onclick="switchTab('dashboard')"><span class="bnav-icon">🏠</span><span>होम</span></button>
+  <button class="bnav-item" data-tab="subjects" onclick="switchTab('subjects')"><span class="bnav-icon">📚</span><span>विषय</span></button>
+  <button class="bnav-item" data-tab="quiz" onclick="switchTab('quiz')"><span class="bnav-icon">❓</span><span>क्विज़</span></button>
+  <button class="bnav-item" data-tab="aicoach" onclick="switchTab('aicoach')"><span class="bnav-icon">🤖</span><span>कोच</span></button>
+  <button class="bnav-item" data-tab="more" onclick="switchTab('more')"><span class="bnav-icon">⋯</span><span>और</span></button>
+</nav>
 
-<main>
+<!-- ══════════════════════════════════════
+     MAIN CONTENT
+══════════════════════════════════════ -->
+<div id="mainContent">
 
-  <!-- DASHBOARD -->
-  <div id="dashboard" class="section active">
-    <div class="stats-grid">
-      <div class="stat-card"><div class="stat-num" id="dXP">0</div><div class="stat-label">कुल XP</div></div>
-      <div class="stat-card"><div class="stat-num gold" id="dStreak">0</div><div class="stat-label">🔥 स्ट्रीक (दिन)</div></div>
-      <div class="stat-card"><div class="stat-num green" id="dCorrect">0</div><div class="stat-label">सही जवाब ✓</div></div>
-      <div class="stat-card"><div class="stat-num red" id="dAcc">0%</div><div class="stat-label">सटीकता</div></div>
-    </div>
-
-    <div class="card">
-      <div class="card-title">स्तर प्रगति</div>
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
-        <div style="font-size:19px;font-weight:700;" id="dLevel">स्तर 1</div>
-        <div id="dRank" style="font-size:13px;font-weight:600;color:var(--gold);"></div>
+  <!-- ── DASHBOARD ── -->
+  <div id="sec-dashboard" class="section active">
+    <div class="daily-banner pending" id="dailyBanner">
+      <div style="font-size:32px" id="dailyIcon">🎯</div>
+      <div style="flex:1">
+        <div style="font-size:14px;font-weight:700;margin-bottom:2px" id="dailyTitle">आज की दैनिक क्विज़</div>
+        <div style="font-size:11px;color:var(--muted)" id="dailySub">10 सवाल • सभी विषय • +50 बोनस XP</div>
       </div>
-      <div class="prog-wrap"><div class="prog-fill" id="dBar" style="width:0%"></div></div>
-      <div style="font-size:12px;color:var(--muted);margin-top:3px;" id="dXPInfo">0 / 100 XP अगले स्तर के लिए</div>
+      <button class="btn btn-p btn-sm" id="dailyBtn" onclick="startDailyQuiz()">शुरू करो</button>
     </div>
 
-    <div class="card">
-      <div class="card-title">विषय प्रगति</div>
+    <div class="stats-row">
+      <div class="stat-c glass"><div class="stat-num" id="dXP">0</div><div class="stat-lbl">⚡ XP</div></div>
+      <div class="stat-c glass"><div class="stat-num" style="color:var(--gold)" id="dStreak">0</div><div class="stat-lbl">🔥 स्ट्रीक</div></div>
+      <div class="stat-c glass"><div class="stat-num" style="color:var(--green)" id="dCorrect">0</div><div class="stat-lbl">✓ सही</div></div>
+      <div class="stat-c glass"><div class="stat-num" style="color:var(--accent2)" id="dAcc">0%</div><div class="stat-lbl">🎯 सटीकता</div></div>
+    </div>
+
+    <div class="card glass">
+      <div class="label" style="margin-bottom:10px">स्तर प्रगति</div>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+        <div style="font-size:19px;font-weight:800" id="dLevel">स्तर 1</div>
+        <div id="dRankBadge"></div>
+      </div>
+      <div class="prog-wrap" style="height:8px"><div class="prog-fill" id="dBar" style="width:0%;background:linear-gradient(90deg,#6366f1,#8b5cf6)"></div></div>
+      <div style="font-size:11px;color:var(--muted);margin-top:5px" id="dXPInfo">0/100 XP अगले स्तर के लिए</div>
+    </div>
+
+    <div class="card glass">
+      <div class="label" style="margin-bottom:10px">विषय प्रगति</div>
       <div id="dSubStats"><div class="empty">क्विज़ खेलो — प्रगति यहाँ दिखेगी 📚</div></div>
     </div>
 
-    <div class="card">
-      <div class="card-title">आज का लक्ष्य</div>
-      <div style="font-size:14px;color:var(--muted);line-height:1.8;">
-        ✅ कम से कम 10 सवाल हल करो<br>
-        ✅ 1 पोमोडोरो (25 मिनट) पढ़ाई करो<br>
-        ✅ AI कोच से एक doubt पूछो<br>
-        ✅ अपने नोट्स लिखो<br>
-        <div style="margin-top:10px;font-size:13px;color:var(--accent);font-style:italic;">"मेहनत कभी झूठ नहीं बोलती।"</div>
+    <div class="card glass">
+      <div class="label" style="margin-bottom:10px">आज का लक्ष्य</div>
+      <div id="goalList" style="font-size:13px;color:var(--muted);line-height:1.95">
+        ☐ दैनिक क्विज़ पूरी करो<br>
+        ☐ 1 पोमोडोरो (25 मिनट) पढ़ाई करो<br>
+        ☐ AI कोच से एक doubt पूछो<br>
+        ☐ 1 नया नोट बनाओ
       </div>
+      <div style="margin-top:10px;font-size:12px;color:var(--accent);font-style:italic">"मेहनत कभी झूठ नहीं बोलती।"</div>
     </div>
 
-    <div class="footer-credit">बनाया: Aman Bhandari • सबके लिए मुफ़्त 🇮🇳</div>
+    <div style="text-align:center;font-size:10px;color:var(--muted);padding:8px 0 4px">
+      बनाया: Aman Bhandari • सबके लिए मुफ़्त 🇮🇳
+    </div>
   </div>
 
-  <!-- QUIZ -->
-  <div id="quiz" class="section">
-
-    <div class="card" style="margin-bottom:12px;">
-      <div class="card-title">विषय चुनो</div>
-      <div class="subj-row">
-        <button class="subj-btn active" onclick="setSubj('math',this)">📐 गणित</button>
-        <button class="subj-btn" onclick="setSubj('science',this)">🔬 विज्ञान</button>
-        <button class="subj-btn" onclick="setSubj('hindi',this)">📖 हिंदी</button>
-        <button class="subj-btn" onclick="setSubj('english',this)">🔤 अंग्रेज़ी</button>
-        <button class="subj-btn" onclick="setSubj('social',this)">🌍 सामाजिक</button>
+  <!-- ── SUBJECTS ── -->
+  <div id="sec-subjects" class="section">
+    <div class="card glass" style="margin-bottom:14px">
+      <div style="font-size:16px;font-weight:700;margin-bottom:3px">📚 विषय चुनो</div>
+      <div style="font-size:12px;color:var(--muted)">Bihar Board Class 9 • NCERT आधारित</div>
+    </div>
+    <div id="subjGrid" class="subj-grid">
+      <div class="subj-card" onclick="openSubject('math')">
+        <span class="subj-icon-big">📐</span>
+        <div style="font-size:14px;font-weight:700;margin-bottom:3px">गणित</div>
+        <div style="font-size:11px;color:var(--muted)" id="sp-math">0% सटीकता</div>
       </div>
-      <div class="card-title" style="margin-top:12px;margin-bottom:8px;">कठिनाई स्तर</div>
-      <div class="diff-row">
-        <button class="diff-btn active" onclick="setDiff('easy',this)">🟢 आसान</button>
-        <button class="diff-btn" onclick="setDiff('medium',this)">🟡 मध्यम</button>
-        <button class="diff-btn" onclick="setDiff('hard',this)">🔴 कठिन</button>
+      <div class="subj-card" onclick="openSubject('science')">
+        <span class="subj-icon-big">🔬</span>
+        <div style="font-size:14px;font-weight:700;margin-bottom:3px">विज्ञान</div>
+        <div style="font-size:11px;color:var(--muted)" id="sp-science">0% सटीकता</div>
+      </div>
+      <div class="subj-card" onclick="openSubject('hindi')">
+        <span class="subj-icon-big">📖</span>
+        <div style="font-size:14px;font-weight:700;margin-bottom:3px">हिंदी</div>
+        <div style="font-size:11px;color:var(--muted)" id="sp-hindi">0% सटीकता</div>
+      </div>
+      <div class="subj-card" onclick="openSubject('english')">
+        <span class="subj-icon-big">🔤</span>
+        <div style="font-size:14px;font-weight:700;margin-bottom:3px">अंग्रेज़ी</div>
+        <div style="font-size:11px;color:var(--muted)" id="sp-english">0% सटीकता</div>
+      </div>
+      <div class="subj-card subj-card-wide" onclick="openSubject('social')">
+        <span class="subj-icon-big">🌍</span>
+        <div style="font-size:14px;font-weight:700;margin-bottom:3px">सामाजिक विज्ञान</div>
+        <div style="font-size:11px;color:var(--muted)" id="sp-social">0% सटीकता</div>
+      </div>
+    </div>
+    <div id="subjDetail" style="display:none">
+      <div class="back-row">
+        <button class="btn btn-g btn-sm" onclick="closeSubjectDetail()">← वापस</button>
+        <div class="back-title" id="sdTitle"></div>
+      </div>
+      <div id="sdChapters"></div>
+    </div>
+  </div>
+
+  <!-- ── QUIZ ── -->
+  <div id="sec-quiz" class="section">
+    <div class="card glass" style="margin-bottom:10px" id="quizControls">
+      <div class="label" style="margin-bottom:8px">विषय चुनो</div>
+      <div class="filter-row" id="quizSubjRow">
+        <button class="filter-btn active" onclick="setQuizSubj('math',this)">📐 गणित</button>
+        <button class="filter-btn" onclick="setQuizSubj('science',this)">🔬 विज्ञान</button>
+        <button class="filter-btn" onclick="setQuizSubj('hindi',this)">📖 हिंदी</button>
+        <button class="filter-btn" onclick="setQuizSubj('english',this)">🔤 अंग्रेज़ी</button>
+        <button class="filter-btn" onclick="setQuizSubj('social',this)">🌍 सामाजिक</button>
+      </div>
+      <div class="label" style="margin-bottom:8px;margin-top:10px">कठिनाई</div>
+      <div style="display:flex;gap:6px">
+        <button class="filter-btn gold active" style="flex:1" onclick="setQuizDiff('easy',this)">🟢 आसान</button>
+        <button class="filter-btn gold" style="flex:1" onclick="setQuizDiff('medium',this)">🟡 मध्यम</button>
+        <button class="filter-btn gold" style="flex:1" onclick="setQuizDiff('hard',this)">🔴 कठिन</button>
       </div>
     </div>
 
-    <!-- Score summary shown after 10 questions -->
+    <!-- Daily mode banner in quiz -->
+    <div id="dailyModeBar" style="display:none;background:rgba(99,102,241,.1);border:1px solid rgba(99,102,241,.3);border-radius:10px;padding:10px 14px;margin-bottom:10px;font-size:13px;color:var(--accent);display:none;align-items:center;gap:8px">
+      🎯 <strong>दैनिक क्विज़ मोड</strong> — 10 सवाल, सभी विषय
+    </div>
+
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;font-size:12px;color:var(--muted)">
+      <span id="qSubjLbl"></span>
+      <span style="font-family:var(--mono)" id="qProgress">0/10</span>
+    </div>
+    <div class="prog-wrap" style="height:4px;margin-bottom:12px"><div class="prog-fill" id="qProgBar" style="width:0%;background:linear-gradient(90deg,#6366f1,#8b5cf6)"></div></div>
+
     <div class="score-sum" id="scoreSummary">
       <div class="score-big" id="sumScore">0/10</div>
-      <div class="score-msg" id="sumMsg"></div>
-      <div style="margin-top:14px;">
-        <button class="btn btn-p" onclick="restartQuiz()">🔄 फिर से खेलो</button>
+      <div style="font-size:16px;color:var(--muted);margin-top:8px" id="sumMsg"></div>
+      <div id="sumBonus" style="font-size:13px;color:var(--green);margin-top:6px;display:none">🎉 +50 बोनस XP मिला!</div>
+      <div style="display:flex;gap:10px;justify-content:center;margin-top:24px;flex-wrap:wrap">
+        <button class="btn btn-p" onclick="restartQuiz()">🔄 फिर से</button>
+        <button class="btn btn-g" onclick="switchTab('dashboard')">🏠 होम</button>
       </div>
     </div>
 
     <div id="quizArea">
-      <div class="q-box">
-        <div class="q-tag" id="qTag">प्रश्न 1</div>
-        <div class="q-text" id="qText">लोड हो रहा है...</div>
+      <div class="card glass" id="qBox">
+        <div class="label" id="qTag">Q 1</div>
+        <div style="font-size:15px;font-weight:600;line-height:1.65;margin-top:6px" id="qText">लोड हो रहा है...</div>
       </div>
-      <div class="opts-grid" id="optsGrid"></div>
-      <div class="result-bar" id="resBanner"></div>
+      <div id="optsGrid"></div>
+      <div class="res-bar" id="resBanner"></div>
       <div class="exp-box" id="expBox"></div>
-      <div class="quiz-btns">
-        <button class="btn btn-p" id="nextBtn" onclick="nextQ()" style="display:none">अगला सवाल →</button>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <button class="btn btn-p" id="nextBtn" onclick="nextQ()" style="display:none">अगला →</button>
         <button class="btn btn-g" onclick="skipQ()">⏭ छोड़ो</button>
+        <button class="btn btn-g" id="dailyStartBtn" onclick="startDailyQuiz()" style="font-size:12px">🎯 दैनिक</button>
       </div>
     </div>
   </div>
 
-  <!-- AI COACH -->
-  <div id="aicoach" class="section">
-    <div class="card">
-      <div class="card-title">AI पढ़ाई कोच — Bihar Board Class 9</div>
-      <div class="quick-qs">
-        <button class="quick-q" onclick="sendQ(this)">त्रिकोणमिति समझाओ</button>
-        <button class="quick-q" onclick="sendQ(this)">प्रकाश संश्लेषण क्या है?</button>
-        <button class="quick-q" onclick="sendQ(this)">Newton के नियम बताओ</button>
-        <button class="quick-q" onclick="sendQ(this)">द्विघात समीकरण हल करो</button>
-        <button class="quick-q" onclick="sendQ(this)">हिंदी व्याकरण — संधि</button>
-        <button class="quick-q" onclick="sendQ(this)">पढ़ाई कैसे करें?</button>
-        <button class="quick-q" onclick="sendQ(this)">मुझे मोटिवेट करो</button>
+  <!-- ── AI COACH ── -->
+  <div id="sec-aicoach" class="section">
+    <div class="card glass">
+      <div class="label" style="margin-bottom:3px">🤖 AI पढ़ाई कोच</div>
+      <div style="font-size:11px;color:var(--muted);margin-bottom:12px">Bihar Board Class 9 • हिंदी में मदद</div>
+      <div class="filter-row" id="quickQs" style="margin-bottom:12px">
+        <button class="filter-btn" onclick="sendQuickQ(this)">त्रिकोणमिति समझाओ</button>
+        <button class="filter-btn" onclick="sendQuickQ(this)">प्रकाश संश्लेषण क्या है?</button>
+        <button class="filter-btn" onclick="sendQuickQ(this)">Newton के नियम बताओ</button>
+        <button class="filter-btn" onclick="sendQuickQ(this)">द्विघात समीकरण हल करो</button>
+        <button class="filter-btn" onclick="sendQuickQ(this)">हिंदी व्याकरण — संधि</button>
+        <button class="filter-btn" onclick="sendQuickQ(this)">मुझे मोटिवेट करो</button>
+        <button class="filter-btn" onclick="sendQuickQ(this)">परीक्षा की तैयारी कैसे करें?</button>
       </div>
       <div class="chat-wrap" id="chatWrap">
-        <div class="msg">
-          <div class="msg-av ai-av">🤖</div>
-          <div class="bubble ai-bub">नमस्ते! 👋 मैं तुम्हारा AI पढ़ाई कोच हूँ। Bihar Board Class 9 के किसी भी विषय में मदद माँगो — गणित, विज्ञान, हिंदी, अंग्रेज़ी या सामाजिक विज्ञान। क्या पूछना है?</div>
+        <div class="chat-msg">
+          <div class="chat-av ai-av">🤖</div>
+          <div class="bubble ai-bubble">नमस्ते! 👋 मैं तुम्हारा AI पढ़ाई कोच हूँ। Bihar Board Class 9 के किसी भी विषय में मदद माँगो — गणित, विज्ञान, हिंदी, अंग्रेज़ी या सामाजिक विज्ञान। क्या पूछना है?</div>
         </div>
       </div>
-      <div class="chat-input-wrap">
-        <input class="chat-in" id="chatIn" placeholder="अपना सवाल यहाँ लिखो..." onkeydown="if(event.key==='Enter')sendMsg()" />
-        <button class="btn btn-p" onclick="sendMsg()">भेजो</button>
+      <div style="display:flex;gap:8px">
+        <input class="inp" id="chatInput" placeholder="अपना सवाल यहाँ लिखो..." onkeydown="if(event.key==='Enter')sendChat()"/>
+        <button class="btn btn-p" onclick="sendChat()">भेजो</button>
       </div>
     </div>
   </div>
 
-  <!-- NOTES -->
-  <div id="notes" class="section">
-    <div class="card">
-      <div class="card-title">नोट्स बनाओ</div>
-      <div class="notes-subj-row">
-        <button class="subj-btn active" onclick="setNoteSubj('गणित',this)">📐 गणित</button>
-        <button class="subj-btn" onclick="setNoteSubj('विज्ञान',this)">🔬 विज्ञान</button>
-        <button class="subj-btn" onclick="setNoteSubj('हिंदी',this)">📖 हिंदी</button>
-        <button class="subj-btn" onclick="setNoteSubj('अंग्रेज़ी',this)">🔤 अंग्रेज़ी</button>
-        <button class="subj-btn" onclick="setNoteSubj('सामाजिक',this)">🌍 सामाजिक</button>
+  <!-- ── NOTES ── -->
+  <div id="sec-notes" class="section">
+    <div class="card glass">
+      <div class="label" style="margin-bottom:10px">📓 नया नोट</div>
+      <div class="filter-row" id="noteSubjRow">
+        <button class="filter-btn active" onclick="setNoteSubj('गणित',this)">📐 गणित</button>
+        <button class="filter-btn" onclick="setNoteSubj('विज्ञान',this)">🔬 विज्ञान</button>
+        <button class="filter-btn" onclick="setNoteSubj('हिंदी',this)">📖 हिंदी</button>
+        <button class="filter-btn" onclick="setNoteSubj('अंग्रेज़ी',this)">🔤 अंग्रेज़ी</button>
+        <button class="filter-btn" onclick="setNoteSubj('सामाजिक',this)">🌍 सामाजिक</button>
       </div>
-      <textarea class="note-area" id="noteInput" placeholder="यहाँ अपने नोट्स लिखो — formula, important points, याद रखने वाली बातें..."></textarea>
-      <div class="notes-btns">
+      <textarea class="inp" id="noteInput" placeholder="Formula, important points, याद रखने वाली बातें..."></textarea>
+      <div style="display:flex;gap:8px;margin-top:10px">
         <button class="btn btn-p" onclick="saveNote()">💾 सहेजो</button>
-        <button class="btn btn-g" onclick="clearNoteInput()">🗑 साफ़ करो</button>
+        <button class="btn btn-g" onclick="document.getElementById('noteInput').value=''">🗑 साफ़ करो</button>
       </div>
     </div>
-    <div class="card">
-      <div class="card-title">सहेजे गए नोट्स</div>
-      <div class="saved-notes" id="savedNotes"><div class="empty">अभी कोई नोट नहीं है। ऊपर लिखो!</div></div>
+    <div class="card glass">
+      <div class="label" style="margin-bottom:10px">सहेजे गए नोट्स</div>
+      <div id="savedNotes"><div class="empty">अभी कोई नोट नहीं 📝</div></div>
     </div>
   </div>
 
-  <!-- TIMER -->
-  <div id="timer" class="section">
-    <div class="card">
-      <div class="card-title">पोमोडोरो टाइमर</div>
-      <div class="presets">
-        <button class="pre-btn" onclick="setTimer(25*60,'पोमोडोरो 25 मिनट')">🍅 25 मिनट</button>
-        <button class="pre-btn" onclick="setTimer(45*60,'गहरी पढ़ाई 45 मिनट')">🧠 45 मिनट</button>
-        <button class="pre-btn" onclick="setTimer(60*60,'1 घंटा फोकस')">⚡ 60 मिनट</button>
-        <button class="pre-btn" onclick="setTimer(5*60,'ब्रेक 5 मिनट')">☕ 5 मिनट ब्रेक</button>
+  <!-- ── MORE HUB ── -->
+  <div id="sec-more" class="section">
+    <div class="subj-grid">
+      <div class="subj-card" onclick="switchTab('timer')"><span class="subj-icon-big">⏳</span><div style="font-size:14px;font-weight:700;margin-bottom:2px">टाइमर</div><div style="font-size:11px;color:var(--muted)">पोमोडोरो पढ़ाई</div></div>
+      <div class="subj-card" onclick="switchTab('pyqs')"><span class="subj-icon-big">📄</span><div style="font-size:14px;font-weight:700;margin-bottom:2px">PYQs</div><div style="font-size:11px;color:var(--muted)">पिछले वर्षों के प्रश्न</div></div>
+      <div class="subj-card" onclick="switchTab('planner')"><span class="subj-icon-big">📅</span><div style="font-size:14px;font-weight:700;margin-bottom:2px">Study Planner</div><div style="font-size:11px;color:var(--muted)">सप्ताह की योजना</div></div>
+      <div class="subj-card" onclick="switchTab('leaderboard')"><span class="subj-icon-big">🏆</span><div style="font-size:14px;font-weight:700;margin-bottom:2px">रैंकिंग</div><div style="font-size:11px;color:var(--muted)">टॉप विद्यार्थी</div></div>
+      <div class="subj-card" onclick="switchTab('profile')"><span class="subj-icon-big">👤</span><div style="font-size:14px;font-weight:700;margin-bottom:2px">प्रोफ़ाइल</div><div style="font-size:11px;color:var(--muted)">तुम्हारी जानकारी</div></div>
+      <div class="subj-card" onclick="switchTab('settings')"><span class="subj-icon-big">⚙️</span><div style="font-size:14px;font-weight:700;margin-bottom:2px">सेटिंग्स</div><div style="font-size:11px;color:var(--muted)">ऐप कस्टमाइज़ करो</div></div>
+    </div>
+  </div>
+
+  <!-- ── TIMER ── -->
+  <div id="sec-timer" class="section">
+    <div class="back-row"><button class="btn btn-g btn-sm" onclick="switchTab('more')">← वापस</button><div class="back-title">⏳ पोमोडोरो टाइमर</div></div>
+    <div class="card glass">
+      <div class="filter-row" style="justify-content:center">
+        <button class="filter-btn" onclick="setTimerPreset(25*60,'पोमोडोरो 25 मिनट')">🍅 25 मिनट</button>
+        <button class="filter-btn" onclick="setTimerPreset(45*60,'गहरी पढ़ाई 45 मिनट')">🧠 45 मिनट</button>
+        <button class="filter-btn" onclick="setTimerPreset(60*60,'1 घंटा फोकस')">⚡ 60 मिनट</button>
+        <button class="filter-btn" onclick="setTimerPreset(5*60,'ब्रेक 5 मिनट')">☕ ब्रेक</button>
       </div>
-      <div class="timer-disp" id="timerDisp">25:00</div>
-      <div class="timer-label-txt" id="timerLbl">पोमोडोरो 25 मिनट</div>
-      <div class="timer-btns">
-        <button class="btn btn-p" id="startBtn" onclick="toggleTimer()">▶ शुरू करो</button>
+      <!-- SVG circular timer -->
+      <div style="text-align:center;margin:4px 0">
+        <svg width="164" height="164" viewBox="0 0 164 164" style="display:block;margin:0 auto">
+          <circle cx="82" cy="82" r="72" fill="none" stroke="rgba(255,255,255,.06)" stroke-width="9"/>
+          <circle id="timerArc" cx="82" cy="82" r="72" fill="none" stroke="#6366f1" stroke-width="9"
+            stroke-dasharray="452.4" stroke-dashoffset="0" stroke-linecap="round"
+            transform="rotate(-90 82 82)" style="transition:stroke-dashoffset 1s linear;stroke:var(--accent)"/>
+          <text id="timerSvgText" x="82" y="90" text-anchor="middle" fill="#f0f1f8" font-size="28" font-weight="800" font-family="'JetBrains Mono',monospace">25:00</text>
+        </svg>
+      </div>
+      <div style="text-align:center;font-size:12px;color:var(--muted);margin-bottom:14px" id="timerLabel">पोमोडोरो 25 मिनट</div>
+      <div style="display:flex;justify-content:center;gap:10px">
+        <button class="btn btn-p" id="timerStartBtn" onclick="toggleTimer()">▶ शुरू करो</button>
         <button class="btn btn-g" onclick="resetTimer()">↺ रीसेट</button>
       </div>
     </div>
-    <div class="card">
-      <div class="card-title">आज के सत्र</div>
-      <div class="sess-log" id="sessLog"><div class="empty">अभी कोई सत्र पूरा नहीं हुआ</div></div>
+    <div class="card glass">
+      <div class="label" style="margin-bottom:10px">आज के सत्र</div>
+      <div id="sessLog"><div class="empty">अभी कोई सत्र पूरा नहीं हुआ</div></div>
     </div>
   </div>
 
-  <!-- LEADERBOARD -->
-  <div id="leaderboard" class="section">
-    <div class="card">
-      <div class="card-title">शीर्ष विद्यार्थी</div>
-      <div id="lbList"></div>
+  <!-- ── PYQs ── -->
+  <div id="sec-pyqs" class="section">
+    <div class="back-row"><button class="btn btn-g btn-sm" onclick="switchTab('more')">← वापस</button><div class="back-title">📄 पिछले वर्षों के प्रश्न</div></div>
+    <div class="filter-row" id="pyqFilterRow">
+      <button class="filter-btn active" onclick="filterPYQ('all',this)">सभी</button>
+      <button class="filter-btn" onclick="filterPYQ('math',this)">📐 गणित</button>
+      <button class="filter-btn" onclick="filterPYQ('science',this)">🔬 विज्ञान</button>
+      <button class="filter-btn" onclick="filterPYQ('hindi',this)">📖 हिंदी</button>
+      <button class="filter-btn" onclick="filterPYQ('social',this)">🌍 सामाजिक</button>
     </div>
+    <div id="pyqList"></div>
   </div>
 
-</main>
+  <!-- ── STUDY PLANNER ── -->
+  <div id="sec-planner" class="section">
+    <div class="back-row"><button class="btn btn-g btn-sm" onclick="switchTab('more')">← वापस</button><div class="back-title">📅 Study Planner</div></div>
+    <div id="plannerWrap"></div>
+  </div>
 
-<div class="toast" id="toast"></div>
+  <!-- ── LEADERBOARD ── -->
+  <div id="sec-leaderboard" class="section">
+    <div class="back-row"><button class="btn btn-g btn-sm" onclick="switchTab('more')">← वापस</button><div class="back-title">🏆 शीर्ष विद्यार्थी</div></div>
+    <div class="card glass"><div id="lbList"></div></div>
+  </div>
 
+  <!-- ── PROFILE ── -->
+  <div id="sec-profile" class="section">
+    <div class="back-row"><button class="btn btn-g btn-sm" onclick="switchTab('dashboard')">← होम</button><div class="back-title">👤 प्रोफ़ाइल</div></div>
+    <div class="card glass" style="text-align:center;padding:24px 20px">
+      <div class="profile-av" id="profAv"></div>
+      <div style="font-size:20px;font-weight:800" id="profName"></div>
+      <div style="font-size:12px;color:var(--muted);margin-top:3px" id="profPhone"></div>
+      <div style="display:flex;gap:8px;justify-content:center;margin-top:10px;flex-wrap:wrap" id="profBadges"></div>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px">
+      <div class="glass" style="padding:13px;text-align:center"><div style="font-size:11px;color:var(--muted);margin-bottom:4px">XP</div><div style="font-size:20px;font-weight:800;color:var(--accent)" id="ppXP">0</div></div>
+      <div class="glass" style="padding:13px;text-align:center"><div style="font-size:11px;color:var(--muted);margin-bottom:4px">स्ट्रीक</div><div style="font-size:20px;font-weight:800;color:var(--gold)" id="ppStr">0</div></div>
+      <div class="glass" style="padding:13px;text-align:center"><div style="font-size:11px;color:var(--muted);margin-bottom:4px">सटीकता</div><div style="font-size:20px;font-weight:800;color:var(--green)" id="ppAcc">0%</div></div>
+    </div>
+    <div class="card glass">
+      <div class="label" style="margin-bottom:12px">उपलब्धियाँ</div>
+      <div id="achievements"></div>
+    </div>
+    <button class="btn btn-red" style="width:100%;padding:13px;font-size:14px;justify-content:center;margin-top:4px" onclick="logout()">🚪 लॉगआउट करो</button>
+  </div>
+
+  <!-- ── SETTINGS ── -->
+  <div id="sec-settings" class="section">
+    <div class="back-row"><button class="btn btn-g btn-sm" onclick="switchTab('more')">← वापस</button><div class="back-title">⚙️ सेटिंग्स</div></div>
+    <div class="card glass">
+      <div class="label" style="margin-bottom:4px">सूचनाएँ</div>
+      <div class="sett-row"><div><div style="font-size:14px">दैनिक रिमाइंडर</div><div style="font-size:11px;color:var(--muted)">हर दिन पढ़ाई की याद दिलाएगा</div></div><div class="toggle on" onclick="this.classList.toggle('on')"></div></div>
+      <div class="sett-row"><div><div style="font-size:14px">स्ट्रीक अलर्ट</div><div style="font-size:11px;color:var(--muted)">स्ट्रीक टूटने से पहले सूचना</div></div><div class="toggle on" onclick="this.classList.toggle('on')"></div></div>
+      <div class="sep"></div>
+      <div class="label" style="margin-bottom:4px">पढ़ाई</div>
+      <div class="sett-row"><div><div style="font-size:14px">ध्वनि प्रभाव</div><div style="font-size:11px;color:var(--muted)">सही/गलत जवाब पर आवाज़</div></div><div class="toggle" onclick="this.classList.toggle('on')"></div></div>
+      <div class="sett-row"><div><div style="font-size:14px">स्वत: अगला प्रश्न</div><div style="font-size:11px;color:var(--muted)">जवाब देने के बाद अपने आप</div></div><div class="toggle" onclick="this.classList.toggle('on')"></div></div>
+      <div class="sep"></div>
+      <div class="label" style="margin-bottom:4px">खाता</div>
+      <div class="sett-row"><div><div style="font-size:14px">नाम</div><div style="font-size:11px;color:var(--muted)" id="stName"></div></div><span class="tag tag-blue">संपादित नहीं</span></div>
+      <div class="sett-row"><div><div style="font-size:14px">मोबाइल</div><div style="font-size:11px;color:var(--muted)" id="stPhone"></div></div><span class="tag tag-green">सत्यापित ✓</span></div>
+    </div>
+    <button class="btn btn-red" style="width:100%;padding:13px;font-size:14px;justify-content:center;margin-top:4px" onclick="logout()">🚪 लॉगआउट करो</button>
+    <div style="text-align:center;font-size:10px;color:var(--muted);padding:16px 0">बनाया: Aman Bhandari • सबके लिए मुफ़्त 🇮🇳 • v2.0</div>
+  </div>
+
+</div><!-- end mainContent -->
+
+<div id="toast"></div>
+
+<!-- ══════════════════════════════════════
+     JAVASCRIPT
+══════════════════════════════════════ -->
 <script>
-// ========== STATE ==========
-const S = {
-  xp: +localStorage.getItem('thXP')||0,
-  streak: +localStorage.getItem('thStreak')||0,
-  correct: +localStorage.getItem('thCorrect')||0,
-  total: +localStorage.getItem('thTotal')||0,
-  sub: JSON.parse(localStorage.getItem('thSub')||'{}'),
-  lastDate: localStorage.getItem('thLastDate')||'',
-  sessions: JSON.parse(localStorage.getItem('thSess')||'[]'),
-  notes: JSON.parse(localStorage.getItem('thNotes')||'[]'),
-  subject: 'math',
-  diff: 'easy',
-  noteSubj: 'गणित',
-  qCount: 0,
-  qCorrect: 0,
-};
+'use strict';
 
-function save(){
-  localStorage.setItem('thXP',S.xp);
-  localStorage.setItem('thStreak',S.streak);
-  localStorage.setItem('thCorrect',S.correct);
-  localStorage.setItem('thTotal',S.total);
-  localStorage.setItem('thSub',JSON.stringify(S.sub));
-  localStorage.setItem('thLastDate',S.lastDate);
-  localStorage.setItem('thSess',JSON.stringify(S.sessions));
-  localStorage.setItem('thNotes',JSON.stringify(S.notes));
-}
-
-// Streak check
-function checkStreak(){
-  const today = new Date().toDateString();
-  const yest = new Date(Date.now()-86400000).toDateString();
-  if(S.lastDate!==today){
-    if(S.lastDate===yest) S.streak++;
-    else if(!S.lastDate) S.streak=1;
-    else S.streak=1;
-    S.lastDate=today; save();
-  }
-}
-
-// ========== TAB ==========
-const tabNames=['dashboard','quiz','aicoach','notes','timer','leaderboard'];
-function switchTab(name){
-  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
-  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
-  document.getElementById(name).classList.add('active');
-  document.querySelectorAll('.tab')[tabNames.indexOf(name)].classList.add('active');
-  if(name==='dashboard') updateDash();
-  if(name==='leaderboard') renderLB();
-  if(name==='notes') renderNotes();
-  if(name==='timer') renderSess();
-}
-
-// ========== DASHBOARD ==========
-const ranks=['नया','खोजी','प्रयासी','चमक','विजेता','टॉपर','किंवदंती'];
-function updateDash(){
-  document.getElementById('dXP').textContent=S.xp;
-  document.getElementById('hXP').textContent=S.xp+' XP';
-  document.getElementById('dStreak').textContent=S.streak;
-  document.getElementById('hStreak').textContent='🔥'+S.streak;
-  document.getElementById('dCorrect').textContent=S.correct;
-  const acc=S.total>0?Math.round(S.correct/S.total*100):0;
-  document.getElementById('dAcc').textContent=acc+'%';
-  const lv=Math.floor(S.xp/100)+1;
-  const xpIn=S.xp%100;
-  document.getElementById('dLevel').textContent='स्तर '+lv;
-  document.getElementById('dBar').style.width=xpIn+'%';
-  document.getElementById('dXPInfo').textContent=xpIn+' / 100 XP — स्तर '+(lv+1)+' के लिए';
-  document.getElementById('dRank').textContent='🏅 '+( ranks[Math.min(lv-1,ranks.length-1)]);
-
-  const ss=document.getElementById('dSubStats');
-  if(!Object.keys(S.sub).length){ss.innerHTML='<div class="empty">क्विज़ खेलो — प्रगति यहाँ दिखेगी 📚</div>';return;}
-  const labels={math:'📐 गणित',science:'🔬 विज्ञान',hindi:'📖 हिंदी',english:'🔤 अंग्रेज़ी',social:'🌍 सामाजिक'};
-  ss.innerHTML=Object.entries(S.sub).map(([k,d])=>{
-    const a=d.total>0?Math.round(d.correct/d.total*100):0;
-    return `<div style="margin-bottom:11px;">
-      <div style="display:flex;justify-content:space-between;margin-bottom:3px;">
-        <span style="font-size:13px;">${labels[k]||k}</span>
-        <span style="font-size:11px;color:var(--muted);font-family:var(--mono);">${d.correct}/${d.total} (${a}%)</span>
-      </div>
-      <div class="prog-wrap"><div class="prog-fill" style="width:${a}%"></div></div>
-    </div>`;
-  }).join('');
-}
-
-// ========== QUIZ DATA ==========
-const QBank = {
+/* ─── QUESTION BANK ─── */
+const QB = {
   math:{
     easy:[
-      {q:"2 × 3 + 4 = ?",opts:["10","9","11","8"],ans:0,exp:"पहले गुणा: 2×3=6, फिर जोड़: 6+4=10"},
-      {q:"√81 = ?",opts:["9","8","7","10"],ans:0,exp:"9 × 9 = 81, इसलिए √81 = 9"},
-      {q:"एक आयत की लंबाई 6 cm और चौड़ाई 4 cm है। परिमाप = ?",opts:["20 cm","24 cm","10 cm","16 cm"],ans:0,exp:"परिमाप = 2(6+4) = 2×10 = 20 cm"},
-      {q:"यदि 4x = 20, तो x = ?",opts:["5","4","6","8"],ans:0,exp:"x = 20÷4 = 5"},
-      {q:"15 का 20% = ?",opts:["3","4","5","2"],ans:0,exp:"15 × 20/100 = 15 × 0.2 = 3"},
+      {q:"√144 = ?",opts:["12","13","11","14"],ans:0,exp:"12 × 12 = 144, इसलिए √144 = 12"},
+      {q:"5x = 35 → x = ?",opts:["7","5","6","8"],ans:0,exp:"x = 35 ÷ 5 = 7"},
+      {q:"वर्ग की भुजा 6 cm → क्षेत्रफल = ?",opts:["36 cm²","24 cm²","12 cm²","18 cm²"],ans:0,exp:"क्षेत्रफल = भुजा² = 6² = 36 cm²"},
+      {q:"40 का 25% = ?",opts:["10","8","12","15"],ans:0,exp:"40 × 25/100 = 10"},
+      {q:"3² + 4² = ?",opts:["25","7","49","12"],ans:0,exp:"9 + 16 = 25"},
+      {q:"आयत: l=8, b=5 → परिमाप = ?",opts:["26 cm","40 cm","13 cm","20 cm"],ans:0,exp:"परिमाप = 2(8+5) = 26 cm"},
+      {q:"LCM(4, 6) = ?",opts:["12","24","8","6"],ans:0,exp:"4=2², 6=2×3 → LCM=12"},
+      {q:"2 + 3 × 4 = ?",opts:["14","20","9","24"],ans:0,exp:"BODMAS: 3×4=12, 2+12=14"},
     ],
     medium:[
-      {q:"समीकरण x² - 5x + 6 = 0 के मूल क्या हैं?",opts:["2 और 3","1 और 6","3 और 4","2 और 4"],ans:0,exp:"(x-2)(x-3)=0 → x=2 या x=3"},
-      {q:"एक वृत्त की त्रिज्या 7 cm है। क्षेत्रफल = ? (π=22/7)",opts:["154 cm²","144 cm²","168 cm²","196 cm²"],ans:0,exp:"πr² = (22/7)×7×7 = 22×7 = 154 cm²"},
-      {q:"sin 30° = ?",opts:["1/2","√3/2","1","0"],ans:0,exp:"sin 30° = 1/2 — यह एक मानक मान है।"},
-      {q:"दो संख्याओं का LCM 60, HCF 5 है। एक संख्या 15 है तो दूसरी = ?",opts:["20","25","30","10"],ans:0,exp:"LCM×HCF = a×b → 60×5 = 15×b → b=20"},
-      {q:"(a+b)² = ?",opts:["a²+2ab+b²","a²+b²","a²-b²","2(a+b)"],ans:0,exp:"(a+b)² = a² + 2ab + b² — बीजगणित का सर्वसमिका"},
+      {q:"x² − 5x + 6 = 0 के मूल = ?",opts:["2 और 3","1 और 6","2 और 4","3 और 4"],ans:0,exp:"(x-2)(x-3)=0 → x=2 या x=3"},
+      {q:"वृत्त r=7 cm का क्षेत्रफल (π=22/7) = ?",opts:["154 cm²","144 cm²","168 cm²","196 cm²"],ans:0,exp:"πr² = 22/7 × 49 = 154 cm²"},
+      {q:"sin 30° = ?",opts:["½","√3/2","1","0"],ans:0,exp:"sin 30° = ½ (मानक मान)"},
+      {q:"(a+b)² = ?",opts:["a²+2ab+b²","a²+b²","a²-b²","2(a+b)"],ans:0,exp:"बीजगणित सर्वसमिका"},
+      {q:"AP: a=3, d=4 → 10वाँ पद = ?",opts:["39","40","36","43"],ans:0,exp:"a₁₀ = 3+(10-1)×4 = 39"},
+      {q:"tan 45° = ?",opts:["1","0","√3","½"],ans:0,exp:"tan 45° = sin45°/cos45° = 1"},
+      {q:"एक त्रिभुज के कोण 2:3:4 → सबसे बड़ा = ?",opts:["80°","60°","40°","90°"],ans:0,exp:"9x=180° → x=20° → 4×20=80°"},
+      {q:"p(x)=x²-3x+2 → p(1) = ?",opts:["0","1","2","-1"],ans:0,exp:"1-3+2=0 → x=1 एक मूल है"},
     ],
     hard:[
-      {q:"यदि tan θ = 3/4, तो sin θ = ?",opts:["3/5","4/5","3/4","4/3"],ans:0,exp:"Pythagoras: hyp=√(9+16)=5 → sinθ = लंब/कर्ण = 3/5"},
-      {q:"2x + 3y = 12 और x - y = 1 तो x = ?",opts:["3","4","2","5"],ans:0,exp:"x=y+1 → 2(y+1)+3y=12 → 5y=10 → y=2 → x=3"},
-      {q:"एक त्रिभुज के कोण 2:3:4 के अनुपात में हैं। सबसे बड़ा कोण = ?",opts:["80°","60°","90°","70°"],ans:0,exp:"2x+3x+4x=180° → 9x=180° → x=20° → सबसे बड़ा = 4×20=80°"},
-      {q:"(3x - 2y)² का विस्तार = ?",opts:["9x²-12xy+4y²","9x²+4y²","9x²-4y²","3x²-2y²"],ans:0,exp:"(a-b)² = a²-2ab+b² → 9x²-2×3x×2y+4y² = 9x²-12xy+4y²"},
-      {q:"AP: 3, 7, 11, 15... का 10वाँ पद = ?",opts:["39","40","38","41"],ans:0,exp:"a=3, d=4 → a₁₀ = 3 + (10-1)×4 = 3+36 = 39"},
+      {q:"tanθ = 3/4 → sinθ = ?",opts:["3/5","4/5","3/4","5/3"],ans:0,exp:"कर्ण=√(9+16)=5 → sinθ=3/5"},
+      {q:"2x+3y=12, x−y=1 → x = ?",opts:["3","4","2","5"],ans:0,exp:"x=y+1 → 5y=10 → y=2, x=3"},
+      {q:"(3x−2y)² = ?",opts:["9x²−12xy+4y²","9x²+4y²","9x²−4y²","6x−4y"],ans:0,exp:"(a-b)²=a²-2ab+b²"},
+      {q:"√2 को सिद्ध कीजिए — यह किस प्रकार की संख्या है?",opts:["अपरिमेय","परिमेय","पूर्णांक","प्राकृत"],ans:0,exp:"√2 = अपरिमेय (विरोधाभास से सिद्ध)"},
     ],
   },
   science:{
     easy:[
-      {q:"जल का रासायनिक सूत्र क्या है?",opts:["H₂O","HO","H₂O₂","H₃O"],ans:0,exp:"पानी में 2 हाइड्रोजन और 1 ऑक्सीजन परमाणु होते हैं → H₂O"},
-      {q:"कोशिका का 'पावरहाउस' किसे कहते हैं?",opts:["माइटोकॉन्ड्रिया","नाभिक","राइबोसोम","क्लोरोप्लास्ट"],ans:0,exp:"माइटोकॉन्ड्रिया ATP (ऊर्जा) बनाता है इसलिए इसे पावरहाउस कहते हैं।"},
-      {q:"पृथ्वी पर गुरुत्वाकर्षण g = ?",opts:["9.8 m/s²","8.9 m/s²","10.5 m/s²","9.5 m/s²"],ans:0,exp:"g ≈ 9.8 m/s² (लगभग 10 m/s² लिया जाता है)"},
-      {q:"प्रकाश संश्लेषण में उपोत्पाद कौन सा गैस है?",opts:["ऑक्सीजन","CO₂","नाइट्रोजन","हाइड्रोजन"],ans:0,exp:"6CO₂ + 6H₂O → C₆H₁₂O₆ + 6O₂ — ऑक्सीजन उपोत्पाद है।"},
-      {q:"DNA का पूरा नाम क्या है?",opts:["Deoxyribonucleic Acid","Double Nucleic Acid","Diribonucleic Acid","Deoxyribose Acid"],ans:0,exp:"DNA = Deoxyribonucleic Acid — यह आनुवंशिक जानकारी रखता है।"},
+      {q:"कोशिका का 'पावरहाउस' = ?",opts:["माइटोकॉन्ड्रिया","नाभिक","राइबोसोम","लाइसोसोम"],ans:0,exp:"माइटोकॉन्ड्रिया ATP बनाता है"},
+      {q:"g (पृथ्वी) ≈ ?",opts:["9.8 m/s²","10.5 m/s²","8.9 m/s²","9.0 m/s²"],ans:0,exp:"g ≈ 9.8 m/s²"},
+      {q:"प्रकाश संश्लेषण उपोत्पाद गैस = ?",opts:["O₂","CO₂","N₂","H₂"],ans:0,exp:"6CO₂+6H₂O → C₆H₁₂O₆+6O₂"},
+      {q:"DNA = ?",opts:["Deoxyribonucleic Acid","Double Nucleic Acid","Diribonucleic","Deoxyribose"],ans:0,exp:"Deoxyribonucleic Acid"},
+      {q:"ध्वनि गति (वायु) ≈ ?",opts:["340 m/s","3×10⁸ m/s","1500 m/s","100 m/s"],ans:0,exp:"ध्वनि ≈ 340 m/s वायु में"},
+      {q:"जल का रासायनिक सूत्र = ?",opts:["H₂O","HO","H₂O₂","H₃O"],ans:0,exp:"2H + 1O = H₂O"},
+      {q:"मानव शरीर में गुणसूत्र = ?",opts:["46","44","48","23"],ans:0,exp:"23 जोड़े = 46 गुणसूत्र"},
+      {q:"आवर्त सारणी का पहला तत्व = ?",opts:["हाइड्रोजन","हीलियम","लिथियम","ऑक्सीजन"],ans:0,exp:"H (परमाणु क्रमांक 1)"},
     ],
     medium:[
-      {q:"ओम का नियम: V = ?",opts:["IR","I/R","R/I","I²R"],ans:0,exp:"V = IR — विभवान्तर = धारा × प्रतिरोध"},
-      {q:"न्यूटन का दूसरा नियम: F = ?",opts:["ma","mv","m/a","m+a"],ans:0,exp:"F = ma — बल = द्रव्यमान × त्वरण"},
-      {q:"प्रकाश की गति = ?",opts:["3×10⁸ m/s","3×10⁶ m/s","3×10¹⁰ m/s","3×10⁷ m/s"],ans:0,exp:"निर्वात में प्रकाश की गति = 3 × 10⁸ m/s"},
-      {q:"pH 7 से कम होने पर पदार्थ क्या होता है?",opts:["अम्लीय","क्षारीय","उदासीन","तटस्थ"],ans:0,exp:"pH<7 = अम्लीय, pH=7 = उदासीन, pH>7 = क्षारीय"},
-      {q:"मानव शरीर में सबसे लंबी हड्डी कौन सी है?",opts:["फीमर","टीबिया","ह्यूमरस","फिबुला"],ans:0,exp:"फीमर (जांघ की हड्डी) शरीर की सबसे लंबी हड्डी है।"},
+      {q:"ओम का नियम V = ?",opts:["IR","I/R","I²R","V²/R"],ans:0,exp:"V = IR"},
+      {q:"pH < 7 = ?",opts:["अम्लीय","क्षारीय","उदासीन","तटस्थ"],ans:0,exp:"pH<7=अम्लीय"},
+      {q:"विद्युत शक्ति P = ?",opts:["VI","V/I","I/V","V+I"],ans:0,exp:"P = VI = I²R"},
+      {q:"मानव की सबसे लंबी हड्डी = ?",opts:["फीमर","टीबिया","ह्यूमरस","रेडियस"],ans:0,exp:"फीमर (जांघ)"},
+      {q:"कार्य का SI मात्रक = ?",opts:["जूल","न्यूटन","वाट","पास्कल"],ans:0,exp:"W=F×d → जूल (J)"},
+      {q:"समान्तर: R₁=2Ω, R₂=3Ω → R = ?",opts:["1.2Ω","5Ω","6Ω","0.5Ω"],ans:0,exp:"1/R=1/2+1/3=5/6 → R=1.2Ω"},
     ],
     hard:[
-      {q:"किस प्रकार के दर्पण का उपयोग वाहनों के पीछे देखने के लिए होता है?",opts:["उत्तल दर्पण","अवतल दर्पण","समतल दर्पण","गोलीय दर्पण"],ans:0,exp:"उत्तल दर्पण का दृष्टि क्षेत्र बड़ा होता है इसलिए rear-view mirror में उपयोग होता है।"},
-      {q:"विद्युत शक्ति P = ?",opts:["VI","V/I","I/V","V²I"],ans:0,exp:"P = VI = I²R = V²/R — विद्युत शक्ति का सूत्र"},
-      {q:"प्रकाश का वायु से काँच में जाने पर अपवर्तन कोण = ?",opts:["आपतन कोण से कम","आपतन कोण से अधिक","आपतन कोण के बराबर","शून्य"],ans:0,exp:"सघन माध्यम में प्रकाश मुड़ता है, गति घटती है, अपवर्तन कोण छोटा होता है।"},
-      {q:"मेंडल के प्रभाविता के नियम के अनुसार F1 संकर में कौन सा लक्षण दिखता है?",opts:["प्रभावी","अप्रभावी","दोनों","कोई नहीं"],ans:0,exp:"F1 संकर में केवल प्रभावी (Dominant) लक्षण दिखता है।"},
-      {q:"एक विद्युत परिपथ में 2Ω और 3Ω के प्रतिरोध श्रेणी में जुड़े हैं। कुल प्रतिरोध = ?",opts:["5Ω","1.2Ω","6Ω","2.5Ω"],ans:0,exp:"श्रेणी में R = R₁+R₂ = 2+3 = 5Ω"},
+      {q:"उत्तल दर्पण वाहनों में क्यों?",opts:["बड़ा दृष्टि क्षेत्र","अभिसारी","वास्तविक प्रतिबिम्ब","आवर्धक"],ans:0,exp:"अपसारी → बड़ा दृष्टि क्षेत्र"},
+      {q:"F1 में कौन सा लक्षण दिखता है?",opts:["प्रभावी","अप्रभावी","दोनों","कोई नहीं"],ans:0,exp:"मेंडल → प्रभावी (Dominant)"},
+      {q:"श्रेणी: R₁=2Ω, R₂=3Ω → R = ?",opts:["5Ω","1.2Ω","6Ω","0.8Ω"],ans:0,exp:"श्रेणी: R=R₁+R₂=5Ω"},
     ],
   },
   hindi:{
     easy:[
-      {q:"'कमल' का पर्यायवाची शब्द क्या है?",opts:["पद्म","जल","वन","नभ"],ans:0,exp:"कमल के पर्यायवाची: पद्म, नलिन, जलज, अरविंद, सरोज"},
-      {q:"'आकाश' का विलोम शब्द क्या है?",opts:["पाताल","धरती","जमीन","ज़मीन"],ans:0,exp:"आकाश का विलोम = पाताल"},
-      {q:"'पुस्तक' का बहुवचन क्या है?",opts:["पुस्तकें","पुस्तकों","पुस्तको","पुस्तकि"],ans:0,exp:"पुस्तक → पुस्तकें (बहुवचन)"},
-      {q:"हिंदी वर्णमाला में स्वरों की संख्या कितनी है?",opts:["11","13","9","12"],ans:0,exp:"हिंदी में 11 स्वर होते हैं: अ, आ, इ, ई, उ, ऊ, ए, ऐ, ओ, औ, ऋ"},
-      {q:"'सूरदास' किस काल के कवि थे?",opts:["भक्तिकाल","रीतिकाल","आदिकाल","आधुनिककाल"],ans:0,exp:"सूरदास भक्तिकाल के महान कवि थे।"},
+      {q:"'कमल' का पर्यायवाची = ?",opts:["पद्म","जल","नभ","वन"],ans:0,exp:"पद्म, नलिन, जलज = कमल के पर्यायवाची"},
+      {q:"'आकाश' का विलोम = ?",opts:["पाताल","धरती","जमीन","भूमि"],ans:0,exp:"आकाश ↔ पाताल"},
+      {q:"हिंदी में स्वर = ?",opts:["11","13","9","12"],ans:0,exp:"11 स्वर: अ आ इ ई उ ऊ ए ऐ ओ औ ऋ"},
+      {q:"सूरदास किस काल के कवि?",opts:["भक्तिकाल","रीतिकाल","आदिकाल","आधुनिककाल"],ans:0,exp:"भक्तिकाल — कृष्णभक्ति"},
+      {q:"'पुस्तक' का बहुवचन = ?",opts:["पुस्तकें","पुस्तकों","पुस्तको","पुस्तकि"],ans:0,exp:"पुस्तक → पुस्तकें"},
+      {q:"'रहिमन पानी राखिए' — किसकी कविता?",opts:["रहीम","कबीर","तुलसी","रसखान"],ans:0,exp:"रहीम (अब्दुर्रहीम खानखाना)"},
     ],
     medium:[
-      {q:"'राम ने सेब खाया' — इस वाक्य में कर्ता कौन है?",opts:["राम","सेब","खाया","ने"],ans:0,exp:"कर्ता वह होता है जो क्रिया करता है — यहाँ 'राम' कर्ता है।"},
-      {q:"'सूर्योदय' में कौन सी संधि है?",opts:["गुण संधि","दीर्घ संधि","वृद्धि संधि","यण संधि"],ans:0,exp:"सूर्य + उदय = सूर्योदय — अ+उ = ओ → गुण संधि"},
-      {q:"'तुलसीदास' की प्रसिद्ध रचना कौन सी है?",opts:["रामचरितमानस","सूरसागर","पद्मावत","बीजक"],ans:0,exp:"तुलसीदास की रामचरितमानस (अवधी में) सबसे प्रसिद्ध रचना है।"},
-      {q:"'जो पढ़ा-लिखा हो' — एक शब्द में क्या होगा?",opts:["साक्षर","निरक्षर","विद्वान","पंडित"],ans:0,exp:"साक्षर = जो पढ़ा-लिखा हो"},
-      {q:"'रहिमन पानी राखिए' — यह किसकी कविता है?",opts:["रहीम","कबीर","तुलसीदास","रसखान"],ans:0,exp:"यह रहीम (अब्दुर्रहीम खानखाना) का प्रसिद्ध दोहा है।"},
+      {q:"'सूर्योदय' में संधि = ?",opts:["गुण संधि","दीर्घ संधि","यण संधि","वृद्धि संधि"],ans:0,exp:"सूर्य+उदय → अ+उ=ओ → गुण संधि"},
+      {q:"तुलसीदास की प्रसिद्ध रचना = ?",opts:["रामचरितमानस","सूरसागर","पद्मावत","बीजक"],ans:0,exp:"रामचरितमानस (अवधी)"},
+      {q:"'राम ने सेब खाया' — कर्ता = ?",opts:["राम","सेब","खाया","ने"],ans:0,exp:"क्रिया करने वाला = कर्ता → राम"},
+      {q:"'जो पढ़ा-लिखा हो' — एक शब्द = ?",opts:["साक्षर","निरक्षर","विद्वान","पंडित"],ans:0,exp:"साक्षर = पढ़ा-लिखा"},
     ],
     hard:[
-      {q:"'अनेकार्थी' शब्द 'कर' का एक अर्थ 'हाथ' है। दूसरा अर्थ क्या है?",opts:["टैक्स","काम","खेत","पैर"],ans:0,exp:"'कर' के अर्थ हैं: हाथ, टैक्स (कर), करना (क्रिया)"},
-      {q:"वीर रस का स्थायी भाव क्या है?",opts:["उत्साह","भय","क्रोध","प्रेम"],ans:0,exp:"वीर रस का स्थायी भाव = उत्साह"},
-      {q:"'उत्कर्ष' का विलोम क्या है?",opts:["अपकर्ष","निम्न","हीन","पतन"],ans:0,exp:"उत्कर्ष (उन्नति) का विलोम = अपकर्ष (पतन)"},
-      {q:"'प्रत्यय' से बना शब्द कौन सा है?",opts:["लिखावट","प्रतिदिन","अनुकरण","विज्ञान"],ans:0,exp:"लिखावट = लिख + आवट (प्रत्यय)"},
-      {q:"महाकाव्य और खंडकाव्य में मुख्य अंतर क्या है?",opts:["कथा की विशालता","भाषा","काल","नायक"],ans:0,exp:"महाकाव्य में पूरा जीवन-वृत्त होता है, खंडकाव्य में एक ही खंड/प्रसंग होता है।"},
+      {q:"वीर रस का स्थायी भाव = ?",opts:["उत्साह","भय","क्रोध","प्रेम"],ans:0,exp:"वीर रस → उत्साह"},
+      {q:"'उत्कर्ष' का विलोम = ?",opts:["अपकर्ष","निम्न","हीन","पतन"],ans:0,exp:"उत्कर्ष ↔ अपकर्ष"},
+      {q:"महाकाव्य vs खंडकाव्य का अंतर?",opts:["कथा की विशालता","भाषा","काल","नायक"],ans:0,exp:"महाकाव्य=पूरा जीवन; खंडकाव्य=एक खंड"},
     ],
   },
   english:{
     easy:[
-      {q:"Past tense of 'go' is:",opts:["went","gone","goed","going"],ans:0,exp:"'Go' is an irregular verb. Past tense = went"},
-      {q:"Plural of 'child' is:",opts:["children","childs","childrens","child's"],ans:0,exp:"Irregular plural: child → children"},
-      {q:"'The sun rises in the east.' — Subject is:",opts:["The sun","rises","east","the"],ans:0,exp:"Subject performs the action — 'The sun' rises."},
-      {q:"Synonym of 'happy' is:",opts:["joyful","sad","angry","tired"],ans:0,exp:"Joyful, glad, pleased are synonyms of happy."},
-      {q:"Fill in the blank: She ___ to school every day.",opts:["goes","go","went","going"],ans:0,exp:"With 'she' (3rd person singular) → goes (present simple)"},
+      {q:"Past tense of 'go':",opts:["went","gone","goed","going"],ans:0,exp:"Irregular verb: go → went"},
+      {q:"Plural of 'child':",opts:["children","childs","childrens","child's"],ans:0,exp:"Irregular: child → children"},
+      {q:"Synonym of 'happy':",opts:["joyful","sad","angry","tired"],ans:0,exp:"Joyful = happy"},
+      {q:"She ___ to school every day.",opts:["goes","go","went","gone"],ans:0,exp:"3rd person singular → goes"},
+      {q:"Antonym of 'ancient':",opts:["modern","old","new","young"],ans:0,exp:"Ancient ↔ Modern"},
     ],
     medium:[
-      {q:"Which tense: 'I have eaten my food.'",opts:["Present Perfect","Simple Past","Past Continuous","Simple Present"],ans:0,exp:"'Have + V3' = Present Perfect tense"},
-      {q:"Antonym of 'ancient' is:",opts:["modern","old","new","fresh"],ans:0,exp:"Ancient = very old. Antonym = modern"},
-      {q:"Passive voice of 'She writes a letter':",opts:["A letter is written by her","A letter was written","She wrote a letter","Letter is write by her"],ans:0,exp:"Active → Passive: Object becomes subject. 'A letter is written by her.'"},
-      {q:"'Despite his illness, he came to school.' — 'Despite' is:",opts:["Preposition","Conjunction","Adverb","Verb"],ans:0,exp:"'Despite' is a preposition used to show contrast."},
-      {q:"Choose correct sentence:",opts:["Neither of them is correct.","Neither of them are correct.","Neither them is correct.","Neither of them was correct always."],ans:0,exp:"'Neither of' takes singular verb → 'is'"},
+      {q:"'I have eaten' — Which tense?",opts:["Present Perfect","Simple Past","Past Continuous","Future"],ans:0,exp:"Have + V3 = Present Perfect"},
+      {q:"Passive: 'She writes a letter':",opts:["A letter is written by her","Letter was written","She wrote","Letter writes"],ans:0,exp:"Object becomes subject in passive"},
+      {q:"'Despite his illness, he came.' — 'Despite' is:",opts:["Preposition","Conjunction","Adverb","Verb"],ans:0,exp:"'Despite' = preposition"},
+      {q:"'The news is good.' — 'news' is:",opts:["Uncountable noun","Countable noun","Proper noun","Verb"],ans:0,exp:"News = uncountable noun"},
     ],
     hard:[
-      {q:"'The news is good.' — 'news' is:",opts:["Uncountable noun","Countable noun","Proper noun","Abstract noun"],ans:0,exp:"'News' is an uncountable noun, always used with singular verb."},
-      {q:"'Scarcely had I reached when it rained.' — This uses:",opts:["Inverted structure","Simple sentence","Passive voice","Reported speech"],ans:0,exp:"Scarcely/Hardly + had + subject + V3 uses inverted/negative structure."},
-      {q:"Identify the figure of speech: 'Life is a journey.'",opts:["Metaphor","Simile","Personification","Alliteration"],ans:0,exp:"Direct comparison without 'like/as' = Metaphor. (Simile would use 'like': 'Life is like a journey')"},
-      {q:"'He said, \"I am happy.\"' — Indirect speech:",opts:["He said that he was happy.","He said that he is happy.","He told he was happy.","He said he will be happy."],ans:0,exp:"Reporting verb past → tense changes. 'am' → 'was'. Pronoun 'I' → 'he'."},
-      {q:"Choose the correct form: 'I wish I ___ a bird.'",opts:["were","was","am","be"],ans:0,exp:"After 'wish' for imaginary situations, use 'were' (subjunctive mood) for all persons."},
+      {q:"'Life is a journey' — Figure of speech:",opts:["Metaphor","Simile","Personification","Alliteration"],ans:0,exp:"Direct comparison without like/as = Metaphor"},
+      {q:"'I wish I ___ a bird.'",opts:["were","was","am","be"],ans:0,exp:"Subjunctive mood after 'wish'"},
+      {q:"Identify the error: 'Neither of them are correct.'",opts:["are → is","Neither → Both","them → him","correct → corrected"],ans:0,exp:"'Neither of' takes singular verb → is"},
     ],
   },
   social:{
     easy:[
-      {q:"भारत का राष्ट्रीय पशु कौन है?",opts:["बाघ","शेर","हाथी","मोर"],ans:0,exp:"बंगाल टाइगर (बाघ) भारत का राष्ट्रीय पशु है।"},
-      {q:"भारत में कितने राज्य हैं?",opts:["28","29","27","30"],ans:0,exp:"वर्तमान में भारत में 28 राज्य और 8 केंद्र शासित प्रदेश हैं।"},
-      {q:"भारत की राजधानी क्या है?",opts:["नई दिल्ली","मुंबई","कोलकाता","चेन्नई"],ans:0,exp:"भारत की राजधानी नई दिल्ली है।"},
-      {q:"गंगा नदी किस दिशा में बहती है?",opts:["पश्चिम से पूर्व","पूर्व से पश्चिम","उत्तर से दक्षिण","दक्षिण से उत्तर"],ans:0,exp:"गंगा नदी पश्चिम से पूर्व दिशा में बहती है और बंगाल की खाड़ी में मिलती है।"},
-      {q:"भारतीय संविधान कब लागू हुआ?",opts:["26 जनवरी 1950","15 अगस्त 1947","26 नवंबर 1949","2 अक्टूबर 1950"],ans:0,exp:"संविधान 26 जनवरी 1950 को लागू हुआ — इसलिए गणतंत्र दिवस 26 जनवरी को मनाते हैं।"},
+      {q:"भारत का राष्ट्रीय पशु = ?",opts:["बाघ","शेर","हाथी","मोर"],ans:0,exp:"बंगाल टाइगर = राष्ट्रीय पशु"},
+      {q:"संविधान कब लागू हुआ?",opts:["26 जनवरी 1950","15 अगस्त 1947","26 नवंबर 1949","2 अक्टूबर"],ans:0,exp:"26 जनवरी 1950 = गणतंत्र दिवस"},
+      {q:"भारत में राज्य = ?",opts:["28","29","30","27"],ans:0,exp:"28 राज्य + 8 केंद्र शासित प्रदेश"},
+      {q:"गंगा का प्रवाह = ?",opts:["पश्चिम से पूर्व","पूर्व से पश्चिम","उत्तर से दक्षिण","दक्षिण से उत्तर"],ans:0,exp:"पश्चिम से पूर्व → बंगाल की खाड़ी"},
+      {q:"भारत की राजधानी = ?",opts:["नई दिल्ली","मुंबई","कोलकाता","चेन्नई"],ans:0,exp:"नई दिल्ली"},
+      {q:"भारत का सर्वोच्च पर्वत शिखर = ?",opts:["K2","एवरेस्ट","कंचनजंगा","नंदादेवी"],ans:0,exp:"K2 (भारतीय क्षेत्र में सबसे ऊँचा)"},
     ],
     medium:[
-      {q:"क्षेत्रफल में भारत का सबसे बड़ा राज्य कौन सा है?",opts:["राजस्थान","मध्य प्रदेश","उत्तर प्रदेश","महाराष्ट्र"],ans:0,exp:"राजस्थान (342,239 km²) क्षेत्रफल में भारत का सबसे बड़ा राज्य है।"},
-      {q:"'हरित क्रांति' किससे संबंधित है?",opts:["कृषि उत्पादन","उद्योग","वन","जल"],ans:0,exp:"हरित क्रांति 1960 के दशक में आई जिसने गेहूँ-चावल उत्पादन बढ़ाया।"},
-      {q:"संयुक्त राष्ट्र की स्थापना कब हुई?",opts:["1945","1950","1947","1919"],ans:0,exp:"संयुक्त राष्ट्र (UN) की स्थापना 24 अक्टूबर 1945 को हुई।"},
-      {q:"भारत में 'प्रथम पंचवर्षीय योजना' कब शुरू हुई?",opts:["1951","1947","1956","1961"],ans:0,exp:"भारत की प्रथम पंचवर्षीय योजना 1951 में शुरू हुई।"},
-      {q:"लोकसभा में सदस्यों की अधिकतम संख्या कितनी है?",opts:["552","545","500","600"],ans:0,exp:"लोकसभा में अधिकतम 552 सीटें (543 निर्वाचित + 2 मनोनीत) होती हैं।"},
+      {q:"क्षेत्रफल में सबसे बड़ा राज्य = ?",opts:["राजस्थान","मध्य प्रदेश","उत्तर प्रदेश","महाराष्ट्र"],ans:0,exp:"राजस्थान (342,239 km²)"},
+      {q:"UN की स्थापना = ?",opts:["1945","1950","1947","1919"],ans:0,exp:"24 अक्टूबर 1945"},
+      {q:"हरित क्रांति = ?",opts:["कृषि उत्पादन","उद्योग","वन","जल"],ans:0,exp:"1960 दशक — गेहूँ-चावल उत्पादन बढ़ाया"},
+      {q:"लोकसभा में अधिकतम सीटें = ?",opts:["552","545","500","600"],ans:0,exp:"552 (543 निर्वाचित + 2 मनोनीत)"},
     ],
     hard:[
-      {q:"भारत में 'उदारीकरण' (Liberalisation) किस वर्ष शुरू हुआ?",opts:["1991","1985","2000","1975"],ans:0,exp:"1991 में डॉ. मनमोहन सिंह ने नई आर्थिक नीति के तहत उदारीकरण शुरू किया।"},
-      {q:"'अर्थशास्त्र' ग्रंथ किसने लिखा?",opts:["चाणक्य","अशोक","अकबर","विक्रमादित्य"],ans:0,exp:"चाणक्य (कौटिल्य) ने 'अर्थशास्त्र' लिखा — यह राजनीति और अर्थव्यवस्था पर ग्रंथ है।"},
-      {q:"1857 की क्रांति का मुख्य कारण क्या था?",opts:["चर्बी वाले कारतूस","नमक कानून","इनकार टैक्स","जमींदारी"],ans:0,exp:"चर्बी वाले कारतूस (गाय और सुअर की) ने सैनिकों की धार्मिक भावनाओं को ठेस पहुँचाई।"},
-      {q:"भारत की GDP में किस क्षेत्र का सबसे अधिक योगदान है?",opts:["सेवा क्षेत्र","कृषि","उद्योग","खनन"],ans:0,exp:"सेवा क्षेत्र (IT, बैंकिंग, व्यापार) भारतीय GDP का लगभग 55-60% है।"},
-      {q:"'मानव विकास सूचकांक' (HDI) किसने विकसित किया?",opts:["महबूब उल हक","अमर्त्य सेन","जवाहरलाल नेहरू","मनमोहन सिंह"],ans:0,exp:"HDI को महबूब उल हक (पाकिस्तानी अर्थशास्त्री) और अमर्त्य सेन ने विकसित किया।"},
+      {q:"उदारीकरण भारत में कब?",opts:["1991","1985","2000","1975"],ans:0,exp:"1991 — डॉ. मनमोहन सिंह"},
+      {q:"1857 क्रांति का मुख्य कारण?",opts:["चर्बी वाले कारतूस","नमक कानून","जमींदारी","टैक्स"],ans:0,exp:"एनफील्ड राइफल के कारतूस"},
+      {q:"GDP में सर्वाधिक योगदान?",opts:["सेवा क्षेत्र","कृषि","उद्योग","खनन"],ans:0,exp:"सेवा क्षेत्र ≈ 55-60% GDP"},
     ],
   },
 };
 
-// ========== QUIZ LOGIC ==========
-let currQ=null, answered=false, quizEnded=false;
-const MAX_Q=10;
+const SUBJ_LABELS = {math:'📐 गणित',science:'🔬 विज्ञान',hindi:'📖 हिंदी',english:'🔤 अंग्रेज़ी',social:'🌍 सामाजिक'};
+const RANKS = ['नया 🌱','खोजी 🔍','प्रयासी ⚡','चमक ✨','विजेता 🥇','टॉपर 🏆','किंवदंती 👑'];
 
-function setSubj(subj,btn){
-  S.subject=subj;
-  document.querySelectorAll('.subj-btn').forEach(b=>b.classList.remove('active'));
+const CHAPTERS = {
+  math:['वास्तविक संख्याएँ','बहुपद','निर्देशांक ज्यामिति','दो चरों में रैखिक समीकरण','यूक्लिड की ज्यामिति','रेखाएँ और कोण','त्रिभुज','चतुर्भुज','समान्तर चतुर्भुज','वृत्त','रचना','हेरोन का सूत्र','पृष्ठीय क्षेत्रफल','सांख्यिकी','प्रायिकता'],
+  science:['हमारे आस-पास के पदार्थ','शुद्ध पदार्थ','परमाणु एवं अणु','परमाणु की संरचना','जीवन की मौलिक इकाई','ऊतक','जीवों में विविधता','गति','बल एवं न्यूटन के नियम','गुरुत्वाकर्षण','कार्य तथा ऊर्जा','ध्वनि','हम बीमार क्यों होते हैं','प्राकृतिक संपदा','खाद्य संसाधन'],
+  hindi:['दो बैलों की कथा','ल्हासा की ओर','उपभोक्तावाद','साँवले सपनों की याद','नाना साहब की पुत्री','प्रेमचंद के फटे जूते','मेरे बचपन के दिन','एक कुत्ता और एक मैना','व्याकरण — संधि','समास','अलंकार'],
+  english:['The Fun They Had','The Sound of Music','The Little Girl','A Truly Beautiful Mind','The Snake and Mirror','My Childhood','Packing','Reach for the Top','The Bond of Love','Kathmandu','If I Were You'],
+  social:['भारत — आकार एवं स्थिति','भौतिक स्वरूप','अपवाह','जलवायु','प्राकृतिक वनस्पति','जनसंख्या','फ्रांसीसी क्रांति','समाजवाद और रूसी क्रांति','नात्सीवाद','जंगल समाज','पालमपुर गाँव','संसाधन के रूप में लोग','निर्धनता','भारत में खाद्य सुरक्षा'],
+};
+
+const PYQS = [
+  {subj:'math',year:'2023',q:'सिद्ध कीजिए कि √2 एक अपरिमेय संख्या है।',a:'मान लो √2=p/q (p,q सहभाज्य नहीं)\n→ 2=p²/q² → p²=2q²\n→ p सम है → p=2m\n→ 4m²=2q² → q²=2m²\n→ q भी सम → विरोधाभास\n∴ √2 अपरिमेय।'},
+  {subj:'math',year:'2022',q:'समीकरण x² − 5x + 6 = 0 के मूल ज्ञात कीजिए।',a:'(x−2)(x−3)=0\n→ x=2 या x=3'},
+  {subj:'math',year:'2023',q:'समान्तर श्रेढ़ी 3,7,11,15… का 10वाँ पद ज्ञात कीजिए।',a:'a=3, d=4\na₁₀ = 3+(10-1)×4 = 3+36 = 39'},
+  {subj:'science',year:'2023',q:'प्रकाश संश्लेषण की क्रिया का समीकरण लिखिए।',a:'6CO₂ + 6H₂O + प्रकाश ऊर्जा → C₆H₁₂O₆ + 6O₂\n\nकारक:\n• सूर्य प्रकाश\n• क्लोरोफिल\n• कार्बन डाइऑक्साइड\n• जल'},
+  {subj:'science',year:'2022',q:'न्यूटन के गति के तीनों नियम लिखिए।',a:'1. जड़त्व नियम — बाह्य बल के बिना अवस्था नहीं बदलती\n2. F = ma — बल=द्रव्यमान×त्वरण\n3. क्रिया-प्रतिक्रिया — हर क्रिया की समान विपरीत प्रतिक्रिया'},
+  {subj:'science',year:'2023',q:'ओम के नियम को समझाइए और सूत्र लिखिए।',a:'परिभाषा: स्थिर ताप पर किसी चालक में बहने वाली धारा, उसके सिरों पर लगे विभवान्तर के समानुपाती होती है।\nसूत्र: V = IR\nजहाँ V=विभवान्तर, I=धारा, R=प्रतिरोध'},
+  {subj:'hindi',year:'2023',q:"'दो बैलों की कथा' में हीरा और मोती के चरित्र का वर्णन कीजिए।",a:'हीरा — शांत, विवेकी, धैर्यवान, नेतृत्वकर्ता\nमोती — साहसी, उत्साही, भावुक\n\nदोनों मित्रता, स्वतंत्रता और स्वाभिमान के प्रतीक हैं।\nप्रेमचंद ने इनके माध्यम से दासता विरोध का संदेश दिया।'},
+  {subj:'social',year:'2023',q:'1789 की फ्रांसीसी क्रांति के मुख्य कारणों का वर्णन कीजिए।',a:'(1) आर्थिक संकट — भूख, गरीबी, करों का बोझ\n(2) सामाजिक असमानता — तीन वर्ग (एस्टेट)\n(3) राजनीतिक कारण — निरंकुश राजतंत्र\n(4) दार्शनिक प्रभाव — रूसो, वोल्टेयर\n(5) अमेरिकी क्रांति का प्रेरणा'},
+  {subj:'social',year:'2022',q:'भारत की जलवायु को प्रभावित करने वाले कारकों को समझाइए।',a:'(1) अक्षांश — भूमध्य रेखा से दूरी\n(2) समुद्र तल से ऊँचाई\n(3) समुद्र से दूरी\n(4) मानसूनी हवाएँ\n(5) भूमि का स्वरूप (हिमालय)'},
+];
+
+/* ─── LOCAL STORAGE HELPERS ─── */
+const ls = {
+  g:(k,d)=>{try{const v=localStorage.getItem(k);return v?JSON.parse(v):d}catch{return d}},
+  s:(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v))}catch{}}
+};
+
+/* ─── STATE ─── */
+const ST = {
+  user: ls.g('th3_user',null),
+  xp: ls.g('th3_xp',0),
+  streak: ls.g('th3_streak',0),
+  correct: ls.g('th3_correct',0),
+  total: ls.g('th3_total',0),
+  sub: ls.g('th3_sub',{}),
+  lastDate: ls.g('th3_lastdate',''),
+  dailyDate: ls.g('th3_dailydate',''),
+  sessions: ls.g('th3_sess',[]),
+  notes: ls.g('th3_notes',[]),
+  tasks: ls.g('th3_tasks',{}),
+  noteSubj: 'गणित',
+  // quiz state
+  quizSubj: 'math',
+  quizDiff: 'easy',
+  qCount: 0,
+  qCorrect: 0,
+  currQ: null,
+  answered: false,
+  isDailyMode: false,
+  dailyPool: [],
+  dailyIdx: 0,
+  quizEnded: false,
+  // timer state
+  timerSecs: 25*60,
+  timerTotal: 25*60,
+  timerLabel: 'पोमोडोरो 25 मिनट',
+  timerRunning: false,
+  timerRef: null,
+  // chat
+  chatHistory: [],
+};
+function save(k){
+  const map={xp:'th3_xp',streak:'th3_streak',correct:'th3_correct',total:'th3_total',sub:'th3_sub',lastDate:'th3_lastdate',dailyDate:'th3_dailydate',sessions:'th3_sess',notes:'th3_notes',tasks:'th3_tasks'};
+  if(k){ls.s(map[k],ST[k]);}
+  else{Object.keys(map).forEach(key=>ls.s(map[key],ST[key]));}
+}
+
+/* ─── TOAST ─── */
+let toastTimer;
+function showToast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg;t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer=setTimeout(()=>t.classList.remove('show'),2800);
+}
+
+/* ─── OTP LOGIN ─── */
+let generatedOTP='';
+function sendOTP(){
+  const name=document.getElementById('lName').value.trim();
+  const phone=document.getElementById('lPhone').value.trim();
+  const err=document.getElementById('l1Err');
+  if(!name){err.textContent='नाम लिखो';err.style.display='block';return;}
+  if(!/^\d{10}$/.test(phone)){err.textContent='10 अंकों का मोबाइल नंबर लिखो';err.style.display='block';return;}
+  err.style.display='none';
+  generatedOTP=String(Math.floor(100000+Math.random()*900000));
+  document.getElementById('otpInfo').textContent=phone+' पर OTP भेजा गया';
+  document.getElementById('demoHint').textContent='🔐 Demo OTP: '+generatedOTP;
+  document.getElementById('step1').classList.remove('active');
+  document.getElementById('step2').classList.add('active');
+  setupOTPBoxes();
+}
+function setupOTPBoxes(){
+  for(let i=0;i<6;i++){
+    const box=document.getElementById('o'+i);
+    box.value='';
+    box.oninput=function(){
+      if(this.value&&i<5)document.getElementById('o'+(i+1)).focus();
+    };
+    box.onkeydown=function(e){
+      if(e.key==='Backspace'&&!this.value&&i>0)document.getElementById('o'+(i-1)).focus();
+    };
+  }
+  document.getElementById('o0').focus();
+}
+function resendOTP(){
+  generatedOTP=String(Math.floor(100000+Math.random()*900000));
+  document.getElementById('demoHint').textContent='🔐 नया Demo OTP: '+generatedOTP;
+  showToast('✅ नया OTP भेजा गया!');
+}
+function verifyOTP(){
+  const entered=[0,1,2,3,4,5].map(i=>document.getElementById('o'+i).value).join('');
+  const err=document.getElementById('l2Err');
+  if(entered.length<6){err.textContent='6 अंक दर्ज करो';err.style.display='block';return;}
+  if(entered===generatedOTP){
+    const name=document.getElementById('lName').value.trim();
+    const phone=document.getElementById('lPhone').value.trim();
+    ST.user={name,phone};
+    ls.s('th3_user',ST.user);
+    initApp();
+    showToast('🎉 स्वागत है, '+name+'!');
+  } else {
+    err.textContent='गलत OTP! फिर से कोशिश करो';err.style.display='block';
+    [0,1,2,3,4,5].forEach(i=>{document.getElementById('o'+i).value='';});
+    document.getElementById('o0').focus();
+  }
+}
+function logout(){
+  if(!confirm('क्या आप लॉगआउट करना चाहते हैं?'))return;
+  ls.s('th3_user',null);location.reload();
+}
+
+/* ─── INIT ─── */
+function initApp(){
+  document.getElementById('loginScreen').style.display='none';
+  document.getElementById('mainHeader').style.display='flex';
+  document.getElementById('mainNav').style.display='flex';
+  document.getElementById('mainContent').style.display='block';
+  // Avatar initial
+  const initial=ST.user.name[0].toUpperCase();
+  document.getElementById('hAvBtn').textContent=initial;
+  // Streak
+  checkStreak();
+  // Load first question
+  loadQ();
+  // Update UI
+  updateDash();
+  renderNotes();
+  renderSessions();
+  renderPYQs('all');
+  renderPlanner();
+  renderProfile();
+  updateSubjectProgress();
+  // Daily banner
+  updateDailyBanner();
+}
+
+/* ─── STREAK ─── */
+function checkStreak(){
+  const today=new Date().toDateString();
+  const yest=new Date(Date.now()-86400000).toDateString();
+  if(ST.lastDate!==today){
+    ST.streak=ST.lastDate===yest?ST.streak+1:1;
+    ST.lastDate=today;
+    save('streak');save('lastDate');
+  }
+}
+
+/* ─── TAB SWITCH ─── */
+const TAB_NAMES=['dashboard','subjects','quiz','aicoach','more','notes','timer','pyqs','planner','leaderboard','profile','settings'];
+function switchTab(name){
+  TAB_NAMES.forEach(t=>{const s=document.getElementById('sec-'+t);if(s)s.classList.remove('active');});
+  document.querySelectorAll('.bnav-item').forEach(b=>b.classList.remove('active'));
+  const sec=document.getElementById('sec-'+name);
+  if(sec)sec.classList.add('active');
+  const navEl=document.querySelector('.bnav-item[data-tab="'+name+'"]')
+    || document.querySelector('.bnav-item[data-tab="more"]');
+  if(navEl)navEl.classList.add('active');
+  window.scrollTo(0,0);
+  if(name==='dashboard')updateDash();
+  if(name==='leaderboard')renderLB();
+  if(name==='notes')renderNotes();
+  if(name==='profile')renderProfile();
+  if(name==='subjects')updateSubjectProgress();
+  if(name==='planner')renderPlanner();
+}
+
+/* ─── DASHBOARD ─── */
+function updateDash(){
+  const acc=ST.total>0?Math.round(ST.correct/ST.total*100):0;
+  const lv=Math.floor(ST.xp/100)+1;
+  const xpin=ST.xp%100;
+  document.getElementById('dXP').textContent=ST.xp;
+  document.getElementById('hXP').textContent=ST.xp+' XP';
+  document.getElementById('dStreak').textContent=ST.streak;
+  document.getElementById('hStreak').textContent='🔥'+ST.streak;
+  document.getElementById('dCorrect').textContent=ST.correct;
+  document.getElementById('dAcc').textContent=acc+'%';
+  document.getElementById('dLevel').textContent='स्तर '+lv;
+  document.getElementById('dBar').style.width=xpin+'%';
+  document.getElementById('dXPInfo').textContent=xpin+'/100 XP → स्तर '+(lv+1);
+  const rank=RANKS[Math.min(lv-1,RANKS.length-1)];
+  document.getElementById('dRankBadge').innerHTML=`<span class="tag tag-blue">${rank}</span>`;
+
+  const ss=document.getElementById('dSubStats');
+  const keys=Object.keys(ST.sub);
+  if(!keys.length){ss.innerHTML='<div class="empty">क्विज़ खेलो — प्रगति यहाँ दिखेगी 📚</div>';return;}
+  ss.innerHTML=keys.map(k=>{
+    const d=ST.sub[k],a=d.total>0?Math.round(d.correct/d.total*100):0;
+    const col=a>=70?'var(--green)':a>=40?'var(--gold)':'var(--accent2)';
+    return `<div style="margin-bottom:11px">
+      <div style="display:flex;justify-content:space-between;margin-bottom:3px;font-size:13px">
+        <span>${SUBJ_LABELS[k]||k}</span>
+        <span style="color:var(--muted);font-family:var(--mono);font-size:11px">${d.correct}/${d.total} (${a}%)</span>
+      </div>
+      <div class="prog-wrap" style="height:6px"><div class="prog-fill" style="width:${a}%;background:${col}"></div></div>
+    </div>`;
+  }).join('');
+  updateDailyBanner();
+}
+
+function updateDailyBanner(){
+  const done=ST.dailyDate===new Date().toDateString();
+  const banner=document.getElementById('dailyBanner');
+  banner.className='daily-banner '+(done?'done':'pending');
+  document.getElementById('dailyIcon').textContent=done?'✅':'🎯';
+  document.getElementById('dailyTitle').textContent=done?'आज की क्विज़ पूरी हुई!':'आज की दैनिक क्विज़';
+  document.getElementById('dailySub').textContent=done?'कल फिर आना 🌟':'10 सवाल • सभी विषय • +50 बोनस XP';
+  const btn=document.getElementById('dailyBtn');
+  btn.style.display=done?'none':'inline-flex';
+}
+
+/* ─── SUBJECTS ─── */
+function updateSubjectProgress(){
+  Object.keys(SUBJ_LABELS).forEach(k=>{
+    const d=ST.sub[k],a=d&&d.total>0?Math.round(d.correct/d.total*100):0;
+    const el=document.getElementById('sp-'+k);
+    if(el)el.textContent=a+'% सटीकता'+(d?' ('+d.total+' प्रश्न)':'');
+  });
+}
+function openSubject(subj){
+  document.getElementById('subjGrid').style.display='none';
+  const detail=document.getElementById('subjDetail');
+  detail.style.display='block';
+  document.getElementById('sdTitle').textContent=SUBJ_LABELS[subj]||subj;
+  const chs=CHAPTERS[subj]||[];
+  document.getElementById('sdChapters').innerHTML=chs.map((ch,i)=>`
+    <div style="display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--glass);border:1px solid var(--border);border-radius:10px;margin-bottom:7px">
+      <span style="font-family:var(--mono);font-size:11px;color:var(--muted)">${String(i+1).padStart(2,'0')}</span>
+      <span style="font-size:13px;flex:1">${ch}</span>
+      <button class="btn btn-p btn-sm" onclick="goQuizFromSubj('${subj}')">क्विज़</button>
+    </div>`).join('');
+}
+function closeSubjectDetail(){
+  document.getElementById('subjGrid').style.display='grid';
+  document.getElementById('subjDetail').style.display='none';
+}
+function goQuizFromSubj(subj){
+  ST.quizSubj=subj;
+  switchTab('quiz');
+  document.querySelectorAll('#quizSubjRow .filter-btn').forEach(b=>b.classList.remove('active'));
+  const subjs=['math','science','hindi','english','social'];
+  const idx=subjs.indexOf(subj);
+  const btns=document.querySelectorAll('#quizSubjRow .filter-btn');
+  if(btns[idx])btns[idx].classList.add('active');
+  restartQuiz();
+}
+
+/* ─── QUIZ ─── */
+const MAX_Q=10;
+function getRandomQ(){
+  const diff=ST.isDailyMode?'easy':ST.quizDiff;
+  const subj=ST.isDailyMode?(['math','science','hindi','english','social'][Math.floor(Math.random()*5)]):ST.quizSubj;
+  const pool=[...(QB[subj]?.[diff]||[]),...(QB[subj]?.easy||[])];
+  return {...pool[Math.floor(Math.random()*pool.length)],_subj:subj};
+}
+function setQuizSubj(s,btn){
+  ST.quizSubj=s;
+  document.querySelectorAll('#quizSubjRow .filter-btn').forEach(b=>b.classList.remove('active'));
   btn.classList.add('active');
   restartQuiz();
 }
-function setDiff(d,btn){
-  S.diff=d;
-  document.querySelectorAll('.diff-btn').forEach(b=>b.classList.remove('active'));
+function setQuizDiff(d,btn){
+  ST.quizDiff=d;
+  document.querySelectorAll('.filter-btn.gold').forEach(b=>b.classList.remove('active'));
   btn.classList.add('active');
+  restartQuiz();
+}
+function startDailyQuiz(){
+  const done=ST.dailyDate===new Date().toDateString();
+  if(done){showToast('आज की क्विज़ पहले ही पूरी हुई! 🌟');return;}
+  ST.isDailyMode=true;
+  switchTab('quiz');
+  document.getElementById('quizControls').style.display='none';
+  document.getElementById('dailyModeBar').style.display='flex';
+  document.getElementById('dailyStartBtn').style.display='none';
   restartQuiz();
 }
 function restartQuiz(){
-  S.qCount=0; S.qCorrect=0;
-  quizEnded=false;
+  ST.qCount=0;ST.qCorrect=0;ST.quizEnded=false;
   document.getElementById('scoreSummary').className='score-sum';
   document.getElementById('quizArea').style.display='block';
+  if(!ST.isDailyMode){
+    document.getElementById('quizControls').style.display='block';
+    document.getElementById('dailyModeBar').style.display='none';
+    document.getElementById('dailyStartBtn').style.display=ST.dailyDate===new Date().toDateString()?'none':'inline-flex';
+  }
   loadQ();
 }
-function skipQ(){ loadQ(); }
-
 function loadQ(){
-  if(S.qCount>=MAX_Q){ endQuiz(); return; }
-  answered=false;
-  const pool=QBank[S.subject][S.diff];
-  currQ=pool[Math.floor(Math.random()*pool.length)];
-  document.getElementById('qTag').textContent=`प्रश्न ${S.qCount+1}/${MAX_Q} • ${S.diff==='easy'?'आसान':S.diff==='medium'?'मध्यम':'कठिन'}`;
-  document.getElementById('qText').textContent=currQ.q;
-  document.getElementById('optsGrid').innerHTML=currQ.opts.map((o,i)=>
-    `<button class="opt-btn" onclick="pick(${i},this)">${String.fromCharCode(65+i)}. ${o}</button>`
-  ).join('');
-  document.getElementById('resBanner').className='result-bar';
-  document.getElementById('resBanner').textContent='';
+  if(ST.qCount>=MAX_Q){endQuiz();return;}
+  ST.answered=false;ST.currQ=getRandomQ();
+  const diff=ST.quizDiff;
+  document.getElementById('qTag').textContent=`Q${ST.qCount+1}/${MAX_Q} • ${SUBJ_LABELS[ST.currQ._subj]||ST.currQ._subj}`;
+  document.getElementById('qText').textContent=ST.currQ.q;
+  document.getElementById('qProgress').textContent=(ST.qCount)+'/'+MAX_Q;
+  document.getElementById('qProgBar').style.width=(ST.qCount/MAX_Q*100)+'%';
+  document.getElementById('qSubjLbl').textContent=ST.isDailyMode?'🎯 दैनिक क्विज़':SUBJ_LABELS[ST.quizSubj];
+  document.getElementById('resBanner').className='res-bar';
   document.getElementById('expBox').className='exp-box';
   document.getElementById('nextBtn').style.display='none';
+  const grid=document.getElementById('optsGrid');
+  grid.innerHTML=ST.currQ.opts.map((o,i)=>`<button class="opt-btn" onclick="pickAnswer(${i},this)">${String.fromCharCode(65+i)}. ${o}</button>`).join('');
 }
-
-function pick(idx,btn){
-  if(answered) return;
-  answered=true;
-  S.qCount++;
-  S.total++;
-  if(!S.sub[S.subject]) S.sub[S.subject]={correct:0,total:0};
-  S.sub[S.subject].total++;
-
+function pickAnswer(idx,btn){
+  if(ST.answered)return;
+  ST.answered=true;ST.qCount++;ST.total++;
+  const subj=ST.currQ._subj||ST.quizSubj;
+  if(!ST.sub[subj])ST.sub[subj]={correct:0,total:0};
+  ST.sub[subj].total++;
   document.querySelectorAll('.opt-btn').forEach(b=>b.disabled=true);
+  const xpGain=ST.quizDiff==='easy'?5:ST.quizDiff==='medium'?10:15;
   const rb=document.getElementById('resBanner');
-  const xpGain = S.diff==='easy'?5:S.diff==='medium'?10:15;
-
-  if(idx===currQ.ans){
-    S.correct++; S.xp+=xpGain; S.qCorrect++;
-    S.sub[S.subject].correct++;
+  if(idx===ST.currQ.ans){
+    ST.correct++;ST.xp+=xpGain;ST.qCorrect++;ST.sub[subj].correct++;
     btn.classList.add('correct');
-    rb.textContent=`✅ सही! +${xpGain} XP मिला!`;
-    rb.className='result-bar ok';
-    showToast(`✅ सही जवाब! +${xpGain} XP`);
+    rb.textContent='✅ सही! +'+xpGain+' XP मिला!';rb.className='res-bar ok';
+    showToast('✅ सही! +'+xpGain+' XP');
   } else {
-    S.xp=Math.max(0,S.xp-2);
+    ST.xp=Math.max(0,ST.xp-2);
     btn.classList.add('wrong');
-    document.querySelectorAll('.opt-btn')[currQ.ans].classList.add('correct');
-    rb.textContent=`❌ गलत! सही जवाब: ${String.fromCharCode(65+currQ.ans)}`;
-    rb.className='result-bar bad';
+    document.querySelectorAll('.opt-btn')[ST.currQ.ans].classList.add('correct');
+    rb.textContent='❌ गलत! सही: '+String.fromCharCode(65+ST.currQ.ans);rb.className='res-bar bad';
+    showToast('❌ गलत!');
   }
-  document.getElementById('expBox').innerHTML=`<strong>💡 स्पष्टीकरण:</strong> ${currQ.exp}`;
+  document.getElementById('expBox').innerHTML='<strong>💡 स्पष्टीकरण:</strong> '+ST.currQ.exp;
   document.getElementById('expBox').className='exp-box show';
   document.getElementById('nextBtn').style.display='inline-flex';
-  save(); updateDash();
-  document.getElementById('hXP').textContent=S.xp+' XP';
+  document.getElementById('qProgress').textContent=ST.qCount+'/'+MAX_Q;
+  document.getElementById('qProgBar').style.width=(ST.qCount/MAX_Q*100)+'%';
+  save();updateDash();
 }
-
-function nextQ(){
-  if(S.qCount>=MAX_Q) endQuiz();
-  else loadQ();
-}
-
+function nextQ(){if(ST.qCount>=MAX_Q)endQuiz();else loadQ();}
+function skipQ(){if(!ST.quizEnded)loadQ();}
 function endQuiz(){
-  quizEnded=true;
+  ST.quizEnded=true;
   document.getElementById('quizArea').style.display='none';
-  const sc=document.getElementById('scoreSummary');
-  sc.className='score-sum show';
-  document.getElementById('sumScore').textContent=`${S.qCorrect}/${MAX_Q}`;
-  const pct=Math.round(S.qCorrect/MAX_Q*100);
+  const pct=Math.round(ST.qCorrect/MAX_Q*100);
+  document.getElementById('sumScore').textContent=ST.qCorrect+'/'+MAX_Q;
   const msgs=['थोड़ी और मेहनत करो! 💪','अच्छी कोशिश! 👍','बहुत अच्छा! 🌟','शाबाश! 🔥','अद्भुत! 🏆 टॉपर!'];
-  document.getElementById('sumMsg').textContent=msgs[Math.min(Math.floor(pct/25),4)]+` (${pct}%)`;
+  document.getElementById('sumMsg').textContent=msgs[Math.min(Math.floor(pct/25),4)]+' ('+pct+'%)';
+  const bonus=document.getElementById('sumBonus');
+  if(ST.isDailyMode&&ST.dailyDate!==new Date().toDateString()){
+    ST.xp+=50;ST.dailyDate=new Date().toDateString();
+    save('xp');save('dailyDate');
+    bonus.style.display='block';
+    showToast('🎉 दैनिक क्विज़ पूरी! +50 बोनस XP');
+    updateDailyBanner();
+  } else bonus.style.display='none';
+  ST.isDailyMode=false;
+  document.getElementById('scoreSummary').className='score-sum show';
+  document.getElementById('quizControls').style.display='block';
+  document.getElementById('dailyModeBar').style.display='none';
+  save();updateDash();
 }
 
-// ========== AI COACH ==========
-const chatH=[];
-async function sendMsg(){
-  const inp=document.getElementById('chatIn');
-  const txt=inp.value.trim();
-  if(!txt) return;
-  addBubble(txt,'user'); inp.value='';
-  chatH.push({role:'user',content:txt});
-  const tid=addTyping();
+/* ─── AI COACH ─── */
+async function sendChat(){
+  const inp=document.getElementById('chatInput');
+  const text=inp.value.trim();if(!text)return;
+  inp.value='';
+  appendBubble(text,'user');
+  ST.chatHistory.push({role:'user',content:text});
+  const tid=appendTyping();
   try{
-    const r=await fetch('https://api.anthropic.com/v1/messages',{
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
+    const res=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',headers:{'Content-Type':'application/json'},
       body:JSON.stringify({
-        model:'claude-sonnet-4-6',
-        max_tokens:1000,
-        system:`Tu ek friendly AI study coach hai jo Bihar Board Class 9 ke garib bacchon ki madad karta hai. Hamesha Hindi mein jawab de (Devanagari script mein). Simple, clear aur encouraging tone rakho. Step-by-step samjhao. Bihar Board NCERT syllabus follow karo. Motivate karo. Chhote chhote paragraphs mein likho. Formulae aur examples zaroor do.`,
-        messages:chatH.slice(-8),
-      }),
+        model:'claude-sonnet-4-6',max_tokens:1000,
+        system:'Tu Bihar Board Class 9 ke garib bacchon ke liye ek friendly AI study coach hai. Hamesha Devanagari Hindi mein jawab de. Simple language use karo. Bihar Board NCERT syllabus follow karo. Step-by-step samjhao. Formulae aur examples do. Motivate karo. Chhote paragraphs use karo.',
+        messages:ST.chatHistory.slice(-8)
+      })
     });
-    const d=await r.json();
+    const d=await res.json();
     removeTyping(tid);
-    const rep=d.content?.[0]?.text||'कुछ गलती हुई। दोबारा कोशिश करो।';
-    chatH.push({role:'assistant',content:rep});
-    addBubble(rep,'ai');
-  }catch(e){
+    const reply=d.content?.[0]?.text||'कुछ गलती हुई। दोबारा कोशिश करो।';
+    ST.chatHistory.push({role:'assistant',content:reply});
+    appendBubble(reply,'ai');
+  } catch(e){
     removeTyping(tid);
-    addBubble('नेटवर्क की समस्या है। इंटरनेट चेक करो और दोबारा कोशिश करो। 🔄','ai');
+    appendBubble('नेटवर्क समस्या। इंटरनेट चेक करो। 🔄','ai');
   }
 }
-function sendQ(btn){ document.getElementById('chatIn').value=btn.textContent; sendMsg(); }
-function addBubble(txt,role){
+function sendQuickQ(btn){
+  document.getElementById('chatInput').value=btn.textContent;
+  sendChat();
+}
+function appendBubble(text,role){
   const w=document.getElementById('chatWrap');
   const d=document.createElement('div');
-  d.className='msg'+(role==='user'?' user':'');
-  d.innerHTML=`<div class="msg-av ${role}-av">${role==='ai'?'🤖':'👤'}</div>
-    <div class="bubble ${role==='ai'?'ai-bub':'user-bub'}">${txt.replace(/\n/g,'<br>')}</div>`;
-  w.appendChild(d); w.scrollTop=w.scrollHeight;
+  d.className='chat-msg'+(role==='user'?' user':'');
+  d.innerHTML=`<div class="chat-av ${role==='ai'?'ai-av':'user-av'}">${role==='ai'?'🤖':(ST.user?.name[0]||'👤')}</div>
+    <div class="bubble ${role==='ai'?'ai-bubble':'user-bubble'}">${text.replace(/</g,'&lt;').replace(/\n/g,'<br>')}</div>`;
+  w.appendChild(d);w.scrollTop=w.scrollHeight;
 }
-function addTyping(){
+function appendTyping(){
   const w=document.getElementById('chatWrap');
-  const id='t'+Date.now();
+  const id='typ'+Date.now();
   const d=document.createElement('div');
-  d.className='msg'; d.id=id;
-  d.innerHTML=`<div class="msg-av ai-av">🤖</div><div class="typing"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>`;
-  w.appendChild(d); w.scrollTop=w.scrollHeight;
-  return id;
+  d.id=id;d.className='chat-msg';
+  d.innerHTML=`<div class="chat-av ai-av">🤖</div><div class="typing-dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>`;
+  w.appendChild(d);w.scrollTop=w.scrollHeight;return id;
 }
-function removeTyping(id){ const e=document.getElementById(id); if(e) e.remove(); }
+function removeTyping(id){const e=document.getElementById(id);if(e)e.remove();}
 
-// ========== NOTES ==========
-function setNoteSubj(subj,btn){
-  S.noteSubj=subj;
-  document.querySelectorAll('.notes-subj-row .subj-btn').forEach(b=>b.classList.remove('active'));
+/* ─── NOTES ─── */
+function setNoteSubj(s,btn){
+  ST.noteSubj=s;
+  document.querySelectorAll('#noteSubjRow .filter-btn').forEach(b=>b.classList.remove('active'));
   btn.classList.add('active');
 }
 function saveNote(){
-  const txt=document.getElementById('noteInput').value.trim();
-  if(!txt){showToast('कुछ लिखो पहले!');return;}
-  S.notes.unshift({subj:S.noteSubj,text:txt,date:new Date().toLocaleDateString('hi-IN')});
-  if(S.notes.length>50) S.notes.pop();
-  save(); renderNotes();
+  const text=document.getElementById('noteInput').value.trim();
+  if(!text){showToast('⚠️ कुछ लिखो पहले!');return;}
+  ST.notes.unshift({subj:ST.noteSubj,text,date:new Date().toLocaleDateString('hi-IN')});
+  if(ST.notes.length>50)ST.notes.pop();
+  save('notes');renderNotes();
   document.getElementById('noteInput').value='';
   showToast('✅ नोट सहेजा गया!');
 }
-function clearNoteInput(){ document.getElementById('noteInput').value=''; }
-function deleteNote(i){ if(confirm('यह नोट हटाएँ?')){ S.notes.splice(i,1); save(); renderNotes(); } }
+function deleteNote(i){
+  if(!confirm('यह नोट हटाएँ?'))return;
+  ST.notes.splice(i,1);save('notes');renderNotes();
+}
 function renderNotes(){
   const c=document.getElementById('savedNotes');
-  if(!S.notes.length){c.innerHTML='<div class="empty">अभी कोई नोट नहीं है। ऊपर लिखो!</div>';return;}
-  c.innerHTML=S.notes.map((n,i)=>`
+  if(!ST.notes.length){c.innerHTML='<div class="empty">अभी कोई नोट नहीं 📝</div>';return;}
+  c.innerHTML=ST.notes.map((n,i)=>`
     <div class="note-item">
-      <div class="note-item-head">
-        <span class="note-tag">${n.subj}</span>
-        <div style="display:flex;gap:10px;align-items:center;">
-          <span class="note-date">${n.date}</span>
-          <button class="note-del" onclick="deleteNote(${i})">🗑 हटाओ</button>
+      <div class="note-head">
+        <span class="tag tag-blue">${n.subj}</span>
+        <div style="display:flex;gap:10px;align-items:center">
+          <span style="font-size:10px;color:var(--muted)">${n.date}</span>
+          <button onclick="deleteNote(${i})" style="background:none;border:none;color:var(--accent2);cursor:pointer;font-size:11px;font-family:var(--font)">🗑 हटाओ</button>
         </div>
       </div>
-      <div class="note-preview">${n.text.substring(0,200)}${n.text.length>200?'...':''}</div>
+      <div style="font-size:13px;color:var(--muted);line-height:1.55">${n.text.substring(0,220)}${n.text.length>220?'...':''}</div>
     </div>`).join('');
 }
 
-// ========== TIMER ==========
-let tInterval=null, tSecs=25*60, tRunning=false, tLabel='पोमोडोरो 25 मिनट';
-function setTimer(s,l){ clearInterval(tInterval); tRunning=false; tSecs=s; tLabel=l; document.getElementById('startBtn').textContent='▶ शुरू करो'; document.getElementById('timerLbl').textContent=l; renderTDisp(); }
-function renderTDisp(){ const m=String(Math.floor(tSecs/60)).padStart(2,'0'),s=String(tSecs%60).padStart(2,'0'); const d=document.getElementById('timerDisp'); d.textContent=m+':'+s; d.className='timer-disp'+(tSecs<=60&&tRunning?' warn':''); }
+/* ─── PYQs ─── */
+function filterPYQ(f,btn){
+  document.querySelectorAll('#pyqFilterRow .filter-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  renderPYQs(f);
+}
+function renderPYQs(f){
+  f=f||'all';
+  const list=f==='all'?PYQS:PYQS.filter(p=>p.subj===f);
+  const c=document.getElementById('pyqList');
+  if(!list.length){c.innerHTML='<div class="empty">इस विषय के PYQ जल्द आएंगे</div>';return;}
+  c.innerHTML=list.map((p,i)=>`
+    <div class="card glass" style="margin-bottom:8px;padding:14px">
+      <div style="display:flex;justify-content:space-between;margin-bottom:8px">
+        <span class="tag tag-gold">📅 ${p.year}</span>
+        <span class="tag tag-muted">${SUBJ_LABELS[p.subj]||p.subj}</span>
+      </div>
+      <div style="font-size:14px;font-weight:500;line-height:1.6;margin-bottom:10px">${p.q}</div>
+      <button onclick="togglePYQ(${i})" style="background:none;border:none;color:var(--accent);font-size:12px;cursor:pointer;font-family:var(--font)">💡 उत्तर देखो ▼</button>
+      <div class="pyq-ans" id="pa${i}">${p.a.replace(/\n/g,'<br>')}</div>
+    </div>`).join('');
+}
+function togglePYQ(i){document.getElementById('pa'+i).classList.toggle('open');}
+
+/* ─── PLANNER ─── */
+const DAYS=['सोमवार','मंगलवार','बुधवार','गुरुवार','शुक्रवार','शनिवार','रविवार'];
+const DEFAULT_TASKS={'सोमवार':['गणित — बहुपद अभ्यास','विज्ञान — परमाणु संरचना'],'मंगलवार':['हिंदी — पाठ 1 पढ़ो','सामाजिक — फ्रांसीसी क्रांति'],'बुधवार':['गणित — त्रिकोणमिति','अंग्रेज़ी — Grammar practice'],'गुरुवार':['विज्ञान — बल और गति','हिंदी — व्याकरण'],'शुक्रवार':['Full revision — सभी विषय','PYQ practice'],'शनिवार':['Mock test दो','Notes बनाओ'],'रविवार':['आराम 😴 + Revision','अगले सप्ताह की planning']};
+function renderPlanner(){
+  if(!Object.keys(ST.tasks).length){
+    DAYS.forEach(d=>{ST.tasks[d]=(DEFAULT_TASKS[d]||[]).map(t=>({text:t,done:false}));});
+    save('tasks');
+  }
+  const todayName=new Date().toLocaleDateString('hi-IN',{weekday:'long'});
+  document.getElementById('plannerWrap').innerHTML=DAYS.map(day=>{
+    const tasks=ST.tasks[day]||[];
+    const done=tasks.filter(t=>t.done).length;
+    const isToday=todayName.includes(day.slice(0,2));
+    return `<div class="plan-day">
+      <div class="plan-head" onclick="togglePlanDay('${day}')">
+        <div style="display:flex;align-items:center;gap:8px">
+          <span style="font-size:14px;font-weight:700">${day}</span>
+          ${isToday?'<span class="tag tag-green">आज</span>':''}
+        </div>
+        <div style="display:flex;align-items:center;gap:8px">
+          <span style="font-size:11px;color:var(--muted)">${done}/${tasks.length} ✓</span>
+          <span style="font-size:10px;color:var(--muted)">▼</span>
+        </div>
+      </div>
+      <div class="plan-body${isToday?' open':''}" id="pb-${day}">
+        ${tasks.map((t,i)=>`
+          <div class="task-row" onclick="toggleTask('${day}',${i})">
+            <div class="task-cb${t.done?' done':''}">
+              ${t.done?'<span style="color:#000;font-size:10px;font-weight:900">✓</span>':''}
+            </div>
+            <span style="font-size:13px;${t.done?'text-decoration:line-through;color:var(--muted)':''}">${t.text}</span>
+          </div>`).join('')}
+        <div style="display:flex;gap:6px;margin-top:8px">
+          <input class="inp" id="ti-${day}" placeholder="नया काम जोड़ो..." style="padding:7px 10px;font-size:12px" onkeydown="if(event.key==='Enter')addTask('${day}')"/>
+          <button class="btn btn-p btn-sm" onclick="addTask('${day}')">+ जोड़ो</button>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+function togglePlanDay(day){document.getElementById('pb-'+day).classList.toggle('open');}
+function toggleTask(day,i){ST.tasks[day][i].done=!ST.tasks[day][i].done;save('tasks');renderPlanner();}
+function addTask(day){
+  const inp=document.getElementById('ti-'+day);
+  if(!inp||!inp.value.trim())return;
+  if(!ST.tasks[day])ST.tasks[day]=[];
+  ST.tasks[day].push({text:inp.value.trim(),done:false});
+  save('tasks');renderPlanner();
+}
+
+/* ─── TIMER ─── */
+function setTimerPreset(s,l){
+  clearInterval(ST.timerRef);ST.timerRunning=false;
+  ST.timerSecs=s;ST.timerTotal=s;ST.timerLabel=l;
+  document.getElementById('timerStartBtn').textContent='▶ शुरू करो';
+  document.getElementById('timerLabel').textContent=l;
+  renderTimerDisp();
+}
+function renderTimerDisp(){
+  const m=String(Math.floor(ST.timerSecs/60)).padStart(2,'0');
+  const s=String(ST.timerSecs%60).padStart(2,'0');
+  document.getElementById('timerSvgText').textContent=m+':'+s;
+  const circ=2*Math.PI*72;
+  const pct=ST.timerTotal>0?(ST.timerTotal-ST.timerSecs)/ST.timerTotal:0;
+  const arc=document.getElementById('timerArc');
+  arc.style.stroke=ST.timerSecs<=60&&ST.timerRunning?'var(--accent2)':'var(--accent)';
+  arc.style.strokeDashoffset=String(circ*(1-pct));
+}
 function toggleTimer(){
-  if(tRunning){ clearInterval(tInterval); tRunning=false; document.getElementById('startBtn').textContent='▶ जारी रखो'; }
-  else {
-    tRunning=true; document.getElementById('startBtn').textContent='⏸ रुको';
-    tInterval=setInterval(()=>{ tSecs--; renderTDisp(); if(tSecs<=0){ clearInterval(tInterval); tRunning=false; document.getElementById('startBtn').textContent='▶ शुरू करो'; logSess(tLabel); showToast('🎉 सत्र पूरा! शाबाश! +25 XP'); } },1000);
+  if(ST.timerRunning){
+    clearInterval(ST.timerRef);ST.timerRunning=false;
+    document.getElementById('timerStartBtn').textContent='▶ जारी रखो';
+  } else {
+    ST.timerRunning=true;
+    document.getElementById('timerStartBtn').textContent='⏸ रुको';
+    ST.timerRef=setInterval(()=>{
+      ST.timerSecs--;renderTimerDisp();
+      if(ST.timerSecs<=0){
+        clearInterval(ST.timerRef);ST.timerRunning=false;
+        document.getElementById('timerStartBtn').textContent='▶ शुरू करो';
+        const t=new Date().toLocaleTimeString('hi-IN',{hour:'2-digit',minute:'2-digit'});
+        ST.sessions.unshift({lbl:ST.timerLabel,t,date:new Date().toDateString()});
+        if(ST.sessions.length>20)ST.sessions.pop();
+        ST.xp+=25;save('sessions');save('xp');
+        renderSessions();updateDash();
+        showToast('🎉 सत्र पूरा! शाबाश! +25 XP');
+      }
+    },1000);
   }
 }
-function resetTimer(){ clearInterval(tInterval); tRunning=false; document.getElementById('startBtn').textContent='▶ शुरू करो'; setTimer(25*60,'पोमोडोरो 25 मिनट'); }
-function logSess(lbl){ const t=new Date().toLocaleTimeString('hi-IN',{hour:'2-digit',minute:'2-digit'}); S.sessions.unshift({lbl,t,date:new Date().toDateString()}); if(S.sessions.length>20) S.sessions.pop(); S.xp+=25; save(); renderSess(); updateDash(); }
-function renderSess(){ const lg=document.getElementById('sessLog'); const td=S.sessions.filter(s=>s.date===new Date().toDateString()); if(!td.length){lg.innerHTML='<div class="empty">अभी कोई सत्र पूरा नहीं हुआ</div>';return;} lg.innerHTML=td.map(s=>`<div class="sess-item"><span>${s.lbl}</span><span>✅ ${s.t}</span></div>`).join(''); }
+function resetTimer(){
+  clearInterval(ST.timerRef);ST.timerRunning=false;
+  ST.timerSecs=ST.timerTotal;
+  document.getElementById('timerStartBtn').textContent='▶ शुरू करो';
+  renderTimerDisp();
+}
+function renderSessions(){
+  const lg=document.getElementById('sessLog');
+  const today=ST.sessions.filter(s=>s.date===new Date().toDateString());
+  if(!today.length){lg.innerHTML='<div class="empty">अभी कोई सत्र पूरा नहीं हुआ</div>';return;}
+  lg.innerHTML=today.map(s=>`
+    <div style="display:flex;justify-content:space-between;padding:8px 10px;background:rgba(255,255,255,.03);border-radius:8px;margin-bottom:5px;font-size:13px">
+      <span>${s.lbl}</span>
+      <span style="font-family:var(--mono);color:var(--green);font-size:11px">✅ ${s.t}</span>
+    </div>`).join('');
+}
 
-// ========== LEADERBOARD ==========
+/* ─── LEADERBOARD ─── */
 function renderLB(){
   const others=[
     {n:'रोहित कुमार',e:'😊',xp:420,sch:'सरकारी हाईस्कूल, पटना'},
@@ -784,24 +1388,66 @@ function renderLB(){
     {n:'काव्या शर्मा',e:'👧',xp:310,sch:'नवादा बालिका स्कूल'},
     {n:'अर्जुन पासवान',e:'🙋',xp:280,sch:'गया सरकारी स्कूल'},
   ];
-  const me={n:'तुम',e:'👑',xp:S.xp,sch:'तुम्हारा स्कूल',you:true};
+  const me={n:ST.user?.name||'तुम',e:'👑',xp:ST.xp,sch:'तुम्हारा स्कूल',you:true};
   const all=[...others,me].sort((a,b)=>b.xp-a.xp);
   const medals=['🥇','🥈','🥉'];
-  const rc=['r1','r2','r3'];
+  const rankColors=['var(--gold)','#c0c0c0','#cd7f32'];
   document.getElementById('lbList').innerHTML=all.map((p,i)=>`
     <div class="lb-row${p.you?' you':''}">
-      <div class="lb-rank ${rc[i]||''}">${medals[i]||i+1}</div>
-      <div class="lb-av">${p.e}</div>
-      <div class="lb-info"><div class="lb-name">${p.n}</div><div class="lb-sub">${p.sch}</div></div>
-      <div class="lb-xp">${p.xp} XP</div>
+      <div style="font-family:var(--mono);font-size:14px;font-weight:800;width:28px;text-align:center;color:${rankColors[i]||'var(--muted)'}">${medals[i]||i+1}</div>
+      <div style="width:34px;height:34px;border-radius:50%;background:${p.you?'var(--accent-g)':'rgba(255,255,255,.08)'};display:flex;align-items:center;justify-content:center;font-size:14px">${p.e}</div>
+      <div style="flex:1">
+        <div style="font-size:13px;font-weight:700">${p.n}${p.you?' (तुम)':''}</div>
+        <div style="font-size:10px;color:var(--muted)">${p.sch}</div>
+      </div>
+      <div style="font-family:var(--mono);font-size:13px;font-weight:800;color:var(--accent)">${p.xp} XP</div>
     </div>`).join('');
 }
 
-// ========== TOAST ==========
-function showToast(msg){ const t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),2800); }
+/* ─── PROFILE ─── */
+function renderProfile(){
+  if(!ST.user)return;
+  const acc=ST.total>0?Math.round(ST.correct/ST.total*100):0;
+  const lv=Math.floor(ST.xp/100)+1;
+  const rank=RANKS[Math.min(lv-1,RANKS.length-1)];
+  document.getElementById('profAv').textContent=ST.user.name[0].toUpperCase();
+  document.getElementById('profName').textContent=ST.user.name;
+  document.getElementById('profPhone').textContent='📱 '+ST.user.phone;
+  document.getElementById('profBadges').innerHTML=`<span class="tag tag-blue">${rank}</span><span class="tag tag-green">Bihar Board Class 9</span>`;
+  document.getElementById('ppXP').textContent=ST.xp;
+  document.getElementById('ppStr').textContent=ST.streak;
+  document.getElementById('ppAcc').textContent=acc+'%';
+  document.getElementById('stName').textContent=ST.user.name;
+  document.getElementById('stPhone').textContent='📱 '+ST.user.phone;
 
-// ========== INIT ==========
-checkStreak(); loadQ(); updateDash(); renderSess();
+  const badges=[
+    {icon:'🌟',name:'पहला कदम',earned:true},
+    {icon:'✅',name:'जिज्ञासु (10 सही)',earned:ST.correct>=10},
+    {icon:'🔥',name:'स्ट्रीक मास्टर (7 दिन)',earned:ST.streak>=7},
+    {icon:'⚡',name:'XP चैंपियन (500)',earned:ST.xp>=500},
+    {icon:'🏆',name:'टॉपर (1000 XP)',earned:ST.xp>=1000},
+    {icon:'⏱',name:'फोकस गुरु',earned:ST.sessions.length>0},
+    {icon:'🎯',name:'दैनिक योद्धा',earned:ST.dailyDate===new Date().toDateString()},
+    {icon:'📚',name:'पाँच विषय',earned:Object.keys(ST.sub).length>=5},
+  ];
+  document.getElementById('achievements').innerHTML=badges.map(b=>`
+    <div style="display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid rgba(255,255,255,.05);opacity:${b.earned?1:.38}">
+      <span style="font-size:22px">${b.icon}</span>
+      <span style="font-size:13px;flex:1">${b.name}</span>
+      ${b.earned?'<span class="tag tag-green">✓ मिला</span>':'<span class="tag tag-muted">बंद</span>'}
+    </div>`).join('');
+}
+
+/* ─── BOOT ─── */
+(function(){
+  if(ST.user){initApp();}
+  else{
+    // Show login, hide app
+    document.getElementById('mainHeader').style.display='none';
+    document.getElementById('mainNav').style.display='none';
+    document.getElementById('mainContent').style.display='none';
+  }
+})();
 </script>
 </body>
 </html>
